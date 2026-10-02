@@ -48,18 +48,34 @@ export const MOCK_FOODS: Food[] = [
   food('noodles', 'Muna-köögiviljanuudlid', 'Nuudlid, muna, kapsas ja krõmpsuv paprika.', 'pasta', { grains: 2, protein: 2, vegetables: 2, fats: 1 }, main),
   food('herring', 'Heeringas kartuli ja salatiga', 'Heeringas, keedukartul ja peedi-õunasalat.', 'fish', { protein: 2, grains: 2, vegetables: 2, fruits: 1 }, main),
 ];
+// Keep existing IDs so saved games continue to resolve their restaurants.
+// Names and logos are real; meals are the game's sample menu. See docs/restaurant-logos.md.
 const configs = [
-  ['raekoja', 'Raekoja Kohvik', 'Raekoja plats', 'coffee', [0, 2, 8, 12, 17, 24]],
-  ['emajoe', 'Emajõe Bistroo', 'Emajõe kallas', 'fish', [1, 4, 9, 13, 18, 30]],
-  ['karlova', 'Karlova Köök', 'Karlova', 'utensils', [5, 6, 10, 14, 22, 27]],
-  ['supilinna', 'Supilinna Söökla', 'Supilinn', 'soup', [0, 7, 8, 15, 20, 35]],
-  ['aparaadi', 'Aparaadi Kohvik', 'Aparaaditehas', 'coffee', [3, 4, 11, 16, 21, 33]],
-  ['vanalinna', 'Vanalinna Deli', 'Vanalinn', 'sandwich', [1, 2, 9, 12, 19, 28]],
-  ['toome', 'Toomekohvik', 'Toomemägi', 'leaf', [5, 7, 10, 13, 23, 31]],
-  ['ulikooli', 'Ülikooli Bistroo', 'Ülikooli tänav', 'utensils', [0, 3, 11, 14, 25, 36]],
-  ['joeaarne', 'Jõeäärne Köök', 'Ülejõe', 'fish', [2, 6, 8, 15, 26, 37]],
-  ['kesklinna', 'Kesklinna Lõuna', 'Kesklinn', 'soup', [1, 7, 9, 16, 29, 38]],
-  ['maitsed', 'Tartu Maitsed', 'Küüni tänav', 'utensils', [3, 5, 10, 12, 32, 39]],
-  ['roheline', 'Roheline Kahvel', 'Botaanikaaia kõrval', 'leaf', [4, 6, 8, 9, 34, 19]],
-] as const;
-export const MOCK_RESTAURANTS: Restaurant[] = configs.map(([id, name, locationLabel, icon, indices]) => ({ id, name, locationLabel, icon, meals: indices.map(index => MOCK_FOODS[index]) }));
+  { id: 'raekoja', name: 'Werner', locationLabel: 'Ülikooli 11', icon: 'coffee',
+    logo: '/logos/restaurants/werner.png', indices: [0, 2, 8, 12, 17, 24] },
+  { id: 'emajoe', name: 'Joyce', locationLabel: 'Riia 2', icon: 'fish',
+    logo: '/logos/restaurants/joyce.svg', indices: [1, 4, 9, 13, 18, 30] },
+  { id: 'karlova', name: 'Kolm Tilli', locationLabel: 'Kastani 42', icon: 'utensils',
+    logo: '/logos/restaurants/kolm-tilli.png', indices: [5, 6, 10, 14, 22, 27] },
+  { id: 'supilinna', name: 'Hõlm', locationLabel: 'Ülikooli 14', icon: 'soup',
+    logo: '/logos/restaurants/holm.svg', logoBackground: '#203c32', indices: [0, 7, 8, 15, 20, 35] },
+  { id: 'aparaadi', name: 'Aparaat', locationLabel: 'Kastani 42', icon: 'coffee',
+    logo: '/logos/restaurants/aparaat.jpg', indices: [3, 4, 11, 16, 21, 33] },
+  { id: 'vanalinna', name: 'La Dolce Vita', locationLabel: 'Kompanii 10', icon: 'sandwich',
+    logo: '/logos/restaurants/la-dolce-vita.png', logoBackground: '#203c32', indices: [1, 2, 9, 12, 19, 28] },
+  { id: 'toome', name: 'Humal', locationLabel: 'Riia 4', icon: 'leaf',
+    logo: '/logos/restaurants/humal.svg', indices: [5, 7, 10, 13, 23, 31] },
+  { id: 'ulikooli', name: 'Kampus', locationLabel: 'Rüütli 7', icon: 'utensils',
+    logo: '/logos/restaurants/kampus.svg', logoBackground: '#203c32', indices: [0, 3, 11, 14, 25, 36] },
+  { id: 'joeaarne', name: 'Pompei', locationLabel: 'Rüütli 7', icon: 'fish',
+    logo: '/logos/restaurants/pompei.svg', indices: [2, 6, 8, 15, 26, 37] },
+  { id: 'kesklinna', name: 'Fii', locationLabel: 'Lääneringtee 39', icon: 'soup',
+    logo: '/logos/restaurants/fii.svg', indices: [1, 7, 9, 16, 29, 38] },
+  { id: 'maitsed', name: 'Vilde ja Vine', locationLabel: 'Vallikraavi 4', icon: 'utensils',
+    logo: '/logos/restaurants/vilde-ja-vine.png', logoBackground: '#203c32', indices: [3, 5, 10, 12, 32, 39] },
+  { id: 'roheline', name: 'Tacora', locationLabel: 'Raekoja plats 1', icon: 'leaf',
+    logo: '/logos/restaurants/tacora.png', indices: [4, 6, 8, 9, 34, 19] },
+] satisfies (Omit<Restaurant, 'meals'> & { indices: number[] })[];
+export const MOCK_RESTAURANTS: Restaurant[] = configs.map(({ indices, ...restaurant }) => ({
+  ...restaurant, meals: indices.map(index => MOCK_FOODS[index]),
+}));

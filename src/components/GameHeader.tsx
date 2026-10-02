@@ -1,10 +1,11 @@
-import { ChevronDown, Star } from 'lucide-react';
+import { Check, Star } from 'lucide-react';
 import { DayProgress } from './DayProgress';
+import { MealBadge } from './MealBadge';
 import type { PlayerState } from '../types/game';
-import { FOOD_GROUPS } from '../data/foodGroups';
-import { getMoodLabel } from '../game/mood';
-import { RaccoonCharacter } from './RaccoonCharacter';
-export function GameHeader({ player, complete = false, onProgress }: { player: PlayerState; complete?: boolean; onProgress?: () => void }) {
-  const groups = FOOD_GROUPS.filter(group => player.foodGroupTotals[group.id] > 0).length;
-  return <div className="game-header"><div className="day-label"><span className="day-pill">PÄEV {player.currentDay} / 3</span><span>Kolm päeva. Sinu valikud.</span></div><DayProgress meal={player.currentMeal} complete={complete} /><div className="score-chip"><Star size={18} /><strong>{player.score}</strong><span>punkti</span></div>{onProgress && <div className="mobile-game-status"><span><RaccoonCharacter moodScore={player.moodScore} small />{getMoodLabel(player.moodScore)}</span><button onClick={onProgress}>Mummud: {groups} / 8 gruppi<ChevronDown size={15} /></button></div>}</div>;
+export function GameHeader({ player, complete = false }: { player: PlayerState; complete?: boolean }) {
+  return <div className="game-header"><div className="day-heading">
+    <div className="day-overview"><span className="day-pill">PÄEV {player.currentDay} / 3</span><DayProgress day={player.currentDay} /></div>
+    {complete ? <span className="meal-badge"><Check size={18} />Päev tehtud!</span> : <MealBadge meal={player.currentMeal} />}
+    <div className="score-chip"><Star size={17} fill="currentColor" /><strong>{player.score}</strong><span className="sr-only">punkti</span></div>
+  </div></div>;
 }

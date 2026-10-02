@@ -1,19 +1,21 @@
-import { ArrowRight, ChevronRight, CircleHelp, Clock3, Compass, Heart, MapPin, Play, Sparkles, Utensils } from 'lucide-react';
-import { Button } from '../components/Button';
-import { CityScene } from '../components/CityScene';
+import { BookOpen, Play, Triangle } from 'lucide-react';
+import { PrimaryButton, SecondaryButton } from '../components/Button';
+import { Card } from '../components/Card';
 import { RaccoonCharacter } from '../components/RaccoonCharacter';
+
 export function HomeScreen({ onStart, onTutorial, onPyramid, onResume }: { onStart: () => void; onTutorial: () => void; onPyramid: () => void; onResume?: () => void }) {
   return <main className="home-screen">
     <section className="home-hero">
-      <div className="hero-copy"><div className="adventure-label"><span />SEIKLUS ALGAB TARTUST</div><h1>Pesukaru<br /><span>toiduseiklus<span className="title-dot">.</span></span></h1><p className="hero-description">Väike linn. Suur isu. Palju valikuid.<br />Aita pesukarulikul veeta kolm maitsvat päeva Tartus ja avasta, kuidas iga amps loeb.</p><div className="hero-buttons"><Button onClick={onResume ?? onStart} className="start-button"><Play size={18} fill="currentColor" />{onResume ? 'Jätka seiklust' : 'Alusta mängu'}<ArrowRight size={21} /></Button><Button variant="ghost" onClick={onTutorial}><CircleHelp size={18} />Kuidas mängida?</Button></div>{onResume && <button className="new-game-link" onClick={onStart}>Alusta uut mängu</button>}<div className="hero-meta"><span><Clock3 size={15} />Umbes 5 minutit</span><i /><span><Sparkles size={15} />Iga kord uus seiklus</span></div></div>
-      <div className="hero-illustration"><div className="scene-corner scene-corner-one" /><div className="scene-corner scene-corner-two" /><span className="scene-city-label"><MapPin size={14} />TARTU</span><CityScene /><div className="hero-speech">Noh, mis täna menüüs on?<span>▾</span></div><RaccoonCharacter className="hero-raccoon" moodScore={94} /><div className="hero-food-sticker"><span className="sticker-icon"><Utensils size={18} /></span><div>Hea tuju algab<br /><strong>mitmekesisusest!</strong></div><span className="sticker-spark">✦</span></div><div className="pixel-spark spark-one">✦</div><div className="pixel-spark spark-two">+</div><div className="scene-bottom-label">SINUGA IGAL AMPSUL.</div></div>
+      <div className="game-logo"><h1 aria-label="Toiduseiklus"><span className="logo-food" aria-hidden="true">TOIDUSEIKLUS</span></h1></div>
+      <div className="hero-illustration">
+        <Card className="hero-description hero-speech-bubble"><p>Aita mul veeta kolm päeva Tartus ja teha <strong>tasakaalustatud toiduvalikuid!</strong></p></Card>
+        <RaccoonCharacter className="hero-raccoon" moodScore={94} />
+      </div>
+      <div className="home-actions">
+        <PrimaryButton onClick={onResume ?? onStart} className="start-button"><Play size={24} fill="currentColor" />{onResume ? 'Jätka seiklust' : 'Alusta mängu'}</PrimaryButton>
+        <div className="home-secondary-actions"><SecondaryButton onClick={onTutorial}><BookOpen size={25} />Kuidas mängida?</SecondaryButton><SecondaryButton onClick={onPyramid} aria-label="Avasta toidupüramiidi"><Triangle size={25} />Toidupüramiid</SecondaryButton></div>
+        {onResume && <button className="new-game-link" onClick={onStart}>Alusta uut mängu</button>}
+      </div>
     </section>
-    <div className="adventure-stats"><div><span className="stat-number">03</span><span>päeva Tartus</span></div><i /><div><span className="stat-number">09</span><span>maitsvat valikut</span></div><i /><div><span className="stat-number">∞</span><span>uusi avastusi</span></div><span className="stats-caption">Sinu tempo. Sinu maitseseiklus.</span></div>
-    <section className="how-section"><div className="section-heading"><div><span className="eyebrow">LIHTNE MÄNGIDA. MÕNUS AVASTADA.</span><h2>Iga amps on uus seiklus.</h2></div><button className="text-link" onClick={onTutorial}>Vaata, kuidas mängida <ChevronRight size={17} /></button></div><div className="feature-grid">
-      <article className="feature-card feature-green"><div className="feature-icon"><Compass size={25} /></div><span className="feature-number">01</span><h3>Avasta Tartut</h3><p>Jaluta mängukaardil ja leia iga päev uusi söögikohti.</p><span className="feature-tag">Üks linn, palju maitseid</span></article>
-      <article className="feature-card feature-peach"><div className="feature-icon"><Utensils size={25} /></div><span className="feature-number">02</span><h3>Vali oma maitsed</h3><p>Pudrust burgerini – igal toidul on päeva tervikus oma koht.</p><span className="feature-tag">Valik on sinu käppades</span></article>
-      <article className="feature-card feature-lilac"><div className="feature-icon"><Heart size={25} /></div><span className="feature-number">03</span><h3>Leia mõnus tasakaal</h3><p>Täida toidupüramiidi ja hoia oma seikluskaaslase tuju hea.</p><span className="feature-tag">Mitmekesisus teeb rõõmu</span></article>
-    </div></section>
-    <div className="home-bottom-note"><div><span className="note-spark">✦</span><p>Üks amps ei määra kõike. <strong>Päeva tervik loeb.</strong></p></div><button className="text-link" onClick={onPyramid}>Avasta toidupüramiidi <ArrowRight size={17} /></button></div>
   </main>;
 }

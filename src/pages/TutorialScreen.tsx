@@ -1,15 +1,22 @@
-import { ArrowRight, MapPin, MousePointer2, Shapes, Sparkles } from 'lucide-react';
-import { Button } from '../components/Button';
+import { ArrowRight } from 'lucide-react';
+import { PrimaryButton } from '../components/Button';
+import { MobileHeader } from '../components/MobileHeader';
 import { RaccoonCharacter } from '../components/RaccoonCharacter';
+import { FoodIllustration } from '../components/FoodIllustration';
+import { PyramidGraphic } from '../components/FoodPyramid';
 const steps = [
-  { Icon: MapPin, title: 'Linn ootab sind', text: 'Vali Tartu kaardilt söögikoht.' },
-  { Icon: MousePointer2, title: 'Mille järele isu on?', text: 'Igas söögikohas saad valida erinevate toitude vahel.' },
-  { Icon: Shapes, title: 'Iga amps loeb', text: 'Iga valik täidab sinu päeva toidupüramiidi.' },
-  { Icon: Sparkles, title: 'Vaheldus teeb rõõmu', text: 'Püüa päeva jooksul süüa mitmekesiselt. Liiga palju või liiga vähe mõnest grupist mõjutab pesukaru enesetunnet.' },
+  { title: 'Avasta Tartut', text: 'Vali Tartu kaardilt söögikoht.' },
+  { title: 'Vali oma maitse', text: 'Igas söögikohas saad valida erinevate toitude vahel.' },
+  { title: 'Kogu värvilisi mummusid', text: 'Iga valik täidab sinu päeva toidupüramiidi.' },
+  { title: 'Leia mõnus tasakaal', text: 'Söö mitmekesiselt. Liigne või vähene tarbimine mõjutab pesukaru enesetunnet.' },
 ];
 export function TutorialSteps() {
-  return <div className="tutorial-steps">{steps.map(({ Icon, title, text }, index) => <div className="tutorial-step" key={title}><span className="tutorial-step-icon"><Icon size={23} /><small>{index + 1}</small></span><div><h3>{title}</h3><p>{text}</p></div></div>)}</div>;
+  return <div className="tutorial-steps">{steps.map(({ title, text }, index) => <div className={`card tutorial-step step-${index + 1}`} key={title}><span className="tutorial-step-number">{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div><div className="tutorial-step-art" aria-hidden="true">{index === 0 ? <img src="/art/tartu-map.webp" alt="" /> : index === 1 ? <div className="tutorial-foods"><FoodIllustration type="porridge" /><FoodIllustration type="salad" /><FoodIllustration type="pancakes" /></div> : index === 2 ? <PyramidGraphic /> : <RaccoonCharacter pose="celebrate" />}</div></div>)}</div>;
 }
-export function TutorialScreen({ onBegin }: { onBegin: () => void }) {
-  return <main className="tutorial-screen"><section className="tutorial-card"><div className="tutorial-art"><span className="eyebrow">TUTVU OMA SEIKLUSKAASLASEGA</span><h1>Tere, ma olen<br /><span>pesukarulik!</span></h1><RaccoonCharacter moodScore={95} /><div className="tutorial-bubble">Kolm päeva. Üheksa toidukorda.<br /><strong>Lähme koos maitseid avastama!</strong></div></div><div className="tutorial-content"><span className="eyebrow">VÄIKE SPIKKER ENNE SEIKLUST</span><h2>Neli lihtsat sammu.</h2><TutorialSteps /><p className="tutorial-note">Toite ei jagata headeks ja halbadeks. Tähtis on kogu päeva tasakaal. Janu korral võta kaardivaates klaas vett.</p><Button onClick={onBegin}>Alustan!<ArrowRight size={20} /></Button></div></section></main>;
+export function TutorialScreen({ onBegin, onBack }: { onBegin: () => void; onBack: () => void }) {
+  return <main className="tutorial-screen"><MobileHeader title="Kuidas mängida?" onBack={onBack} onClose={onBack} />
+    <div className="tutorial-intro"><RaccoonCharacter moodScore={95} /><div><span className="eyebrow">VALMIS SEIKLUSEKS?</span><p>Kolm päeva. Üheksa toidukorda.<br />Valikud on sinu käppades!</p></div></div>
+    <TutorialSteps />
+    <div className="bottom-action"><PrimaryButton onClick={onBegin}>Alustan!<ArrowRight size={20} /></PrimaryButton></div>
+  </main>;
 }

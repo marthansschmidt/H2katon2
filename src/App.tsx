@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, BookOpen, Check, CircleHelp, Home, Leaf, Menu, Sparkles, X } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { HomeScreen } from './pages/HomeScreen';
 import { TutorialScreen, TutorialSteps } from './pages/TutorialScreen';
 import { GameMapScreen } from './pages/GameMapScreen';
@@ -8,12 +8,11 @@ import { FinalSummaryScreen } from './pages/FinalSummaryScreen';
 import { Modal } from './components/Modal';
 import { Button } from './components/Button';
 import { PyramidGuide } from './components/PyramidGuide';
-import { RaccoonCharacter } from './components/RaccoonCharacter';
+import { GameShell } from './components/GameShell';
+import { FeedbackModal } from './components/FeedbackModal';
 import { RestaurantModal } from './components/RestaurantModal';
-import { GroupIcon } from './components/Icons';
 import { FoodPyramid } from './components/FoodPyramid';
-import { FOOD_GROUPS } from './data/foodGroups';
-import { chooseFood, createPlayerState, drinkWater, nextDay, nextMeal } from './game/state';
+import { chooseFood, createPlayerState, nextDay, nextMeal } from './game/state';
 import { loadGame, saveGame } from './game/storage';
 import { getMealsForRestaurant, getRestaurantById, getRestaurantsForDay } from './services/restaurantService';
 import type { Food, Restaurant, Screen } from './types/game';
@@ -102,19 +101,18 @@ export default function App() {
     if (dayNumber === 3) goTo('final');
     else { setRestaurants([]); setPlayer(previous => nextDay(previous)); goTo('map'); }
   }
-  return <div className="app-shell"><a className="skip-link" href="#main-content">Liigu põhisisuni</a><header className="site-header"><div className="header-inner"><button className="brand" onClick={() => goTo('home')} aria-label="Pesukaru toiduseiklus, peamenüü"><span className="brand-icon"><RaccoonCharacter small /></span><span>pesukaru<span>toiduseiklus</span></span></button><nav className={mobileNav ? 'nav-open' : ''} aria-label="Peamenüü"><button className={screen === 'home' ? 'nav-active' : ''} onClick={() => goTo('home')}><Home size={16} />Avaleht</button><button onClick={() => setGuide('tutorial')}><CircleHelp size={16} />Kuidas mängida?</button><button onClick={() => setGuide('pyramid')}><BookOpen size={16} />Toidupüramiid</button></nav><span className="header-location"><MapPinIcon />Tartu ootab!</span><button className="mobile-menu-button icon-button" onClick={() => setMobileNav(v => !v)} aria-label={mobileNav ? 'Sulge menüü' : 'Ava menüü'} aria-expanded={mobileNav}>{mobileNav ? <X size={23} /> : <Menu size={23} />}</button></div></header>
-    <div id="main-content" className="main-container" tabIndex={-1} ref={mainRef}>
+  return <GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={() => goTo('home')} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }} onPyramid={() => { setMobileNav(false); setGuide('pyramid'); }}>
+    <>
       {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={() => setGuide('pyramid')} onResume={hasStarted ? () => goTo(resumeScreen) : undefined} />}
-      {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} />}
-      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onWater={() => { setPlayer(previous => drinkWater(previous)); setToast('+1 vee ja jookide mumm. Väike kosutus!'); }} onPyramid={() => setGuide('pyramid')} onProgress={() => setGuide('progress')} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
+      {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={() => goTo('home')} />}
+      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onPyramid={() => setGuide('pyramid')} onProgress={() => setGuide('progress')} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
       {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={() => setGuide('pyramid')} />}
       {screen === 'final' && <FinalSummaryScreen player={player} onRestart={startGame} onHome={() => goTo('home')} onPyramid={() => setGuide('pyramid')} />}
-    </div><footer className="site-footer"><span><Leaf size={14} />Väikesed valikud, suured avastused.</span><span>Loodud uudishimulikele maitseavastajatele · 16–19</span><span>Toitumispõhimõtted: <a href="https://toitumine.ee/kuidas-tervislikult-toituda/toidusoovitused" target="_blank" rel="noreferrer">toitumine.ee ↗</a></span></footer>
+    </>
     {selected && <RestaurantModal restaurant={selected} foods={player.offers[selected.id] ?? []} meal={player.currentMeal} loading={foodsLoading} error={menuError} onChoose={selectFood} onClose={() => { requestId.current++; setSelected(null); }} />}
-    {currentFood && <Modal title="Üks uus maitse avastatud!" onClose={continueAfterFood}><div className="choice-feedback"><RaccoonCharacter moodScore={player.moodScore} /><span className="choice-check"><Check size={25} /></span><h3>{currentFood.name}</h3><p>Mõnus! Need mummud said sinu päevale juurde.</p><div className="added-groups">{currentFood.groups.map(value => { const group = FOOD_GROUPS.find(g => g.id === value.groupId)!; return <span key={value.groupId} style={{ color: group.color }}><GroupIcon name={group.icon} size={18} />+{value.points} {group.shortName.toLowerCase()}</span>; })}</div><p className="choice-tip"><Sparkles size={16} />Iga toit on osa päeva tervikust.</p><Button onClick={continueAfterFood}>{player.currentMeal === 'dinner' ? 'Vaata päeva kokkuvõtet' : player.currentMeal === 'breakfast' ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile'}<ArrowRight size={18} /></Button></div></Modal>}
-    {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : guide === 'progress' ? 'Minu päeva mummud' : 'Avasta toidupüramiidi'} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <><TutorialSteps /><p className="tutorial-note">3 päeva × 3 toidukorda. Toidugrupi mummud näitavad päeva tervikut. Janu korral saad kaardivaates juua vett.</p><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></> : guide === 'progress' ? <FoodPyramid totals={player.foodGroupTotals} staticOpen /> : <PyramidGuide />}</Modal>}
+    {currentFood && <FeedbackModal food={currentFood} moodScore={player.moodScore} meal={player.currentMeal} onContinue={continueAfterFood} />}
+    {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : guide === 'progress' ? 'Minu päeva mummud' : 'Toidupüramiid'} className={guide === 'pyramid' ? 'pyramid-guide-modal' : guide === 'tutorial' ? 'tutorial-guide-modal' : ''} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <div className="tutorial-guide"><TutorialSteps /><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></div> : guide === 'progress' ? <FoodPyramid totals={player.foodGroupTotals} staticOpen /> : <PyramidGuide totals={player.foodGroupTotals} />}</Modal>}
     {toast && <div className="toast" role="status"><Check size={17} />{toast}</div>}
     {!storageAvailable && <div className="storage-note" role="status">Brauser ei luba mängu salvestada. Seiklus jätkub selles aknas.</div>}
-  </div>;
+  </GameShell>;
 }
-function MapPinIcon() { return <span className="location-dot" aria-hidden="true" />; }

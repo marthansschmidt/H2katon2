@@ -6,7 +6,10 @@ export interface Food {
   id: string; name: string; description: string; image: FoodArt;
   groups: FoodGroupValue[]; mealTimes: MealTime[]; plantBased?: boolean;
 }
-export interface Restaurant { id: string; name: string; locationLabel: string; icon: string; meals: Food[] }
+export interface Restaurant {
+  id: string; name: string; locationLabel: string; icon: string; meals: Food[];
+  logo: string; logoBackground?: string;
+}
 export interface FoodGroup { id: FoodGroupId; name: string; shortName: string; color: string; minTarget: number; maxTarget: number; icon: string; tip: string }
 export type FoodGroupTotals = Record<FoodGroupId, number>;
 export interface DaySelection {

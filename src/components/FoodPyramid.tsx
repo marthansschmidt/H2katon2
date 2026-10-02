@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import type { FoodGroupTotals } from '../types/game';
 import { FoodGroupProgress } from './FoodGroupProgress';
+import { FoodIllustration } from './FoodIllustration';
 import { GroupIcon } from './Icons';
 export function PyramidGraphic() {
   return <div className="pyramid-graphic" aria-label="Toidupüramiid: maiustusi vähem, köögivilju, puuvilju ja teravilju rohkem" role="img">
-    <div className="pyramid-tier tier-one"><GroupIcon name="candy" size={15} /></div>
-    <div className="pyramid-tier tier-two"><GroupIcon name="nut" size={19} /></div>
-    <div className="pyramid-tier tier-three"><span><GroupIcon name="milk" size={22} /></span><span><GroupIcon name="egg" size={22} /></span></div>
-    <div className="pyramid-tier tier-four"><span><GroupIcon name="carrot" size={24} /></span><span><GroupIcon name="apple" size={24} /></span><span><GroupIcon name="wheat" size={24} /></span></div>
-    <div className="pyramid-water"><GroupIcon name="droplet" size={16} /><span>Vesi ja liikumine iga päev</span></div>
+    <div className="pyramid-tier tier-one"><FoodIllustration type="cake" /></div>
+    <div className="pyramid-tier tier-two"><GroupIcon name="nut" size={32} /></div>
+    <div className="pyramid-tier tier-three"><span><FoodIllustration type="yogurt" /></span><span><FoodIllustration type="fish" /><FoodIllustration type="toast" /></span></div>
+    <div className="pyramid-tier tier-four"><span><FoodIllustration type="salad" /></span><span><FoodIllustration type="fruit" /></span><span><FoodIllustration type="porridge" /></span></div>
   </div>;
 }
 export function FoodPyramid({ totals, onInfo, staticOpen = false }: { totals: FoodGroupTotals; onInfo?: () => void; staticOpen?: boolean }) {
