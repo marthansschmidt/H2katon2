@@ -19,6 +19,16 @@ describe('mängu turvaline kohalik salvestamine', () => {
     saveGame(createPlayerState(), 'home', 'tutorial', false);
     expect(loadGame()?.started).toBe(false);
   });
+  it('taastab ka vanema salvestuse, kus eelmise toidukorra kohad puuduvad', () => {
+    saveGame(createPlayerState(), 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    delete save.player.previousRestaurantIds;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    expect(loadGame()?.player.previousRestaurantIds).toEqual([]);
+    save.player.previousRestaurantIds = [123];
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    expect(loadGame()).toBeNull();
+  });
   it('ignoreerib katkist JSON-i ja vigaseid mummugruppe', () => {
     entries.set(SAVE_KEY, '{broken');
     expect(loadGame()).toBeNull();

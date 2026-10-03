@@ -16,7 +16,9 @@ export function loadGame(): Save | null {
     const p = save.player;
     if (save.version !== 1 || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
     if (!Number.isInteger(p.currentDay) || p.currentDay < 1 || p.currentDay > 3 || !MEAL_ORDER.includes(p.currentMeal)) return null;
-    if (!Array.isArray(p.days) || p.days.length !== p.currentDay || ![p.usedFoodIds, p.usedRestaurantIds, p.restaurantIds].every(ids => Array.isArray(ids) && ids.every(id => typeof id === 'string')) || !p.offers || typeof p.offers !== 'object') return null;
+    // Version 1 saves from before meal-specific draws have no previous set.
+    if (p.previousRestaurantIds === undefined) p.previousRestaurantIds = [];
+    if (!Array.isArray(p.days) || p.days.length !== p.currentDay || ![p.usedFoodIds, p.usedRestaurantIds, p.restaurantIds, p.previousRestaurantIds].every(ids => Array.isArray(ids) && ids.every(id => typeof id === 'string')) || !p.offers || typeof p.offers !== 'object') return null;
     if (!Object.values(p.offers).every(foods => Array.isArray(foods) && foods.every(validFood))) return null;
     if (!Number.isFinite(p.score) || p.score < 0 || !Number.isFinite(p.moodScore) || p.moodScore < 0 || p.moodScore > 100 || !FOOD_GROUPS.every(g => Number.isFinite(p.foodGroupTotals?.[g.id]) && p.foodGroupTotals[g.id] >= 0)) return null;
     for (const day of p.days) {

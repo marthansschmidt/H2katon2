@@ -30,7 +30,7 @@ describe('kohalikud näidisandmed', () => {
       expect(group.points).toBeGreaterThan(0);
     }
   });
-  it('näitab järgmise päeva alguses eelkõige külastamata restorane', () => {
+  it('näitab järgmises loosimises eelkõige külastamata restorane', () => {
     const first = getRandomRestaurants(MOCK_RESTAURANTS, []);
     const second = getRandomRestaurants(MOCK_RESTAURANTS, first.map(r => r.id));
     expect(first).toHaveLength(5);
@@ -41,6 +41,20 @@ describe('kohalikud näidisandmed', () => {
     expect(third.filter(r => !seen.includes(r.id))).toHaveLength(2);
     expect(new Set(third.map(r => r.id)).size).toBe(5);
     expect(getRandomRestaurants(MOCK_RESTAURANTS.slice(0, 2), seen)).toHaveLength(2);
+  });
+  it('vahetab kõik viis kohta ka pärast kogu restoranivaliku nägemist', () => {
+    let previous: string[] = [];
+    const seen = new Set<string>();
+    for (let meal = 0; meal < 9; meal++) {
+      const draw = getRandomRestaurants(MOCK_RESTAURANTS, [...seen], 5, previous);
+      expect(draw).toHaveLength(5);
+      expect(new Set(draw.map(restaurant => restaurant.id)).size).toBe(5);
+      expect(draw.some(restaurant => previous.includes(restaurant.id))).toBe(false);
+      for (const restaurant of draw) seen.add(restaurant.id);
+      previous = draw.map(restaurant => restaurant.id);
+    }
+    expect(seen.size).toBe(12);
+    expect(getRandomRestaurants(MOCK_RESTAURANTS.slice(0, 2), [], 5, previous)).toHaveLength(2);
   });
   it('eelistab nägemata toite ja väldib sama menüü topeltkirjeid', () => {
     const restaurant = MOCK_RESTAURANTS[0];
@@ -59,6 +73,17 @@ describe('kohalikud näidisandmed', () => {
 });
 
 describe('kolme päeva mäng', () => {
+  it('tühjendab järgmise toidukorra jaoks kohad ja menüüd, säilitades söödud toidu', () => {
+    const ids = MOCK_RESTAURANTS.slice(0, 5).map(restaurant => restaurant.id);
+    const breakfast = chooseFood({ ...createPlayerState(), restaurantIds: ids, offers: { [ids[0]]: [MOCK_FOODS[0]] } }, MOCK_FOODS[0], 'Kohvik');
+    const lunch = nextMeal(breakfast);
+    expect(lunch.currentMeal).toBe('lunch');
+    expect(lunch.restaurantIds).toEqual([]);
+    expect(lunch.previousRestaurantIds).toEqual(ids);
+    expect(lunch.offers).toEqual({});
+    expect(lunch.days).toEqual(breakfast.days);
+    expect(lunch.score).toBe(breakfast.score);
+  });
   it('võimaldab teha 9 valikut, kokku liita skoori ja alustada tühja mängu', () => {
     let state = createPlayerState();
     for (let day = 1; day <= 3; day++) {

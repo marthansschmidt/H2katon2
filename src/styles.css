@@ -75,9 +75,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .eyebrow { display: inline-flex; align-items: center; gap: 6px; color: #69785b; font-size: 11px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
 .muted { color: var(--muted); font-size: 15px; line-height: 1.6; }
 .pyramid-guide > .muted { color: var(--dark); font-weight: 900; text-align: center; }
-.pyramid-guide-modal .modal-heading, .tutorial-guide-modal .modal-heading { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; }
-.pyramid-guide-modal .mobile-header-title, .tutorial-guide-modal .mobile-header-title { grid-column: 2; text-align: center; }
-.pyramid-guide-modal .modal-heading > .icon-button, .tutorial-guide-modal .modal-heading > .icon-button { grid-column: 3; }
+.pyramid-guide-modal .modal-heading, .tutorial-guide-modal .modal-heading, .feedback-modal .modal-heading { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; }
+.pyramid-guide-modal .mobile-header-title, .tutorial-guide-modal .mobile-header-title, .feedback-modal .mobile-header-title { grid-column: 2; text-align: center; }
+.pyramid-guide-modal .modal-heading > .icon-button, .tutorial-guide-modal .modal-heading > .icon-button, .feedback-modal .modal-heading > .icon-button { grid-column: 3; }
 .bottom-action { position: sticky; bottom: 0; z-index: 5; padding: 16px 0 max(18px, env(safe-area-inset-bottom)); margin-top: 8px; background: linear-gradient(#f8efd900, var(--cream) 16px); }
 
 /* Welcome: logo, city and companion, then one clear action. */
@@ -144,16 +144,12 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .map-location { position: absolute; top: 12px; left: 12px; z-index: 1; background: #fff9eeed; border: 1px solid #ccd8b5; border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 900; color: #527c49; }
 .map-live-dot, .available-dot { width: 7px; height: 7px; border-radius: 50%; background: #4da74b; display: inline-block; }.map-live-dot { margin-left: 5px; }
 .restaurant-marker { position: absolute; z-index: 2; transform: translate(-50%, -50%); background: var(--surface); border: 1.5px solid #e3cfa4; border-radius: 17px; box-shadow: 0 4px 0 #62845030, 0 5px 14px #4d684916; min-height: 68px; width: 116px; padding: 8px 5px; display: flex; align-items: center; flex-direction: column; gap: 5px; transition: margin-top .15s; }
-.restaurant-marker:hover { background: #fff; margin-top: -3px; }.restaurant-marker:active { margin-top: 2px; }
+.restaurant-marker:hover { margin-top: -3px; }.restaurant-marker:active { margin-top: 2px; }
 .marker-pin { width: 30px; height: 27px; color: #418844; display: grid; place-items: center; position: relative; }.marker-pin > span { position: absolute; left: -19px; top: -2px; font-size: 9px; font-weight: 900; background: #dbeac5; color: #527638; width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; }
 .restaurant-marker > strong { font-size: 12px; line-height: 1.2; text-align: center; font-weight: 900; overflow-wrap: anywhere; }.marker-location { display: none; }
-.marker-0 { left: 20% !important; top: 28% !important; }.marker-1 { left: 72% !important; top: 24% !important; }.marker-2 { left: 79% !important; top: 53% !important; }.marker-3 { left: 66% !important; top: 82% !important; }.marker-4 { left: 21% !important; top: 74% !important; }
-.marker-1 .marker-pin { color: #b47526; }.marker-2 .marker-pin { color: #b75b47; }.marker-3 .marker-pin { color: #8c62a9; }.marker-4 .marker-pin { color: #318aac; }
 .map-compass { position: absolute; bottom: 12px; right: 12px; font-size: 22px; color: #617c4a; display: flex; flex-direction: column; align-items: center; }.map-compass span { font-size: 9px; font-weight: 900; }.map-caption { position: absolute; left: 14px; bottom: 10px; font-size: 10px; color: #53683d; }
-.restaurant-list { margin-top: 14px; }.restaurant-list summary { min-height: 48px; padding: 13px 12px; font-size: 14px; font-weight: 800; border: 1px solid var(--border); border-radius: 16px; background: #fff8e8; cursor: pointer; }.restaurant-list summary > span { float: right; color: #6b8055; }.restaurant-list > div { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; }.restaurant-list button { display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; min-height: 64px; width: 100%; text-align: left; }.restaurant-list button > div { flex: 1; }.restaurant-list strong { display: block; font-size: 14px; }.restaurant-list button div > span { display: block; font-size: 12px; color: var(--muted); margin-top: 3px; }.list-number { display: grid; place-items: center; height: 28px; width: 28px; border-radius: 50%; background: #e1edca; font-weight: 900; color: #4b813c; }
-.pyramid-map-link { width: 100%; font-size: 12px; margin: 4px 0 8px; }
 .map-status-dock { position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); z-index: 8; width: min(414px, calc(100% - 16px)); padding: 10px 0 max(12px, env(safe-area-inset-bottom)); background: linear-gradient(#f8efd900, #f8efd9e8 20px); }
-.raccoon-status { padding: 12px 14px; border-radius: 24px; box-shadow: 0 -2px 18px #6e603512, 0 4px 0 #dfcfac66; }.raccoon-status-main { display: flex; align-items: center; gap: 12px; }.status-avatar { width: 64px; height: 62px; background: #e7efd3; border: 1px solid #d5e1b9; border-radius: 20px; overflow: hidden; display: grid; place-items: center; }.status-avatar .raccoon { width: 67px; margin-top: 2px; }.raccoon-status .eyebrow { font-size: 10px; letter-spacing: .8px; }.raccoon-status h3 { font-size: 16px; font-weight: 1000; line-height: 1.3; margin: 2px 0 4px; }.mood-hearts { display: flex; gap: 4px; color: #ceceb7; }.mood-hearts .filled { fill: #ef8c78; stroke: #df7766; }.status-message { font-size: 14px; color: var(--muted); margin-top: 12px; }
+.raccoon-status { padding: 12px 14px; border-radius: 24px; box-shadow: 0 -2px 18px #6e603512, 0 4px 0 #dfcfac66; }.raccoon-status-main { display: flex; align-items: center; gap: 12px; }.status-avatar { width: 64px; height: 62px; background: #e7efd3; border: 1px solid #d5e1b9; border-radius: 20px; overflow: hidden; display: grid; place-items: center; }.status-avatar .raccoon { width: 67px; margin-top: 2px; }.raccoon-status .eyebrow { font-size: 10px; letter-spacing: .8px; }.raccoon-status h3 { font-size: 16px; font-weight: 1000; line-height: 1.3; margin: 2px 0 4px; }.status-message { font-size: 14px; color: var(--muted); margin-top: 12px; }
 .status-progress { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 56px; padding: 10px 0 0; margin-top: 10px; border-top: 1px dashed #e2d6b9; background: transparent; text-align: left; color: #53664b; }.status-progress > div > span { font-size: 12px; font-weight: 800; }.status-group-dots { display: flex; align-items: center; gap: 7px; margin-top: 6px; }.status-group-dots small { font-size: 11px; color: #6b725f; margin-left: 4px; }.status-group-dots .group-dot { width: 12px; height: 12px; }
 .map-loading, .map-error { min-height: 360px; background: #e5edce; border: 1px solid #cfdbb5; border-radius: 24px; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; padding: 24px; font-size: 16px; text-align: center; }
 
@@ -162,7 +158,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .modal::backdrop { background: #152c3d85; backdrop-filter: blur(4px); }
 .modal-heading { position: sticky; top: 0; z-index: 5; background: #f8efd9f5; backdrop-filter: blur(10px); padding: 10px 0; margin-bottom: 14px; border-bottom: 1px solid var(--border); }.modal-heading h2 { font-size: 22px; }.modal-heading .icon-button { width: 44px; min-width: 44px; height: 44px; border-radius: 16px; box-shadow: none; }
 .modal-wide { width: 100%; max-width: 430px; max-height: 100dvh; height: 100dvh; border: 0; border-radius: 0; padding-bottom: max(22px, env(safe-area-inset-bottom)); }.modal-wide .modal-heading h2 { font-size: 19px; }.modal-wide .modal-heading { gap: 8px; }
-.restaurant-hero { height: 142px; position: relative; overflow: hidden; border-radius: 22px; background: linear-gradient(#d7eff1, #e2ecca); border: 1px solid #d0ddb9; }.restaurant-hero .city-art { width: 100%; height: 200px; margin-top: -31px; }.restaurant-location { position: absolute; bottom: 12px; left: 12px; padding: 7px 9px; border: 1px solid #d4ddc1; border-radius: 12px; background: #fff9eeed; display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; color: #5c7850; }.restaurant-hero-icon { position: absolute; top: 14px; right: 14px; width: 48px; height: 48px; background: #fff5df; border: 2px solid #e0cba3; border-radius: 16px; display: grid; place-items: center; color: #b7853e; transform: rotate(8deg); }
+.restaurant-modal .mobile-header-title { text-align: center; }
+.restaurant-hero { height: 142px; position: relative; overflow: hidden; border-radius: 22px; background: linear-gradient(#d7eff1, #e2ecca); border: 1px solid #d0ddb9; }.restaurant-hero .city-art { width: 100%; height: 200px; margin-top: -31px; }.restaurant-hero-icon { position: absolute; top: 14px; right: 14px; width: 48px; height: 48px; background: #fff5df; border: 2px solid #e0cba3; border-radius: 16px; display: grid; place-items: center; color: #b7853e; transform: rotate(8deg); }
 .restaurant-info { margin-top: 12px; display: flex; align-items: center; gap: 10px; padding: 12px; }.restaurant-info p { flex: 1; font-size: 13px; line-height: 1.5; color: var(--muted); }.restaurant-info .meal-badge { font-size: 11px; padding: 6px 8px; }.restaurant-info .meal-badge svg { width: 15px; }
 .restaurant-menu-heading { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin: 22px 0 12px; }.restaurant-menu-heading h3 { font-size: 20px; font-weight: 1000; }.restaurant-menu-heading > span { font-size: 12px; color: var(--muted); }
 .food-card-grid { display: flex; flex-direction: column; gap: 14px; }.food-card { display: grid; grid-template-columns: 86px minmax(0,1fr); gap: 12px; padding: 14px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 20px; box-shadow: var(--shadow); align-items: start; }
@@ -170,8 +167,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .food-card h3 { font-size: 16px; line-height: 1.25; font-weight: 1000; margin-bottom: 6px; }.food-card p { font-size: 14px; color: var(--muted); line-height: 1.45; }.food-group-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 12px; }.food-group-chips > span { display: flex; gap: 4px; align-items: center; padding: 4px 6px; background: #f3eddc; border: 1px solid #e7dcc2; border-radius: 9px; font-size: 12px; font-weight: 900; }.food-card .button { min-height: 48px; font-size: 14px; padding: 10px; border-radius: 16px; }
 .menu-note { font-size: 11px; color: #787968; text-align: center; line-height: 1.6; margin-top: 22px; }.loading-state { min-height: 230px; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--muted); }.loading-icon { animation: gentle-breathe 1.5s infinite; }.error-message { padding: 30px 12px; color: #a84e3b; line-height: 1.6; }
 .feedback-modal { max-width: 340px; background: var(--surface); padding-bottom: 24px; }.feedback-modal .modal-heading { background: var(--surface); border: 0; margin-bottom: 0; }.feedback-modal .modal-heading h2 { font-size: 26px; font-weight: 1000; color: #328d3b; }
-.choice-feedback { text-align: center; }.feedback-character { position: relative; width: 172px; margin: 0 auto 6px; background: radial-gradient(ellipse, #e7f0d2 0 60%, transparent 61%); }.feedback-character .raccoon { width: 145px; margin: auto; }.choice-check { position: absolute; right: 10px; bottom: 20px; display: grid; place-items: center; background: #46b752; border: 3px solid #fff9ee; box-shadow: 0 3px 0 #218835; color: white; width: 38px; height: 38px; border-radius: 14px; }.feedback-spark { position: absolute; top: 14px; left: 4px; color: #edb347; font-size: 28px; }.choice-feedback h3 { font-size: 20px; line-height: 1.3; font-weight: 1000; margin-bottom: 8px; }.choice-feedback > p { font-size: 14px; color: var(--muted); line-height: 1.5; }
-.added-groups { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }.added-groups > div { min-height: 46px; display: flex; align-items: center; gap: 10px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 16px; background: #f9f1df; text-align: left; animation: mumm-pop .2s ease-out; font-size: 15px; }.added-group-icon { width: 30px; display: grid; place-items: center; }.added-groups strong { font-size: 18px; }.choice-tip { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px !important; margin-bottom: 16px; }.choice-feedback .button { font-size: 14px; }
+.choice-feedback { text-align: center; }.feedback-character { position: relative; width: 172px; margin: 0 auto 6px; background: radial-gradient(ellipse, #e7f0d2 0 60%, transparent 61%); }.feedback-character .raccoon { width: 145px; margin: auto; }.choice-feedback h3 { font-size: 20px; line-height: 1.3; font-weight: 1000; margin-bottom: 8px; }.choice-feedback > p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+.added-groups { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }.added-groups > div { min-height: 46px; display: flex; align-items: center; gap: 10px; padding: 7px 12px; border: 1px solid var(--border); border-radius: 16px; background: #f9f1df; text-align: left; animation: mumm-pop .2s ease-out; font-size: 15px; }.added-group-icon { width: 30px; display: grid; place-items: center; }.added-groups strong { font-size: 18px; }.choice-feedback .button { font-size: 14px; }
 
 /* A consistent pyramid and dots in guides, progress and summaries. */
 .pyramid-panel { margin-top: 16px; padding: 16px; border: 1.5px solid var(--border); border-radius: 24px; background: var(--surface); box-shadow: var(--shadow); }.pyramid-heading { display: flex; align-items: center; justify-content: space-between; gap: 6px; }.pyramid-heading h3 { font-size: 19px; font-weight: 1000; margin-top: 5px; }.pyramid-heading .eyebrow { font-size: 9px; }.pyramid-heading .icon-button { background: #f4eddc; box-shadow: none; }
@@ -181,8 +178,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .guide-groups { display: flex; flex-direction: column; gap: 12px; }.guide-groups > div { padding: 14px; border-radius: 18px; background: var(--surface); border: 1px solid var(--border); }.guide-groups p { font-size: 12px; line-height: 1.5; color: var(--muted); margin-top: 8px; }.info-note { border-radius: 18px; background: #e8efda; padding: 16px; margin-top: 18px; font-size: 12px; line-height: 1.6; color: #607253; }.info-note strong { font-size: 14px; color: #47713d; }.info-note p { margin-top: 8px; }
 
 /* Daily and final celebrations still use the actual game results. */
-.summary-title { text-align: center; margin: 24px 0 12px; }.summary-title h1 { font-size: 26px; font-weight: 1000; line-height: 1.2; letter-spacing: -.7px; margin-top: 7px; }.summary-character { height: 198px; position: relative; display: flex; justify-content: center; align-items: flex-end; background: radial-gradient(ellipse at 50% 65%, #e7edc9 0 45%, transparent 46%); }.summary-character .raccoon { width: 142px; }.summary-speech { position: absolute; top: 6px; left: 50%; transform: translateX(-50%) rotate(-2deg); background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 10px 12px; width: 250px; text-align: center; font-size: 12px; font-weight: 800; }.summary-star { position: absolute; right: 62px; top: 83px; font-size: 30px; color: #e6b245; }
-.summary-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 12px; }.summary-metrics > div { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 14px 5px; }.summary-metrics svg { color: #c5993e; }.summary-metrics > div:nth-child(2) svg { color: #6f9e53; }.summary-metrics > div:nth-child(3) svg { color: #4e9dae; }.summary-metrics strong { font-size: 23px; font-weight: 1000; }.summary-metrics span { font-size: 11px; color: #797b68; }
+.summary-title { text-align: center; margin: 24px 0 12px; }.summary-title h1 { font-size: 26px; font-weight: 1000; line-height: 1.2; letter-spacing: -.7px; margin-top: 7px; }.summary-character { height: 198px; position: relative; display: flex; justify-content: center; align-items: flex-end; background: radial-gradient(ellipse at 50% 65%, #e7edc9 0 45%, transparent 46%); }.summary-character .raccoon { width: 142px; }.summary-speech { position: absolute; top: 6px; left: 50%; transform: translateX(-50%) rotate(-2deg); background: var(--surface); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); padding: 10px 12px; width: 250px; text-align: center; font-size: 12px; font-weight: 800; }.summary-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; margin-top: 12px; }.summary-metrics > div { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 14px 5px; }.summary-metrics svg { color: #c5993e; }.summary-metrics > div:nth-child(2) svg { color: #6f9e53; }.summary-metrics > div:nth-child(3) svg { color: #4e9dae; }.summary-metrics strong { font-size: 23px; font-weight: 1000; }.summary-metrics span { font-size: 11px; color: #797b68; }
 .small-section-title { font-size: 20px; font-weight: 1000; margin: 24px 0 12px; }.selected-meals { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }.summary-meal { position: relative; padding: 12px 7px; text-align: center; }.summary-meal .eyebrow { font-size: 9px; letter-spacing: 0; color: #8b7754; }.summary-meal .food-illustration { width: 100%; margin: 6px auto; height: 64px; }.summary-meal h3 { font-size: 12px; font-weight: 900; line-height: 1.3; }.summary-meal p { font-size: 10px; color: #757e68; line-height: 1.4; margin-top: 5px; }.meal-check { color: #60954b; margin-top: 8px; }.water-summary { font-size: 12px; color: var(--muted); margin: 14px 0 20px; text-align: center; }.feedback-card { margin: 20px 0 8px; background: #eaf0d8; border-color: #cedcb1; }.feedback-card h2 { font-size: 20px; margin-top: 8px; font-weight: 1000; }.feedback-card p { margin-top: 10px; font-size: 14px; line-height: 1.6; color: #596b4b; }
 .final-screen { padding-top: 14px; }.final-card { position: relative; isolation: isolate; text-align: center; }.final-city { height: 350px; position: absolute; top: 0; left: -16px; right: -16px; z-index: -1; overflow: hidden; background: linear-gradient(#355268, #7b9baa 44%, #e3d0b9 82%, var(--cream)); border-radius: 26px 26px 0 0; }.final-city .city-art { width: 130%; height: 300px; margin-left: -15%; margin-top: 60px; opacity: .6; filter: saturate(.65) hue-rotate(10deg); }.summary-badge { display: inline-flex; align-items: center; gap: 7px; margin: 18px 0 12px; padding: 8px 12px; background: #fff3d6; border: 1px solid #e6ca8f; border-radius: 14px; color: #a57829; font-size: 11px; letter-spacing: 1.2px; font-weight: 900; }.final-card h1 { color: #fff7e6; text-shadow: 0 2px 0 #2a465766; font-size: 30px; font-weight: 1000; line-height: 1.12; letter-spacing: -.7px; }.final-card h1 > span { color: #ffe0a0; }.final-intro { font-size: 14px; color: #fff9eb; text-shadow: 0 1px 2px #263e4a; line-height: 1.5; margin-top: 12px; }.final-raccoon-wrap { position: relative; margin: 12px auto 20px; width: 230px; }.final-raccoon-wrap > .raccoon { width: 160px; margin: auto; }.final-mood { background: #fff7e5; border: 1px solid var(--border); border-radius: 14px; padding: 7px 12px; font-size: 12px; font-weight: 900; display: inline-block; margin-top: -4px; color: #4d7e40; }.confetti { position: absolute; font-size: 27px; }.c1 { top: 30px; left: 5px; color: #d6a23c; }.c2 { top: 67px; right: 8px; color: #70a1a6; }.c3 { bottom: 30px; left: 19px; color: #a382ba; }
 .final-city:before { content: ''; position: absolute; width: 25px; height: 25px; right: 35px; top: 23px; border-radius: 50%; box-shadow: -7px 4px 0 #fff2c2; transform: rotate(-15deg); }
@@ -213,7 +209,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
   .restaurant-marker > strong { font-size: 11px; }
   .marker-pin { height: 23px; }
   .marker-pin > svg { width: 21px; height: 21px; }
-  .marker-0 { top: 32% !important; }
   .map-location { top: 8px; padding: 6px 8px; }
 }
 
@@ -269,8 +264,16 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .game-screen .score-chip { justify-self: end; margin: 0 48px 0 0; border: 0; background: none; padding: 0; gap: 3px; font-size: 12px; }
 .game-screen .meal-badge { justify-self: center; background: none; border: 0; color: #2e3e3e; min-height: 32px; font-size: 14px; padding: 0; gap: 5px; white-space: nowrap; box-shadow: none; }
 .tartu-map { height: clamp(460px, calc(100svh - 168px), 800px); border: 0; border-radius: 0; background: #72c095; box-shadow: none; }
-.map-art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.map-art, .map-art-previous { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.map-art-loading { opacity: 0; }
+.map-art-entering, .map-restaurant-layer.is-entering { animation: map-scene-fade 650ms ease-in-out both; }
+.map-restaurant-layer { position: absolute; inset: 0; z-index: 2; }
+.map-restaurant-layer.is-loading { opacity: 0; }
+@keyframes map-scene-fade { from { opacity: 0; } to { opacity: 1; } }
 .map-location, .map-caption, .map-compass { display: none; }
+.map-building-links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: visible; }
+.map-building-links path { fill: none; stroke: #fff4d5; stroke-width: 3px; filter: drop-shadow(0 1px 1px #294531); }
+.map-building-links circle { fill: #fff4d5; stroke: #46683f; stroke-width: 2px; }
 .restaurant-marker { width: 112px; min-height: 90px; padding: 5px 6px 8px; gap: 1px; border: 2px solid #d7b27a; background: linear-gradient(#fff9e5, #fff0ce); box-shadow: 0 4px 0 #6a513648, 0 5px 12px #223c2c30; border-radius: 17px; }
 .restaurant-marker:after { content: ''; position: absolute; bottom: -7px; left: calc(50% - 6px); width: 12px; height: 12px; transform: rotate(45deg); border-right: 2px solid #d7b27a; border-bottom: 2px solid #d7b27a; background: #fff0ce; }
 .marker-pin { width: 58px; height: 52px; }
@@ -279,14 +282,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .restaurant-logo { display: block; width: 100%; height: 100%; object-fit: contain; }
 .marker-pin > span { background: #487d49; color: #fff7df; border: 1px solid #e2efc3; left: -14px; top: 6px; width: 18px; height: 18px; }
 .restaurant-marker > strong { font-size: 12px; line-height: 1.15; }
-.marker-0 { left: 24% !important; top: 34% !important; }.marker-1 { left: 73% !important; top: 29% !important; }.marker-2 { left: 79% !important; top: 56% !important; }.marker-3 { left: 63% !important; top: 83% !important; }.marker-4 { left: 22% !important; top: 71% !important; }
-.restaurant-list { margin: 14px 16px 0; }
-.pyramid-map-link { width: calc(100% - 32px); margin: 4px 16px 0; }
 .map-status-dock { width: min(414px, calc(100% - 16px)); background: none; padding-top: 0; }
 .raccoon-status { background: linear-gradient(#fff9e5, #ffedc7); border: 2px solid #dbb986; box-shadow: inset 0 2px 0 #fff, 0 3px 0 #b17e4533, 0 -4px 18px #1d42211c; border-radius: 22px; }
 .status-avatar { background: #fff5dc; border: 0; width: 68px; height: 60px; overflow: hidden; border-radius: 16px; }
 .status-avatar .raccoon { width: 68px; margin: 0; height: 60px; }
-.mood-hearts .filled { fill: #43b849; stroke: #237838; }
 .status-progress { border-color: #dcbf92; }
 .group-dot { border-color: #bcb997; background: #fff7df; }
 .group-dot.filled { border: 1.5px solid color-mix(in srgb, var(--group-color), #173c31 35%); box-shadow: inset 0 2px 0 #ffffff66; }
@@ -310,7 +309,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 /* Big food sprites, a local restaurant scene and warm menu cards. */
 .modal { background: #fff0ce; border-color: #d7b07b; }.modal-heading { background: #fff0cef5; }
 .restaurant-hero { height: 168px; border-color: #d3b885; background: #79c5e6; }.restaurant-art { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
-.restaurant-hero-icon { display: none; }.restaurant-location { background: #fff1dbe8; border-color: #d9ba89; color: #5b673e; }
+.restaurant-hero-icon { display: none; }
 .restaurant-info { background: linear-gradient(#fff9e5, #ffedc7); }
 .food-card { grid-template-columns: 98px minmax(0, 1fr); background: linear-gradient(#fff8e4, #fff0d2); border-color: #e8cda3; min-height: 160px; }
 .food-art-wrap { min-height: 104px; height: 104px; border: 0; background: none; margin-top: 0; }
@@ -320,7 +319,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .food-group-chips > span { background: #fff7df; padding: 4px 5px; border-color: #e6d4b0; }.food-group-chips svg { fill: currentColor; fill-opacity: .2; stroke-width: 2.5px; }
 .feedback-character { width: 238px; background: none; margin: -6px auto 8px; }
 .feedback-character .raccoon { width: 238px; }
-.choice-check { right: 19px; bottom: 10px; }
 .feedback-modal { background: #fff7e0; }.feedback-modal .modal-heading { background: #fff7e0; }.feedback-modal .modal-heading h2 { color: #133749; text-align: center; font-size: 28px; }
 .added-groups > div { background: #fff1d3; border-color: #e5cc9f; }.added-groups > div > span:last-child { color: #613426; font-weight: 800; }
 
@@ -334,8 +332,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .bottom-action { background: linear-gradient(#fff0ce00, #fff0ce 16px); }
 
 /* Compact daily report, with all actual totals still available. */
-.summary-screen { padding-top: 12px; }.summary-screen > .game-header { display: none; }.summary-title { margin: 8px 0; }.summary-title > .eyebrow { font-size: 20px; font-weight: 1000; letter-spacing: -.5px; color: #183748; }.summary-title h1 { font-size: 16px; margin-top: 6px; }.summary-character { height: 165px; background: none; }.summary-character .raccoon { width: 211px; }.summary-speech { width: 180px; top: 0; left: 73%; font-size: 11px; }.summary-star { right: 28px; top: 90px; }
-.summary-metrics { display: none; }.small-section-title { font-size: 18px; margin-top: 12px; }.summary-meal { background: linear-gradient(#fff9e6, #ffecc5); padding: 10px 5px; }.summary-meal .food-illustration { width: 79px; height: 70px; }.summary-meal .eyebrow { font-size: 10px; }.summary-meal p { display: none; }.summary-meal .meal-check { display: none; }
+.summary-screen { padding-top: 12px; }.summary-screen > .game-header { display: none; }.summary-title { margin: 8px 0; }.summary-title > .eyebrow { font-size: 20px; font-weight: 1000; letter-spacing: -.5px; color: #183748; }.summary-title h1 { font-size: 16px; margin-top: 6px; }.summary-character { height: 165px; background: none; }.summary-character .raccoon { width: 211px; }.summary-speech { width: 180px; top: 0; left: 73%; font-size: 11px; }.summary-metrics { display: none; }.small-section-title { font-size: 18px; margin-top: 12px; }.summary-meal { background: linear-gradient(#fff9e6, #ffecc5); padding: 10px 5px; }.summary-meal .food-illustration { width: 79px; height: 70px; }.summary-meal .eyebrow { font-size: 10px; }.summary-meal p { display: none; }.summary-meal .meal-check { display: none; }
 .summary-screen .pyramid-graphic { display: none; }.summary-screen .pyramid-panel { padding: 14px 12px; }.summary-screen .pyramid-heading h3 { font-size: 17px; }.summary-screen .pyramid-heading .eyebrow { display: none; }.summary-screen .group-progress-list { gap: 10px; margin-top: 14px; }.summary-screen .food-group-row { display: flex; gap: 8px; align-items: center; justify-content: space-between; }.summary-screen .group-name { font-size: 12px; gap: 5px; }.summary-screen .group-name svg { width: 17px; }.summary-screen .group-count { display: none; }.summary-screen .group-dots { margin: 0; padding: 0; gap: 4px; }.summary-screen .group-dot { height: 11px; width: 11px; }.summary-screen .pyramid-footnote { font-size: 10px; margin-top: 14px; }
 
 /* The end scene has the same character in a warm twilight city. */
@@ -418,15 +415,15 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .modal { max-height: calc(100dvh - 24px); }
 .modal-wide { max-height: 100dvh; }
 
-/* Keep markers between the top controls and the fixed progress card. */
-.game-screen { --map-top-space: 100px; --map-bottom-space: 190px; padding-bottom: calc(var(--map-bottom-space) + env(safe-area-inset-bottom)); }
+/* Keep building labels between the top controls and the fixed progress card. */
+.game-screen { padding-bottom: 0; }
 .tartu-map { height: max(500px, 100dvh); }
 .map-loading, .map-error { min-height: 100dvh; }
-.marker-0, .marker-1, .marker-2, .marker-3, .marker-4 { top: calc(var(--map-top-space) + (100% - var(--map-top-space) - var(--map-bottom-space) - env(safe-area-inset-bottom)) * var(--marker-y)) !important; }
-.marker-0 { --marker-y: .22; }.marker-1 { --marker-y: .14; }.marker-2 { --marker-y: .48; }.marker-3 { --marker-y: .85; }.marker-4 { --marker-y: .70; }
 .game-menu { left: auto; width: min(360px, calc(100vw - 32px)); }
 
 @media (min-width: 600px), (min-width: 480px) and (max-height: 500px) {
+  .screen-map { --map-controls-width: min(680px, calc(100% - 32px)); }
+  .game-screen .game-header { left: 0; right: 0; width: var(--map-controls-width); margin-inline: auto; }
   .main-container { padding-inline: clamp(24px, 4vw, 64px); }
   .home-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(260px, .85fr); grid-template-areas: 'logo logo' 'art actions'; grid-template-rows: auto 1fr; gap: 24px clamp(24px, 5vw, 96px); padding: clamp(24px, 5dvh, 64px) clamp(24px, 6vw, 120px); }
   .game-logo { grid-area: logo; }
@@ -453,11 +450,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
   .feedback-modal { max-width: 340px; padding-inline: 16px; }
   .restaurant-hero { height: clamp(150px, 22dvh, 240px); }
   .pyramid-graphic { max-width: 420px; }
-  .game-screen { --map-bottom-space: 150px; }
   .restaurant-marker { width: clamp(112px, 13vw, 160px); min-height: 102px; padding: 8px; }
   .restaurant-marker > strong { font-size: clamp(12px, 1.2vw, 16px); }
   .marker-pin, .marker-pin .food-illustration { width: 70px; height: 62px; }
-  .map-status-dock { width: min(680px, calc(100% - 32px)); }
+  .map-status-dock { width: var(--map-controls-width); }
   .raccoon-status { display: flex; align-items: center; gap: 24px; }
   .raccoon-status-main { flex: 1; min-width: 0; }
   .status-progress { width: auto; flex: 1; margin: 0; padding: 8px 0 8px 20px; border-top: 0; border-left: 1px dashed #dcbf92; }
@@ -497,6 +493,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
   .food-group-chips { margin-bottom: 16px; }
 }
 
+@media (min-width: 840px) {
+  .game-screen .score-chip { margin-right: 0; }
+}
+
 @media (min-width: 480px) and (max-height: 500px) {
   .home-hero { grid-template-columns: minmax(0, 1fr) minmax(220px, 1fr); grid-template-areas: 'logo logo' 'art actions'; grid-template-rows: auto 1fr; gap: 12px 24px; padding: 20px 24px; }
   .home-hero h1 > .logo-food { font-size: clamp(26px, 4.6vw, 36px); }
@@ -507,11 +507,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
   .home-actions .start-button { min-height: 60px; font-size: 18px; }
   .home-secondary-actions { grid-template-columns: 1fr; gap: 8px; }
   .home-secondary-actions .button { min-height: 52px; font-size: 14px; gap: 6px; padding-block: 8px; }
-  .game-screen { --map-top-space: 80px; --map-bottom-space: 120px; }
   .tartu-map { height: max(320px, 100dvh); }
   .restaurant-marker { width: min(150px, 16vw); min-height: 84px; }
   .marker-pin, .marker-pin .food-illustration { width: 50px; height: 44px; }
-  .marker-0, .marker-1, .marker-2, .marker-3, .marker-4 { --marker-y: .5; }
-  .marker-0 { left: 10% !important; }.marker-1 { left: 30% !important; }.marker-2 { left: 50% !important; }.marker-3 { left: 70% !important; }.marker-4 { left: 90% !important; }
   .map-status-dock { padding-bottom: max(8px, env(safe-area-inset-bottom)); }
 }

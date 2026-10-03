@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import type { Food, MealTime } from '../types/game';
 import { PrimaryButton } from './Button';
@@ -11,13 +11,12 @@ export function FeedbackModal({ food, moodScore, meal, onContinue }: {
 }) {
   return <Modal title="Hea valik!" onClose={onContinue} className="feedback-modal">
     <div className="choice-feedback">
-      <div className="feedback-character"><RaccoonCharacter moodScore={moodScore} pose="eat" /><span className="choice-check"><Check size={23} /></span><span className="feedback-spark">✦</span></div>
+      <div className="feedback-character"><RaccoonCharacter moodScore={moodScore} pose="eat" /></div>
       <h3>{food.name}</h3><p>Sa said täna juurde:</p>
       <div className="added-groups">{food.groups.map(value => {
         const group = FOOD_GROUPS.find(g => g.id === value.groupId)!;
         return <div key={value.groupId}><span className="added-group-icon" style={{ color: group.color }}><GroupIcon name={group.icon} size={24} /></span><strong>+{value.points}</strong><span>{group.shortName.toLowerCase()}</span></div>;
       })}</div>
-      <p className="choice-tip"><Sparkles size={16} />Iga toit on osa päeva tervikust.</p>
       <PrimaryButton onClick={onContinue} aria-label={meal === 'dinner' ? 'Vaata päeva kokkuvõtet' : meal === 'breakfast' ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile'}>Jätka<ArrowRight size={18} /></PrimaryButton>
     </div>
   </Modal>;

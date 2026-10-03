@@ -4,7 +4,7 @@ import { calculateMoodScore } from './mood';
 import { calculateScore, dayBonus } from './scoring';
 export const newDay = (): DaySelection => ({ restaurantNames: {}, waterMeals: [], score: 0 });
 export function createPlayerState(): PlayerState {
-  return { currentDay: 1, currentMeal: 'breakfast', score: 0, moodScore: 65, foodGroupTotals: emptyTotals(), days: [newDay()], usedRestaurantIds: [], usedFoodIds: [], restaurantIds: [], offers: {} };
+  return { currentDay: 1, currentMeal: 'breakfast', score: 0, moodScore: 65, foodGroupTotals: emptyTotals(), days: [newDay()], usedRestaurantIds: [], usedFoodIds: [], restaurantIds: [], previousRestaurantIds: [], offers: {} };
 }
 export function chooseFood(state: PlayerState, food: Food, restaurantName: string): PlayerState {
   const day = state.days[state.currentDay - 1];
@@ -19,11 +19,11 @@ export function chooseFood(state: PlayerState, food: Food, restaurantName: strin
 }
 export function nextMeal(state: PlayerState): PlayerState {
   const index = MEAL_ORDER.indexOf(state.currentMeal);
-  return index < 2 ? { ...state, currentMeal: MEAL_ORDER[index + 1], offers: {} } : state;
+  return index < 2 ? { ...state, currentMeal: MEAL_ORDER[index + 1], previousRestaurantIds: [...state.restaurantIds], restaurantIds: [], offers: {} } : state;
 }
 export function nextDay(state: PlayerState): PlayerState {
   if (state.currentDay >= 3) return state;
-  return { ...state, currentDay: state.currentDay + 1, currentMeal: 'breakfast', foodGroupTotals: emptyTotals(), moodScore: 65, days: [...state.days, newDay()], restaurantIds: [], offers: {} };
+  return { ...state, currentDay: state.currentDay + 1, currentMeal: 'breakfast', foodGroupTotals: emptyTotals(), moodScore: 65, days: [...state.days, newDay()], previousRestaurantIds: [...state.restaurantIds], restaurantIds: [], offers: {} };
 }
 export function drinkWater(state: PlayerState): PlayerState {
   const day = state.days[state.currentDay - 1];

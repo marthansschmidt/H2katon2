@@ -20,7 +20,7 @@ export interface PlayerState {
   currentDay: number; currentMeal: MealTime; score: number; moodScore: number;
   foodGroupTotals: FoodGroupTotals; days: DaySelection[];
   usedRestaurantIds: string[]; usedFoodIds: string[];
-  restaurantIds: string[]; offers: Record<string, Food[]>;
+  restaurantIds: string[]; previousRestaurantIds: string[]; offers: Record<string, Food[]>;
 }
 export type Screen = 'home' | 'tutorial' | 'map' | 'daySummary' | 'final';
 export const MEAL_ORDER: MealTime[] = ['breakfast', 'lunch', 'dinner'];

@@ -2,6 +2,8 @@
 
 Responsiivne eestikeelne häkatonimäng 16–19-aastastele: kolm päeva Tartus, üheksa toiduvalikut, mänguline toidupüramiid ja pesukaru tagasiside.
 
+Kaart vahetub koos toidukorraga: hommikusöögi ajal on pehme koiduvalgus, lõunasöögi ajal loomulike mahedate värvidega keskpäev ning õhtusöögi ajal hämar linn valgustatud akende ja laternatega. Kõigis kolmes vaates on sama tänavapaigutus ja majad ka kaardi keskel. Söögikohtade mullid kasutavad majade katusepunkte ning kohanduvad ekraani suuruse järgi. Kaardid asuvad failides `public/art/tartu-map-morning.webp`, `public/art/tartu-map-noon-v2.webp` ja `public/art/tartu-map-night.webp`; genereerimispromptid on failis `docs/map-variants-prompts.md`.
+
 ## Kujundus
 
 Mäng täidab ekraani laiuse ja vähemalt ekraani kõrguse. Telefonis paikneb sisu ühes veerus; tahvlil ja arvutis kasutavad avaleht, juhend, menüü ja lõpptulemus mitut veergu. Päevakokkuvõte läheb kahte veergu alates 900 px laiusest, et menüükaardid jääksid loetavaks. Avaleht kasutab täisekraanilist Tartu stseeni, erksat mängulogo ning suuri ruumilisi nuppe. Kreemitaust, rohelised tegevusnupud, ümarad kaardid ja värvilised progressimummud moodustavad ühise süsteemi. Kaardivaates püsib pesukaru staatusekaart all nähtaval ning söögikohtade nupud paiknevad ülemiste juhtnuppude ja staatusekaardi vahel. Madalas rõhtvaates on kaardinupud ühes reas. Juhendis ja päevakokkuvõttes on kleepuv tegevusnupp. Restoranimenüü täidab telefoni ekraani ning pikem sisu kerib dialoogi sees.
@@ -42,7 +44,9 @@ Komponendid ei impordi mock-restoranide andmeid. Tulevase REST-integratsiooni ja
 
 ## Mängureeglid
 
-Päevas on kolm kohustuslikku toiduvalikut. Restoranid valitakse päeva alguses: esmalt näitamata kohad, siis vajaduse korral kordused. 12 koha ja 15 päevakoha puhul on kolmandal päeval osa kordusi paratamatu. `usedFoodIds` salvestab nähtud menüütoidud; uued menüüd eelistavad nägemata toite, kuid sobivate valikute lõppedes on kordused lubatud. Sama restorani menüü püsib sama toidukorra jooksul ja ka lehe värskendamisel.
+Pärast toidu kinnitamist kaob valitud söögikoht sama toidukorra kaardilt. Teiste mullide asukohad jäävad paigale ning kinnitatud toidukorra menüüd ei saa uuesti avada. Peitmine säilib lehe värskendamisel. Järgmisele toidukorrale liikudes loositakse kõik viis söögikohta uuesti ning menüüd tühjendatakse.
+
+Päevas on kolm kohustuslikku toiduvalikut. Viis restorani loositakse iga hommiku-, lõuna- ja õhtusöögi jaoks. Eelmise toidukorra kohad jäetakse kõrvale ning ülejäänute seas eelistatakse varem näitamata kohti. 12 restoraniga võivad varasemate voorude kohad hiljem tagasi tulla, kuid järjestikused viisikud ei kattu. Väiksema andmeallika puhul on puuduvate alternatiivide asemel lubatud kordused. Loositud kohtade komplekt ja avatud menüüd püsivad sama toidukorra jooksul ka lehe värskendamisel. `usedFoodIds` salvestab nähtud menüütoidud; uued menüüd eelistavad nägemata toite, kuid sobivate valikute lõppedes on kordused lubatud.
 
 Mäng premeerib uusi igapäevaseid toidugruppe (+50), vähemalt kolme grupiga toidukorda (+100) ja vähemalt 75% mängutasakaaluga päeva (+150). Juba tugevalt täidetud gruppidele toetuvate toidukordade boonus väheneb. Maiustuste söömist ei nõuta ega premeerita uue igapäevase grupina. Burger võib anda mitmekesisuspunkte samadel alustel kui teised toidud.
 

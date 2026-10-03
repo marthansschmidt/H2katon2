@@ -95,6 +95,13 @@ for (const [width, height] of viewports) {
       return { x, y, width, height };
     }));
     const header = await page.locator('.game-screen .game-header').boundingBox();
+    const menuButton = await page.getByRole('button', { name: 'Ava menüü' }).boundingBox();
+    expect(menuButton!.x + menuButton!.width, 'menu button stays in the screen corner').toBeCloseTo(width - 16, 0);
+    expect(menuButton!.y, 'menu button stays at the top').toBeCloseTo(20, 0);
+    if (width >= 600 || width >= 480 && height <= 500) {
+      expect(header!.width, 'top and bottom bars have the same width').toBeCloseTo(dock!.width, 0);
+      expect(header!.x, 'top and bottom bars align').toBeCloseTo(dock!.x, 0);
+    }
     for (const marker of markers) {
       expect(marker.x).toBeGreaterThanOrEqual(0);
       expect(marker.x + marker.width).toBeLessThanOrEqual(width);

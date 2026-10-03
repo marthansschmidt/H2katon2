@@ -19,20 +19,23 @@ for (const width of [390, 768, 1440]) {
     await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
     await expect(page.locator('.tutorial-screen')).toBeVisible();
     await page.getByRole('button', { name: 'Alustan!' }).click();
-    let firstDayIds: string[] = [];
+    let previousMealIds: string[] = [];
     for (let day = 1; day <= 3; day++) {
       await expect(page.locator('.day-pill')).toHaveText(`PÄEV ${day} / 3`);
       await expect(page.locator('.restaurant-marker')).toHaveCount(5);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       if (day === 1) {
-        firstDayIds = await page.locator('.restaurant-marker').evaluateAll(markers => markers.map(marker => marker.getAttribute('aria-label')!));
         await page.screenshot({ animations: 'disabled', path: `test-results/kaart-${width}.png`, fullPage: true });
-      } else if (day === 2) {
-        const second = await page.locator('.restaurant-marker').evaluateAll(markers => markers.map(marker => marker.getAttribute('aria-label')!));
-        expect(second.some(id => firstDayIds.includes(id))).toBe(false);
       }
       for (let meal = 0; meal < 3; meal++) {
         await expect(page.locator('.day-heading .meal-badge')).toHaveText(['Hommikusöök', 'Lõunasöök', 'Õhtusöök'][meal]);
+        await expect(page.locator('.restaurant-marker')).toHaveCount(5);
+        await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
+        const mealIds = await page.locator('.restaurant-marker').evaluateAll(markers => markers.map(marker => marker.getAttribute('aria-label')!));
+        expect(mealIds.some(id => previousMealIds.includes(id)), 'all five places change for the next meal').toBe(false);
+        previousMealIds = mealIds;
+        const chosenLabel = await page.locator('.restaurant-marker').nth((day + meal) % 5).getAttribute('aria-label');
+        const positionsBefore = await page.locator('.restaurant-marker').evaluateAll(elements => Object.fromEntries(elements.map(element => [element.getAttribute('aria-label'), (element as HTMLElement).style.cssText])));
         await page.locator('.restaurant-marker').nth((day + meal) % 5).click();
         await expect(page.locator('.food-card')).toHaveCount(3);
         expect(await page.locator('.modal-wide').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
@@ -47,10 +50,19 @@ for (const width of [390, 768, 1440]) {
         }
         await page.getByRole('button', { name: 'Valin selle' }).first().click();
         await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+        await expect(page.locator('.restaurant-marker')).toHaveCount(4);
+        const positionsAfter = await page.locator('.restaurant-marker').evaluateAll(elements => Object.fromEntries(elements.map(element => [element.getAttribute('aria-label'), (element as HTMLElement).style.cssText])));
+        expect(Object.keys(positionsAfter)).not.toContain(chosenLabel);
+        for (const [label, position] of Object.entries(positionsAfter)) expect(position).toBe(positionsBefore[label]);
+        // Even a direct click cannot reopen a menu for a completed meal.
+        await page.locator('.restaurant-marker').first().evaluate(element => (element as HTMLButtonElement).click());
+        await expect(page.locator('.modal-wide')).toHaveCount(0);
         expect(await page.locator('.feedback-modal').evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(340);
         if (day === 1 && meal === 1) {
           await page.reload();
           await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+          await expect(page.locator('.restaurant-marker')).toHaveCount(4);
+          expect(await page.locator('.restaurant-marker').evaluateAll(elements => elements.map(element => element.getAttribute('aria-label')))).not.toContain(chosenLabel);
           expect(await page.locator('.feedback-modal').evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(340);
         }
         await page.getByRole('button', { name: meal === 2 ? 'Vaata päeva kokkuvõtet' : meal === 0 ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile' }).click();

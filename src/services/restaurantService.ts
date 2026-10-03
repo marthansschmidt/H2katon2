@@ -3,13 +3,21 @@ import { shuffle } from '../game/random';
 import type { Food, MealTime, Restaurant } from '../types/game';
 
 export interface RestaurantProvider {
-  getRestaurantsForDay(excludedIds: string[]): Promise<Restaurant[]>;
+  getRestaurantsForDay(excludedIds: string[], previousIds?: string[]): Promise<Restaurant[]>;
   getRestaurantById(id: string): Promise<Restaurant | null>;
   getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[]): Promise<Food[]>;
 }
-export function getRandomRestaurants(restaurants: Restaurant[], excludedIds: string[], limit = 5): Restaurant[] {
+export function getRandomRestaurants(restaurants: Restaurant[], excludedIds: string[], limit = 5, previousIds: string[] = []): Restaurant[] {
   const excluded = new Set(excludedIds);
-  return [...shuffle(restaurants.filter(r => !excluded.has(r.id))), ...shuffle(restaurants.filter(r => excluded.has(r.id)))].slice(0, limit);
+  const previous = new Set(previousIds);
+  // Prefer unseen places, then older repeats. Only reuse the immediately
+  // preceding set if a smaller provider cannot supply enough alternatives.
+  return [
+    ...shuffle(restaurants.filter(r => !previous.has(r.id) && !excluded.has(r.id))),
+    ...shuffle(restaurants.filter(r => !previous.has(r.id) && excluded.has(r.id))),
+    ...shuffle(restaurants.filter(r => previous.has(r.id) && !excluded.has(r.id))),
+    ...shuffle(restaurants.filter(r => previous.has(r.id) && excluded.has(r.id))),
+  ].slice(0, limit);
 }
 export function getAvailableFoods(foods: Food[], meal: MealTime, usedFoodIds: string[], limit = 3): Food[] {
   const eligible = foods.filter(food => food.mealTimes.includes(meal));
@@ -19,7 +27,7 @@ export function getAvailableFoods(foods: Food[], meal: MealTime, usedFoodIds: st
   return ordered.slice(0, limit);
 }
 export class MockRestaurantProvider implements RestaurantProvider {
-  async getRestaurantsForDay(excludedIds: string[]) { return getRandomRestaurants(MOCK_RESTAURANTS, excludedIds); }
+  async getRestaurantsForDay(excludedIds: string[], previousIds: string[] = []) { return getRandomRestaurants(MOCK_RESTAURANTS, excludedIds, 5, previousIds); }
   async getRestaurantById(id: string) { return MOCK_RESTAURANTS.find(r => r.id === id) ?? null; }
   async getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[]) {
     const restaurant = await this.getRestaurantById(id);
@@ -31,5 +39,6 @@ export class MockRestaurantProvider implements RestaurantProvider {
 let provider: RestaurantProvider = new MockRestaurantProvider();
 export function setRestaurantProvider(nextProvider: RestaurantProvider) { provider = nextProvider; }
 export const getRestaurantsForDay = (excludedIds: string[] = []) => provider.getRestaurantsForDay(excludedIds);
+export const getRestaurantsForMeal = (usedIds: string[] = [], previousIds: string[] = []) => provider.getRestaurantsForDay(usedIds, previousIds);
 export const getRestaurantById = (id: string) => provider.getRestaurantById(id);
 export const getMealsForRestaurant = (id: string, meal: MealTime, usedFoodIds: string[]) => provider.getMealsForRestaurant(id, meal, usedFoodIds);

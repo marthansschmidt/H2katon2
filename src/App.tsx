@@ -14,7 +14,7 @@ import { RestaurantModal } from './components/RestaurantModal';
 import { FoodPyramid } from './components/FoodPyramid';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from './game/state';
 import { loadGame, saveGame } from './game/storage';
-import { getMealsForRestaurant, getRestaurantById, getRestaurantsForDay } from './services/restaurantService';
+import { getMealsForRestaurant, getRestaurantById, getRestaurantsForMeal } from './services/restaurantService';
 import type { Food, Restaurant, Screen } from './types/game';
 
 export default function App() {
@@ -37,6 +37,7 @@ export default function App() {
   const requestId = useRef(0);
   const mainRef = useRef<HTMLDivElement>(null);
   const dayNumber = player.currentDay;
+  const mealTime = player.currentMeal;
   const restaurantIdsKey = player.restaurantIds.join(',');
 
   useEffect(() => { setStorageAvailable(saveGame(player, screen, resumeScreen, hasStarted)); }, [player, screen, resumeScreen, hasStarted]);
@@ -52,7 +53,7 @@ export default function App() {
     setLoading(true); setError(null);
     async function loadRestaurants() {
       try {
-        const list = player.restaurantIds.length ? (await Promise.all(player.restaurantIds.map(getRestaurantById))).filter((r): r is Restaurant => r !== null) : await getRestaurantsForDay(player.usedRestaurantIds);
+        const list = player.restaurantIds.length ? (await Promise.all(player.restaurantIds.map(getRestaurantById))).filter((r): r is Restaurant => r !== null) : await getRestaurantsForMeal(player.usedRestaurantIds, player.previousRestaurantIds);
         if (cancelled) return;
         if (!list.length) throw new Error('empty');
         setRestaurants(list);
@@ -62,9 +63,9 @@ export default function App() {
     }
     void loadRestaurants();
     return () => { cancelled = true; };
-    // Food and mood updates must not reroll the day's restaurant selection.
+    // Food and mood updates must not reroll the current meal's selection.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [screen, dayNumber, restaurantIdsKey, retry]);
+  }, [screen, dayNumber, mealTime, restaurantIdsKey, retry]);
 
   const goTo = (nextScreen: Screen) => { setToast(''); setScreen(nextScreen); if (nextScreen !== 'home') setResumeScreen(nextScreen); };
   function startGame() {
@@ -72,6 +73,7 @@ export default function App() {
     setPlayer(createPlayerState()); setHasStarted(true); goTo('tutorial');
   }
   async function openRestaurant(restaurant: Restaurant) {
+    if (loading || player.days[dayNumber - 1][player.currentMeal]) return;
     const currentRequest = ++requestId.current;
     setSelected(restaurant); setMenuError(null);
     if (player.offers[restaurant.id]) { setFoodsLoading(false); return; }
@@ -95,7 +97,10 @@ export default function App() {
   const currentFood = screen === 'map' ? player.days[dayNumber - 1][player.currentMeal] : undefined;
   function continueAfterFood() {
     if (player.currentMeal === 'dinner') goTo('daySummary');
-    else { setPlayer(previous => nextMeal(previous)); setToast('Uus toidukord, uued võimalused!'); }
+    else {
+      requestId.current++; setSelected(null); setLoading(true);
+      setPlayer(previous => nextMeal(previous)); setToast('Uus toidukord, uued söögikohad!');
+    }
   }
   function advanceDay() {
     if (dayNumber === 3) goTo('final');
@@ -105,7 +110,7 @@ export default function App() {
     <>
       {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={() => setGuide('pyramid')} onResume={hasStarted ? () => goTo(resumeScreen) : undefined} />}
       {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={() => goTo('home')} />}
-      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onPyramid={() => setGuide('pyramid')} onProgress={() => setGuide('progress')} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
+      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onProgress={() => setGuide('progress')} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
       {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={() => setGuide('pyramid')} />}
       {screen === 'final' && <FinalSummaryScreen player={player} onRestart={startGame} onHome={() => goTo('home')} onPyramid={() => setGuide('pyramid')} />}
     </>
