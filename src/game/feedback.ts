@@ -1,9 +1,8 @@
 import { FOOD_GROUPS } from '../data/foodGroups';
-import { calculateDayBalance } from './foodPyramid';
+import { isDayComplete } from './foodPyramid';
 import type { FoodGroupTotals } from '../types/game';
 export function generateDayFeedback(totals: FoodGroupTotals): string[] {
-  const balance = calculateDayBalance(totals);
-  const feedback = [balance >= 75 ? 'Täna said kokku päris mitmekesise päeva. Mõnus maitseseiklus!' : 'Iga valik on osa suuremast pildist. Täna avastasid uusi maitseid!'];
+  const feedback = [isDayComplete(totals) ? 'Kõigi kuue põhigrupi mummud on täis. Päeva eesmärk on täidetud!' : 'Täna kogusid uusi maitseid ja mummusid. Mõni põhigrupp jäi veel täitmata.'];
   const low = FOOD_GROUPS.filter(g => g.minTarget > 0 && totals[g.id] < g.minTarget).sort((a, b) => totals[a.id] / a.minTarget - totals[b.id] / b.minTarget);
   const high = FOOD_GROUPS.filter(g => totals[g.id] > g.maxTarget).sort((a, b) => totals[b.id] - b.maxTarget - (totals[a.id] - a.maxTarget));
   if (high.length) feedback.push(`${high[0].shortName}: seda gruppi kogunes täna päris palju. Järgmine kord saad katsetada rohkem vaheldust.`);

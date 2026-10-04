@@ -11,8 +11,8 @@ import { PyramidGuide } from './components/PyramidGuide';
 import { GameShell } from './components/GameShell';
 import { FeedbackModal } from './components/FeedbackModal';
 import { RestaurantModal } from './components/RestaurantModal';
-import { FoodPyramid } from './components/FoodPyramid';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from './game/state';
+import { foodsForDay, totalsForDay } from './game/foodPyramid';
 import { loadGame, saveGame } from './game/storage';
 import { getMealsForRestaurant, getRestaurantById, getRestaurantsForMeal } from './services/restaurantService';
 import type { Food, Restaurant, Screen } from './types/game';
@@ -23,7 +23,8 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>(saved?.screen ?? 'home');
   const [resumeScreen, setResumeScreen] = useState<Screen>(saved?.resumeScreen ?? 'tutorial');
   const [hasStarted, setHasStarted] = useState(saved?.started ?? false);
-  const [guide, setGuide] = useState<'tutorial' | 'pyramid' | 'progress' | null>(null);
+  const [guide, setGuide] = useState<'tutorial' | 'pyramid' | null>(null);
+  const [pyramidReminder, setPyramidReminder] = useState(0);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [loading, setLoading] = useState(false);
@@ -68,8 +69,10 @@ export default function App() {
   }, [screen, dayNumber, mealTime, restaurantIdsKey, retry]);
 
   const goTo = (nextScreen: Screen) => { setToast(''); setScreen(nextScreen); if (nextScreen !== 'home') setResumeScreen(nextScreen); };
+  const openPyramid = () => setGuide('pyramid');
   function startGame() {
     requestId.current++; setSelected(null); setRestaurants([]); setError(null); setToast('');
+    setPyramidReminder(0);
     setPlayer(createPlayerState()); setHasStarted(true); goTo('tutorial');
   }
   async function openRestaurant(restaurant: Restaurant) {
@@ -81,7 +84,7 @@ export default function App() {
     const meal = player.currentMeal;
     const day = player.currentDay;
     try {
-      const foods = await getMealsForRestaurant(restaurant.id, meal, player.usedFoodIds);
+      const foods = await getMealsForRestaurant(restaurant.id, meal, player.usedFoodIds, { totals: player.foodGroupTotals, selectedFoodIds: foodsForDay(player.days[day - 1]).map(food => food.id) });
       if (currentRequest !== requestId.current) return;
       if (!foods.length) throw new Error('empty');
       setPlayer(previous => previous.currentDay !== day || previous.currentMeal !== meal ? previous : ({ ...previous, offers: { ...previous.offers, [restaurant.id]: foods }, usedFoodIds: [...new Set([...previous.usedFoodIds, ...foods.map(food => food.id)])] }));
@@ -96,6 +99,7 @@ export default function App() {
   }
   const currentFood = screen === 'map' ? player.days[dayNumber - 1][player.currentMeal] : undefined;
   function continueAfterFood() {
+    setPyramidReminder(previous => previous + 1);
     if (player.currentMeal === 'dinner') goTo('daySummary');
     else {
       requestId.current++; setSelected(null); setLoading(true);
@@ -106,17 +110,17 @@ export default function App() {
     if (dayNumber === 3) goTo('final');
     else { setRestaurants([]); setPlayer(previous => nextDay(previous)); goTo('map'); }
   }
-  return <GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={() => goTo('home')} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }} onPyramid={() => { setMobileNav(false); setGuide('pyramid'); }}>
+  return <GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={() => goTo('home')} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }}>
     <>
-      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={() => setGuide('pyramid')} onResume={hasStarted ? () => goTo(resumeScreen) : undefined} />}
+      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={openPyramid} onResume={hasStarted ? () => goTo(resumeScreen) : undefined} />}
       {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={() => goTo('home')} />}
-      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onProgress={() => setGuide('progress')} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
-      {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={() => setGuide('pyramid')} />}
-      {screen === 'final' && <FinalSummaryScreen player={player} onRestart={startGame} onHome={() => goTo('home')} onPyramid={() => setGuide('pyramid')} />}
+      {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onPyramid={() => { setPyramidReminder(0); openPyramid(); }} pyramidReminder={pyramidReminder} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
+      {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={openPyramid} />}
+      {screen === 'final' && <FinalSummaryScreen player={player} onRestart={startGame} onHome={() => goTo('home')} onPyramid={openPyramid} />}
     </>
-    {selected && <RestaurantModal restaurant={selected} foods={player.offers[selected.id] ?? []} meal={player.currentMeal} loading={foodsLoading} error={menuError} onChoose={selectFood} onClose={() => { requestId.current++; setSelected(null); }} />}
-    {currentFood && <FeedbackModal food={currentFood} moodScore={player.moodScore} meal={player.currentMeal} onContinue={continueAfterFood} />}
-    {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : guide === 'progress' ? 'Minu päeva mummud' : 'Toidupüramiid'} className={guide === 'pyramid' ? 'pyramid-guide-modal' : guide === 'tutorial' ? 'tutorial-guide-modal' : ''} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <div className="tutorial-guide"><TutorialSteps /><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></div> : guide === 'progress' ? <FoodPyramid totals={player.foodGroupTotals} staticOpen /> : <PyramidGuide totals={player.foodGroupTotals} />}</Modal>}
+    {selected && <RestaurantModal restaurant={selected} foods={player.offers[selected.id] ?? []} totals={player.foodGroupTotals} meal={player.currentMeal} loading={foodsLoading} error={menuError} onChoose={selectFood} onClose={() => { requestId.current++; setSelected(null); }} />}
+    {currentFood && <FeedbackModal food={currentFood} previousTotals={totalsForDay({ ...player.days[dayNumber - 1], [player.currentMeal]: undefined })} moodScore={player.moodScore} meal={player.currentMeal} onContinue={continueAfterFood} />}
+    {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : 'Toidupüramiid'} className={guide === 'pyramid' ? 'pyramid-guide-modal' : guide === 'tutorial' ? 'tutorial-guide-modal' : ''} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <div className="tutorial-guide"><TutorialSteps /><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></div> : <PyramidGuide totals={player.foodGroupTotals} />}</Modal>}
     {toast && <div className="toast" role="status"><Check size={17} />{toast}</div>}
     {!storageAvailable && <div className="storage-note" role="status">Brauser ei luba mängu salvestada. Seiklus jätkub selles aknas.</div>}
   </GameShell>;

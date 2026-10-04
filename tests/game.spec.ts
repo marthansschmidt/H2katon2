@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { DAILY_GOAL_EXPLANATION } from '../src/data/foodGroups';
 
 for (const width of [390, 768, 1440]) {
   test(`kogu seiklus, salvestamine ja restart (${width}px)`, async ({ page }) => {
@@ -100,10 +101,12 @@ test('juhendi ja püramiidi avamine, klaviatuur ning mobiili ülevool', async ({
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole('button', { name: 'Kuidas mängida?', exact: true }).last().click();
   await expect(page.getByRole('dialog')).toBeVisible();
+  await expect(page.getByRole('dialog').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await page.getByRole('button', { name: 'Avasta toidupüramiidi' }).click();
   await expect(page.getByText('Erinevad toidugrupid annavad erinevaid toitaineid. Vaheldus loeb!')).toBeVisible();
+  await expect(page.getByRole('dialog').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toBeVisible();
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
   await page.getByRole('button', { name: 'Alustan!' }).click();
@@ -111,9 +114,10 @@ test('juhendi ja püramiidi avamine, klaviatuur ning mobiili ülevool', async ({
   await page.getByRole('button', { name: 'Ava menüü' }).click();
   await expect(page.getByRole('navigation')).toBeVisible();
   await page.getByRole('button', { name: 'Sulge menüü' }).click();
-  await page.getByRole('button', { name: 'Mummud: 0 / 8 gruppi' }).click();
-  await expect(page.getByRole('dialog', { name: 'Minu päeva mummud' })).toBeVisible();
-  await expect(page.getByRole('dialog').getByRole('img', { name: 'Vesi ja joogid: 0 mummu, mängu vahemik 2 kuni 4' })).toBeVisible();
+  await page.getByRole('button', { name: 'Ava toidupüramiid' }).click();
+  await expect(page.getByRole('dialog', { name: 'Toidupüramiid' })).toBeVisible();
+  await expect(page.getByRole('dialog').getByRole('img', { name: 'Köögiviljad: 0 mummu, päeva eesmärk 4' })).toBeVisible();
+  await expect(page.getByText('Vesi ja joogid', { exact: true })).toHaveCount(0);
   await page.keyboard.press('Escape');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 });

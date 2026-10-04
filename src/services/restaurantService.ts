@@ -1,11 +1,12 @@
-import { MOCK_RESTAURANTS } from '../data/mockRestaurants';
+import { MOCK_FOODS, MOCK_RESTAURANTS } from '../data/mockRestaurants';
 import { shuffle } from '../game/random';
+import { DailyMenuPlanner, type MenuContext } from '../game/dailyMenu';
 import type { Food, MealTime, Restaurant } from '../types/game';
 
 export interface RestaurantProvider {
   getRestaurantsForDay(excludedIds: string[], previousIds?: string[]): Promise<Restaurant[]>;
   getRestaurantById(id: string): Promise<Restaurant | null>;
-  getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[]): Promise<Food[]>;
+  getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[], context?: MenuContext): Promise<Food[]>;
 }
 export function getRandomRestaurants(restaurants: Restaurant[], excludedIds: string[], limit = 5, previousIds: string[] = []): Restaurant[] {
   const excluded = new Set(excludedIds);
@@ -27,10 +28,12 @@ export function getAvailableFoods(foods: Food[], meal: MealTime, usedFoodIds: st
   return ordered.slice(0, limit);
 }
 export class MockRestaurantProvider implements RestaurantProvider {
+  private readonly menuPlanner = new DailyMenuPlanner(MOCK_FOODS);
   async getRestaurantsForDay(excludedIds: string[], previousIds: string[] = []) { return getRandomRestaurants(MOCK_RESTAURANTS, excludedIds, 5, previousIds); }
   async getRestaurantById(id: string) { return MOCK_RESTAURANTS.find(r => r.id === id) ?? null; }
-  async getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[]) {
+  async getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[], context?: MenuContext) {
     const restaurant = await this.getRestaurantById(id);
+    if (restaurant && context) return this.menuPlanner.getChoices(meal, context, restaurant.meals.map(food => food.id), usedFoodIds);
     return restaurant ? getAvailableFoods(restaurant.meals, meal, usedFoodIds) : [];
   }
 }
@@ -41,4 +44,4 @@ export function setRestaurantProvider(nextProvider: RestaurantProvider) { provid
 export const getRestaurantsForDay = (excludedIds: string[] = []) => provider.getRestaurantsForDay(excludedIds);
 export const getRestaurantsForMeal = (usedIds: string[] = [], previousIds: string[] = []) => provider.getRestaurantsForDay(usedIds, previousIds);
 export const getRestaurantById = (id: string) => provider.getRestaurantById(id);
-export const getMealsForRestaurant = (id: string, meal: MealTime, usedFoodIds: string[]) => provider.getMealsForRestaurant(id, meal, usedFoodIds);
+export const getMealsForRestaurant = (id: string, meal: MealTime, usedFoodIds: string[], context?: MenuContext) => provider.getMealsForRestaurant(id, meal, usedFoodIds, context);

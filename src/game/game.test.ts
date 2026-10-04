@@ -5,14 +5,14 @@ import { getAvailableFoods, getRandomRestaurants, MockRestaurantProvider } from 
 import { calculateDayBalance, calculateFoodGroupTotals, emptyTotals, foodsForDay } from './foodPyramid';
 import { calculateMoodScore } from './mood';
 import { calculateScore, dayBonus } from './scoring';
-import { chooseFood, createPlayerState, drinkWater, nextDay, nextMeal } from './state';
+import { chooseFood, createPlayerState, nextDay, nextMeal } from './state';
 import { generateDayFeedback } from './feedback';
 
 describe('kohalikud näidisandmed', () => {
   it('sisaldab 12 restorani, 40 eri toitu ja piisavalt sobivaid valikuid igal toidukorral', () => {
     expect(MOCK_RESTAURANTS).toHaveLength(12);
     expect(new Set(MOCK_FOODS.map(f => f.id)).size).toBe(40);
-    expect(FOOD_GROUPS).toHaveLength(8);
+    expect(FOOD_GROUPS).toHaveLength(7);
     expect(MOCK_FOODS.filter(f => f.mealTimes.includes('breakfast')).length).toBeGreaterThanOrEqual(6);
     expect(MOCK_FOODS.filter(f => f.mealTimes.includes('dinner')).length).toBeGreaterThanOrEqual(15);
     expect(MOCK_FOODS.filter(f => f.plantBased).length).toBeGreaterThanOrEqual(5);
@@ -90,7 +90,6 @@ describe('kolme päeva mäng', () => {
       expect(state.currentDay).toBe(day);
       expect(state.foodGroupTotals).toEqual(emptyTotals());
       for (const [index, meal] of (['breakfast', 'lunch', 'dinner'] as const).entries()) {
-        state = drinkWater(state);
         const food = MOCK_FOODS.find(f => f.mealTimes.includes(meal) && !state.usedFoodIds.includes(f.id))!;
         state = chooseFood(state, food, 'Näidiskoht');
         expect(foodsForDay(state.days[day - 1])).toHaveLength(index + 1);
@@ -108,15 +107,6 @@ describe('kolme päeva mäng', () => {
     expect(nextDay(state)).toBe(state);
     expect(createPlayerState()).toEqual({ ...createPlayerState(), score: 0, currentDay: 1, usedFoodIds: [], usedRestaurantIds: [] });
   });
-  it('arvestab vee ainult üks kord toidukorra kohta', () => {
-    const state = drinkWater(createPlayerState());
-    expect(state.foodGroupTotals.drinks).toBe(1);
-    expect(drinkWater(state)).toBe(state);
-    const eaten = chooseFood(state, MOCK_FOODS[0], 'Kohvik');
-    expect(drinkWater(eaten)).toBe(eaten);
-    const lunch = drinkWater(nextMeal(eaten));
-    expect(lunch.foodGroupTotals.drinks).toBe(2);
-  });
   it('ei lase lõunasööki valida hommikusöögiks', () => {
     const state = createPlayerState();
     expect(chooseFood(state, MOCK_FOODS.find(f => f.id === 'burger')!, 'Kohvik')).toBe(state);
@@ -128,7 +118,7 @@ describe('mitmekesisus ja toetav tagasiside', () => {
     const totals = Object.fromEntries(FOOD_GROUPS.map(g => [g.id, g.minTarget])) as ReturnType<typeof emptyTotals>;
     expect(calculateDayBalance(totals)).toBe(100);
     expect(totals.treats).toBe(0);
-    expect(dayBonus(totals)).toBe(150);
+    expect(dayBonus(totals)).toBe(300);
     expect(calculateDayBalance(emptyTotals())).toBeLessThan(30);
   });
   it('näitab nii puudujääki kui ka tugevat ületarbimist', () => {

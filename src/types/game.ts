@@ -1,4 +1,4 @@
-export type FoodGroupId = 'vegetables' | 'fruits' | 'grains' | 'dairy' | 'protein' | 'fats' | 'treats' | 'drinks';
+export type FoodGroupId = 'vegetables' | 'fruits' | 'grains' | 'dairy' | 'protein' | 'fats' | 'treats';
 export type MealTime = 'breakfast' | 'lunch' | 'dinner';
 export type FoodArt = 'porridge' | 'toast' | 'yogurt' | 'pancakes' | 'bowl' | 'soup' | 'burger' | 'wrap' | 'salad' | 'fish' | 'pasta' | 'cake' | 'smoothie' | 'fruit';
 export interface FoodGroupValue { groupId: FoodGroupId; points: number }
@@ -14,7 +14,7 @@ export interface FoodGroup { id: FoodGroupId; name: string; shortName: string; c
 export type FoodGroupTotals = Record<FoodGroupId, number>;
 export interface DaySelection {
   breakfast?: Food; lunch?: Food; dinner?: Food; restaurantNames: Partial<Record<MealTime, string>>;
-  waterMeals: MealTime[]; score: number;
+  score: number;
 }
 export interface PlayerState {
   currentDay: number; currentMeal: MealTime; score: number; moodScore: number;

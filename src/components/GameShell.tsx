@@ -1,12 +1,12 @@
-import { BookOpen, CircleHelp, Home, Settings, X } from 'lucide-react';
+import { CircleHelp, Home, Settings, X } from 'lucide-react';
 import type { ReactNode, Ref } from 'react';
 import type { Screen } from '../types/game';
 import { MobileHeader } from './MobileHeader';
 import { RaccoonCharacter } from './RaccoonCharacter';
 
-export function GameShell({ screen, children, mainRef, menuOpen, onMenu, onHome, onTutorial, onPyramid }: {
+export function GameShell({ screen, children, mainRef, menuOpen, onMenu, onHome, onTutorial }: {
   screen: Screen; children: ReactNode; mainRef: Ref<HTMLDivElement>; menuOpen: boolean;
-  onMenu: () => void; onHome: () => void; onTutorial: () => void; onPyramid: () => void;
+  onMenu: () => void; onHome: () => void; onTutorial: () => void;
 }) {
   return <div className={`app-shell screen-${screen}`}>
     <a className="skip-link" href="#main-content">Liigu põhisisuni</a>
@@ -20,7 +20,6 @@ export function GameShell({ screen, children, mainRef, menuOpen, onMenu, onHome,
       {menuOpen && <nav id="game-menu" className="game-menu" aria-label="Peamenüü">
         <button onClick={onHome}><Home size={20} />Avaleht</button>
         <button onClick={onTutorial}><CircleHelp size={20} />Kuidas mängida?</button>
-        <button onClick={onPyramid}><BookOpen size={20} />Toidupüramiid</button>
       </nav>}
     </div>}
     <div id="main-content" className="main-container" tabIndex={-1} ref={mainRef}>{children}</div>

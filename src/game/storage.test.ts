@@ -19,6 +19,36 @@ describe('mängu turvaline kohalik salvestamine', () => {
     saveGame(createPlayerState(), 'home', 'tutorial', false);
     expect(loadGame()?.started).toBe(false);
   });
+  it('arvutab varasema punktisüsteemi skoori toiduvalikute järgi uuesti', () => {
+    const state = chooseFood(createPlayerState(), MOCK_FOODS[0], 'Kohvik');
+    saveGame(state, 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    save.player.score = 9999;
+    save.player.days[0].score = 9999;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    const restored = loadGame()!.player;
+    expect(restored.score).toBe(state.score);
+    expect(restored.days[0].score).toBe(state.days[0].score);
+    expect(restored.days[0].breakfast?.id).toBe(state.days[0].breakfast?.id);
+  });
+  it('taastab vana mängu ilma veegrupita ning loosib aegunud menüüd uuesti', () => {
+    const state = chooseFood({ ...createPlayerState(), offers: { raekoja: MOCK_FOODS.slice(0, 3) } }, MOCK_FOODS[2], 'Kohvik');
+    saveGame(state, 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    save.version = 1;
+    save.player.days[0].waterMeals = ['breakfast'];
+    save.player.days[0].breakfast.groups.push({ groupId: 'drinks', points: 1 });
+    save.player.foodGroupTotals.drinks = 2;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    const restored = loadGame()!;
+    expect(restored.version).toBe(2);
+    expect(restored.player.days[0].breakfast?.id).toBe('yogurt');
+    expect(restored.player.days[0]).not.toHaveProperty('waterMeals');
+    expect(restored.player.foodGroupTotals).not.toHaveProperty('drinks');
+    expect(restored.player.days[0].breakfast?.groups.some(group => String(group.groupId) === 'drinks')).toBe(false);
+    expect(restored.player.offers).toEqual({});
+    expect(restored.player.score).toBe(state.score);
+  });
   it('taastab ka vanema salvestuse, kus eelmise toidukorra kohad puuduvad', () => {
     saveGame(createPlayerState(), 'map', 'map', true);
     const save = JSON.parse(entries.get(SAVE_KEY)!);

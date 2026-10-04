@@ -19,8 +19,8 @@ for (const [width, height] of [[375, 667], [430, 932]]) {
       expect(dock!.y + dock!.height).toBeLessThanOrEqual(height);
       await page.screenshot({ animations: 'disabled', path: `test-results/kaart-viewport-${width}.png` });
       await expect(page.getByRole('button', { name: 'Võtan klaasi vett' })).toHaveCount(0);
-      await page.getByRole('button', { name: 'Mummud: 0 / 8 gruppi' }).tap();
-      await expect(page.getByRole('dialog', { name: 'Minu päeva mummud' })).toBeVisible();
+      await page.getByRole('button', { name: 'Ava toidupüramiid' }).tap();
+      await expect(page.getByRole('dialog', { name: 'Toidupüramiid' })).toBeVisible();
       await page.screenshot({ animations: 'disabled', path: `test-results/puramiid-${width}.png` });
       await page.getByRole('button', { name: 'Sulge', exact: true }).tap();
       await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');

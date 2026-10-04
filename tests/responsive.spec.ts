@@ -98,10 +98,12 @@ for (const [width, height] of viewports) {
     const menuButton = await page.getByRole('button', { name: 'Ava menüü' }).boundingBox();
     expect(menuButton!.x + menuButton!.width, 'menu button stays in the screen corner').toBeCloseTo(width - 16, 0);
     expect(menuButton!.y, 'menu button stays at the top').toBeCloseTo(20, 0);
-    if (width >= 600 || width >= 480 && height <= 500) {
-      expect(header!.width, 'top and bottom bars have the same width').toBeCloseTo(dock!.width, 0);
-      expect(header!.x, 'top and bottom bars align').toBeCloseTo(dock!.x, 0);
-    }
+    const phone = await page.getByRole('button', { name: 'Ava toidupüramiid' }).boundingBox();
+    expect(phone!.x + phone!.width).toBeCloseTo(width - 16, 0);
+    expect(phone!.y + phone!.height).toBeCloseTo(height - 16, 0);
+    expect(dock!.x + dock!.width / 2).toBeCloseTo(width / 2, 0);
+    expect(dock!.x + dock!.width).toBeLessThan(phone!.x);
+    await expect(page.getByText('Toidupüramiidi täituvus', { exact: true })).toHaveCount(0);
     for (const marker of markers) {
       expect(marker.x).toBeGreaterThanOrEqual(0);
       expect(marker.x + marker.width).toBeLessThanOrEqual(width);
@@ -115,7 +117,7 @@ for (const [width, height] of viewports) {
       }
     }
     await page.screenshot({ path: `test-results/responsive-map-${width}x${height}.png` });
-    await page.getByRole('button', { name: 'Mummud: 0 / 8 gruppi' }).click();
+    await page.getByRole('button', { name: 'Ava toidupüramiid' }).click();
     await checkLayout(page, 'progress');
     await page.keyboard.press('Escape');
 
