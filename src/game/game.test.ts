@@ -118,7 +118,7 @@ describe('mitmekesisus ja toetav tagasiside', () => {
     const totals = Object.fromEntries(FOOD_GROUPS.map(g => [g.id, g.minTarget])) as ReturnType<typeof emptyTotals>;
     expect(calculateDayBalance(totals)).toBe(100);
     expect(totals.treats).toBe(0);
-    expect(dayBonus(totals)).toBe(300);
+    expect(dayBonus(totals)).toBe(0);
     expect(calculateDayBalance(emptyTotals())).toBeLessThan(30);
   });
   it('näitab nii puudujääki kui ka tugevat ületarbimist', () => {

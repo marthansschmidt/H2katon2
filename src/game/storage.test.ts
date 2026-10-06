@@ -41,7 +41,7 @@ describe('mängu turvaline kohalik salvestamine', () => {
     save.player.foodGroupTotals.drinks = 2;
     entries.set(SAVE_KEY, JSON.stringify(save));
     const restored = loadGame()!;
-    expect(restored.version).toBe(2);
+    expect(restored.version).toBe(3);
     expect(restored.player.days[0].breakfast?.id).toBe('yogurt');
     expect(restored.player.days[0]).not.toHaveProperty('waterMeals');
     expect(restored.player.foodGroupTotals).not.toHaveProperty('drinks');
@@ -58,6 +58,26 @@ describe('mängu turvaline kohalik salvestamine', () => {
     save.player.previousRestaurantIds = [123];
     entries.set(SAVE_KEY, JSON.stringify(save));
     expect(loadGame()).toBeNull();
+  });
+  it('viib vana püramiidi mummud uutele eesmärkidele üle, säilitades valitud toidu', () => {
+    const yogurt = MOCK_FOODS.find(food => food.id === 'yogurt')!;
+    const state = chooseFood({ ...createPlayerState(), offers: { raekoja: [yogurt] } }, yogurt, 'Kohvik');
+    saveGame(state, 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    save.version = 2;
+    save.player.days[0].breakfast.groups = [
+      { groupId: 'dairy', points: 2 }, { groupId: 'fruits', points: 2 }, { groupId: 'grains', points: 1 },
+    ];
+    save.player.foodGroupTotals = { ...state.foodGroupTotals, dairy: 1, fruits: 2 };
+    save.player.score = save.player.days[0].score = 200;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    const restored = loadGame()!;
+    expect(restored.version).toBe(3);
+    expect(restored.player.days[0].breakfast?.id).toBe('yogurt');
+    expect(restored.player.days[0].restaurantNames.breakfast).toBe('Kohvik');
+    expect(restored.player.foodGroupTotals).toEqual({ ...state.foodGroupTotals, dairy: 3, fruits: 4 });
+    expect(restored.player.score).toBe(400);
+    expect(restored.player.offers).toEqual({});
   });
   it('ignoreerib katkist JSON-i ja vigaseid mummugruppe', () => {
     entries.set(SAVE_KEY, '{broken');

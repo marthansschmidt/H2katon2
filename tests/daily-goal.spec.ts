@@ -45,13 +45,16 @@ for (const width of [390, 1440]) {
       expect(totals).not.toHaveProperty('drinks');
       const rows = page.locator('.group-progress-list .food-group-row');
       await expect(rows).toHaveCount(7);
-      for (let index = 0; index < REQUIRED_FOOD_GROUPS.length; index++) {
-        await expect(rows.nth(index).locator('.group-dot.filled')).toHaveCount(REQUIRED_FOOD_GROUPS[index].maxTarget);
+      for (const group of REQUIRED_FOOD_GROUPS) {
+        const row = rows.filter({ has: page.locator('.group-name').getByText(group.shortName, { exact: true }) });
+        await expect(row.locator('.group-dot.filled')).toHaveCount(group.maxTarget);
       }
       await expect(page.getByText('Vesi ja joogid', { exact: true })).toHaveCount(0);
       await expect(page.locator('.summary-screen .optional-group')).toHaveCount(0);
+      await expect(page.locator('.pyramid-step-1 .group-name')).toContainText('Näksid');
+      await expect(page.locator('.pyramid-step-1 .group-dot:not(.filled)')).toHaveCount(0);
       await expect(page.locator('.summary-screen').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toHaveCount(0);
-      await expect(page.getByText('Kõigi kuue põhigrupi mummud on täis. Päeva eesmärk on täidetud!')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Mida täna avastasime?' })).toHaveCount(0);
       if (day === 1) await page.screenshot({ path: `test-results/perfect-day-${width}.png`, fullPage: true, animations: 'disabled' });
       await page.getByRole('button', { name: day < 3 ? 'Järgmine päev' : 'Vaata lõpptulemust', exact: true }).click();
     }
@@ -59,15 +62,16 @@ for (const width of [390, 1440]) {
     const state = await page.evaluate(() => JSON.parse(localStorage.getItem('pesukaru-seiklus-v1')!).player);
     expect(state.score).toBe(3000);
     expect(state.days.map((day: { score: number }) => day.score)).toEqual([1000, 1000, 1000]);
-    await expect(page.getByRole('region', { name: 'Lõpphinne' })).toContainText('3000 / 3000 punkti');
-    await expect(page.locator('.grade-letter')).toHaveAttribute('aria-label', 'Hinne A');
-    await expect(page.locator('.grade-scale [aria-current="true"] strong')).toHaveText('A');
+    await expect(page.getByRole('region', { name: 'Lõpptulemus', exact: true })).toContainText('3000 / 3000 punkti');
+    await expect(page.getByRole('img', { name: '5 tärni 5-st' })).toBeVisible();
+    await expect(page.locator('.rating-star')).toHaveCount(5);
+    await expect(page.locator('.rating-star.is-earned')).toHaveCount(5);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-    await page.screenshot({ path: `test-results/final-grade-${width}.png`, fullPage: true, animations: 'disabled' });
+    await page.screenshot({ path: `test-results/final-rating-${width}.png`, fullPage: true, animations: 'disabled' });
   });
 }
 
-test('weaker saved choices receive a lower score and F grade after day three', async ({ page }) => {
+test('weaker saved choices receive a lower score and four stars after day three', async ({ page }) => {
   let player = createPlayerState();
   for (let day = 0; day < 3; day++) {
     for (const [index, id] of ['oatcookie', 'chococake', 'smoothie'].entries()) {
@@ -76,15 +80,16 @@ test('weaker saved choices receive a lower score and F grade after day three', a
     }
     if (day < 2) player = nextDay(player);
   }
-  expect(player.score).toBe(900);
+  expect(player.score).toBe(1800);
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(save => localStorage.setItem('pesukaru-seiklus-v1', JSON.stringify(save)), {
     version: 2, player, screen: 'final', resumeScreen: 'final', started: true,
   });
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Lõpphinne' })).toContainText('900 / 3000 punkti');
-  await expect(page.locator('.grade-letter')).toHaveAttribute('aria-label', 'Hinne F');
-  await expect(page.locator('.grade-scale [aria-current="true"] strong')).toHaveText('F');
-  await expect(page.locator('.grade-heading h2')).toHaveText('Proovi uuesti');
+  await expect(page.getByRole('region', { name: 'Lõpptulemus', exact: true })).toContainText('1800 / 3000 punkti');
+  await expect(page.getByRole('img', { name: '4 tärni 5-st' })).toBeVisible();
+  await expect(page.locator('.rating-star')).toHaveCount(5);
+  await expect(page.locator('.rating-star.is-earned')).toHaveCount(4);
+  await expect(page.locator('.rating-title')).toHaveText('Väga hea');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

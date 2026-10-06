@@ -1,4 +1,4 @@
-import { Check } from 'lucide-react';
+import { Check } from './Icons';
 import type { Food, MealTime } from '../types/game';
 import { MEAL_LABELS } from '../types/game';
 import { FoodIllustration } from './FoodIllustration';

@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { DAILY_GOAL_EXPLANATION } from '../src/data/foodGroups';
 
 for (const width of [390, 768, 1440]) {
-  test(`kogu seiklus, salvestamine ja restart (${width}px)`, async ({ page }) => {
+  test(`kogu seiklus, salvestamine ja avalehe uus mäng (${width}px)`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     const errors: string[] = [];
     const externalRequests: string[] = [];
@@ -39,6 +39,8 @@ for (const width of [390, 768, 1440]) {
         const positionsBefore = await page.locator('.restaurant-marker').evaluateAll(elements => Object.fromEntries(elements.map(element => [element.getAttribute('aria-label'), (element as HTMLElement).style.cssText])));
         await page.locator('.restaurant-marker').nth((day + meal) % 5).click();
         await expect(page.locator('.food-card')).toHaveCount(3);
+        await expect(page.locator('.restaurant-modal .modal-heading .meal-badge')).toHaveText(['Hommikusöök', 'Lõunasöök', 'Õhtusöök'][meal]);
+        await expect(page.locator('.restaurant-modal .meal-badge')).toHaveCount(1);
         expect(await page.locator('.modal-wide').evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
         await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
         if (day === 1 && meal === 0) {
@@ -68,7 +70,7 @@ for (const width of [390, 768, 1440]) {
         }
         await page.getByRole('button', { name: meal === 2 ? 'Vaata päeva kokkuvõtet' : meal === 0 ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile' }).click();
       }
-      await expect(page.getByRole('heading', { name: 'Üks päev, palju avastusi.' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: `PÄEV ${day} KOKKUVÕTE` })).toBeVisible();
       await expect(page.locator('.selected-meals article')).toHaveCount(3);
       await expect(page.locator('.water-summary')).toHaveCount(0);
       if (day === 1) await page.screenshot({ animations: 'disabled', path: `test-results/kokkuvote-${width}.png`, fullPage: true });
@@ -81,7 +83,12 @@ for (const width of [390, 768, 1440]) {
     expect(state.score).toBeGreaterThan(0);
     await page.screenshot({ animations: 'disabled', path: `test-results/lopptulemus-${width}.png`, fullPage: true });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await page.getByRole('button', { name: 'Mängi uuesti' }).click();
+    await page.getByRole('button', { name: 'Tagasi menüüsse' }).click();
+    await expect(page.getByRole('button', { name: 'Uus mäng', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Alusta uut mängu', exact: true })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Jätka seiklust', exact: true })).toHaveCount(0);
+    await page.reload();
+    await page.getByRole('button', { name: 'Uus mäng', exact: true }).click();
     const fresh = await page.evaluate(() => JSON.parse(localStorage.getItem('pesukaru-seiklus-v1')!).player);
     expect(fresh.currentDay).toBe(1);
     expect(fresh.score).toBe(0);
@@ -107,6 +114,9 @@ test('juhendi ja püramiidi avamine, klaviatuur ning mobiili ülevool', async ({
   await page.getByRole('button', { name: 'Avasta toidupüramiidi' }).click();
   await expect(page.getByText('Erinevad toidugrupid annavad erinevaid toitaineid. Vaheldus loeb!')).toBeVisible();
   await expect(page.getByRole('dialog').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toBeVisible();
+  await expect(page.locator('.pyramid-graphic img')).toHaveCount(0);
+  await expect(page.locator('.pyramid-graphic .pyramid-symbol svg')).toHaveCount(7);
+  await page.screenshot({ animations: 'disabled', path: 'test-results/pyramid-guide-320.png', fullPage: true });
   await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
   await page.getByRole('button', { name: 'Alustan!' }).click();

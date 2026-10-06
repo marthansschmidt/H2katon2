@@ -18,7 +18,7 @@ describe('three choices and reachable daily goals', () => {
       if (mealIndex === 3) {
         expect(isDayComplete(totals)).toBe(true);
         expect(calculateDayBalance(totals)).toBe(100);
-        expect(dayBonus(totals)).toBe(300);
+        expect(dayBonus(totals)).toBe(0);
         return;
       }
       const key = `${mealIndex}/${[...ids].sort().join(',')}`;

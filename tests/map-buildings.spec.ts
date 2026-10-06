@@ -24,9 +24,12 @@ test('building pointers follow the image crop and every restaurant survives resi
       const dock = document.querySelector('.map-status-dock')!.getBoundingClientRect();
       return getComputedStyle(element).visibility === 'visible' && rect.x >= 0 && rect.right <= innerWidth && rect.y >= Math.max(0, header.bottom) && rect.bottom + 7 <= dock.top;
     }))).toBe(true);
-    const points = await page.locator('.map-building-links circle').evaluateAll(elements => elements.map(element => ({
-      x: Number(element.getAttribute('cx')), y: Number(element.getAttribute('cy')),
-    })));
+    await expect(page.locator('.map-building-links circle')).toHaveCount(0);
+    const points = await page.locator('.map-building-links path').evaluateAll(elements => elements.map(element => {
+      const path = element as SVGPathElement;
+      const point = path.getPointAtLength(path.getTotalLength());
+      return { x: point.x, y: point.y };
+    }));
     expect(points).toHaveLength(5);
     const image = await page.locator('.map-art').evaluate(async element => {
       const image = element as HTMLImageElement;

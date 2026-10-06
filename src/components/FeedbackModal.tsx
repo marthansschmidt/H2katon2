@@ -1,10 +1,9 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, GroupIcon } from './Icons';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import type { Food, FoodGroupTotals, MealTime } from '../types/game';
 import { calculateChoiceScore } from '../game/scoring';
 import { getFoodContributions } from '../game/foodPyramid';
 import { PrimaryButton } from './Button';
-import { GroupIcon } from './Icons';
 import { Modal } from './Modal';
 import { RaccoonCharacter } from './RaccoonCharacter';
 
@@ -13,7 +12,7 @@ export function FeedbackModal({ food, previousTotals, moodScore, meal, onContinu
 }) {
   return <Modal title="Hea valik!" onClose={onContinue} className="feedback-modal">
     <div className="choice-feedback">
-      <div className="feedback-character"><RaccoonCharacter moodScore={moodScore} pose="eat" /></div>
+      <div className="feedback-character"><RaccoonCharacter moodScore={moodScore} pose={moodScore >= 55 ? 'eat' : undefined} /></div>
       <h3>{food.name}</h3><p className="choice-points">+{calculateChoiceScore(food, previousTotals, meal)} punkti</p><p>{getFoodContributions(food, previousTotals).length ? 'Sa said täna juurde:' : 'Selle toidu grupid on tänaseks juba täidetud. Järgmisel korral otsi puuduvaid mummusid.'}</p>
       <div className="added-groups">{getFoodContributions(food, previousTotals).map(value => {
         const group = FOOD_GROUPS.find(g => g.id === value.groupId)!;

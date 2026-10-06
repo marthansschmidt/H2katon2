@@ -1,4 +1,4 @@
-import { ArrowLeft, X } from 'lucide-react';
+import { ArrowLeft, Xmark } from './Icons';
 import type { ReactNode } from 'react';
 
 export function MobileHeader({ title, onBack, onClose, action, className = '' }: {
@@ -7,6 +7,6 @@ export function MobileHeader({ title, onBack, onClose, action, className = '' }:
   return <header className={`mobile-header ${className}`}>
     {onBack && <button className="icon-button" onClick={onBack} aria-label="Tagasi"><ArrowLeft size={22} /></button>}
     <div className="mobile-header-title">{typeof title === 'string' ? <h2>{title}</h2> : title}</div>
-    {onClose ? <button className="icon-button" onClick={onClose} aria-label="Sulge"><X size={22} /></button> : action}
+    {onClose ? <button className="icon-button" onClick={onClose} aria-label="Sulge"><Xmark size={22} /></button> : action}
   </header>;
 }

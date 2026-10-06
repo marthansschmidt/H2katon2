@@ -1,9 +1,12 @@
 import { DAILY_GOAL_EXPLANATION, FOOD_GROUPS } from '../data/foodGroups';
 import { PyramidGraphic } from './FoodPyramid';
 import { FoodGroupProgress } from './FoodGroupProgress';
-import type { FoodGroupTotals } from '../types/game';
+import type { FoodGroupId, FoodGroupTotals } from '../types/game';
+
+const GROUP_ORDER: FoodGroupId[] = ['treats', 'protein', 'dairy', 'fats', 'grains', 'vegetables', 'fruits'];
+const GUIDE_GROUPS = GROUP_ORDER.map(id => FOOD_GROUPS.find(group => group.id === id)!);
 export function PyramidGuide({ totals }: { totals: FoodGroupTotals }) {
-  return <div className="pyramid-guide"><p className="muted">Erinevad toidugrupid annavad erinevaid toitaineid. Vaheldus loeb!</p><p className="pyramid-footnote">{DAILY_GOAL_EXPLANATION}</p><PyramidGraphic />
-    <div className="guide-groups">{FOOD_GROUPS.map(group => <div key={group.id}><FoodGroupProgress group={group} value={totals[group.id]} /><p>{group.tip}</p></div>)}</div>
+  return <div className="pyramid-guide"><PyramidGraphic /><p className="muted">Erinevad toidugrupid annavad erinevaid toitaineid. Vaheldus loeb!</p><p className="pyramid-footnote">{DAILY_GOAL_EXPLANATION}</p>
+    <div className="guide-groups">{GUIDE_GROUPS.map(group => <div key={group.id}><FoodGroupProgress group={group} value={totals[group.id]} showOptionalLabel={false} /><p>{group.tip}</p></div>)}</div>
   </div>;
 }

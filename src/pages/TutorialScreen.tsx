@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight } from '../components/Icons';
 import { PrimaryButton } from '../components/Button';
 import { MobileHeader } from '../components/MobileHeader';
 import { RaccoonCharacter } from '../components/RaccoonCharacter';
@@ -12,7 +12,7 @@ const steps = [
   { title: 'Leia mõnus tasakaal', text: 'Täidetud grupp enam uusi eesmärgi mummusid ei anna. Vali päeva jooksul erinevaid toite.' },
 ];
 export function TutorialSteps() {
-  return <div className="tutorial-steps">{steps.map(({ title, text }, index) => <div className={`card tutorial-step step-${index + 1}`} key={title}><span className="tutorial-step-number">{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div><div className="tutorial-step-art" aria-hidden="true">{index === 0 ? <img src="/art/tartu-map-morning.webp" alt="" /> : index === 1 ? <div className="tutorial-foods"><FoodIllustration type="porridge" /><FoodIllustration type="salad" /><FoodIllustration type="pancakes" /></div> : index === 2 ? <PyramidGraphic /> : <RaccoonCharacter pose="celebrate" />}</div></div>)}</div>;
+  return <div className="tutorial-steps">{steps.map(({ title, text }, index) => <div className={`card tutorial-step step-${index + 1}`} key={title}><span className="tutorial-step-number">{index + 1}</span><div><h3>{title}</h3><p>{text}</p></div><div className="tutorial-step-art" aria-hidden="true">{index === 0 ? <img src="/art/tartu-map-morning.webp" alt="" /> : index === 1 ? <div className="tutorial-foods"><FoodIllustration type="porridge" /><FoodIllustration type="salad" /><FoodIllustration type="pancakes" /></div> : index === 2 ? <div className="tutorial-pyramid-preview"><PyramidGraphic /></div> : <RaccoonCharacter pose="celebrate" />}</div></div>)}</div>;
 }
 export function TutorialScreen({ onBegin, onBack }: { onBegin: () => void; onBack: () => void }) {
   return <main className="tutorial-screen"><MobileHeader title="Kuidas mängida?" onBack={onBack} onClose={onBack} />

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight } from './components/Icons';
 import { HomeScreen } from './pages/HomeScreen';
 import { TutorialScreen, TutorialSteps } from './pages/TutorialScreen';
 import { GameMapScreen } from './pages/GameMapScreen';
@@ -33,7 +33,6 @@ export default function App() {
   const [menuError, setMenuError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
   const [mobileNav, setMobileNav] = useState(false);
-  const [toast, setToast] = useState('');
   const [storageAvailable, setStorageAvailable] = useState(true);
   const requestId = useRef(0);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -43,11 +42,6 @@ export default function App() {
 
   useEffect(() => { setStorageAvailable(saveGame(player, screen, resumeScreen, hasStarted)); }, [player, screen, resumeScreen, hasStarted]);
   useEffect(() => { mainRef.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); setMobileNav(false); }, [screen, dayNumber]);
-  useEffect(() => {
-    if (!toast) return;
-    const timeout = window.setTimeout(() => setToast(''), 2500);
-    return () => window.clearTimeout(timeout);
-  }, [toast]);
   useEffect(() => {
     if (screen !== 'map') return;
     let cancelled = false;
@@ -68,10 +62,10 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [screen, dayNumber, mealTime, restaurantIdsKey, retry]);
 
-  const goTo = (nextScreen: Screen) => { setToast(''); setScreen(nextScreen); if (nextScreen !== 'home') setResumeScreen(nextScreen); };
+  const goTo = (nextScreen: Screen) => { setScreen(nextScreen); if (nextScreen !== 'home') setResumeScreen(nextScreen); };
   const openPyramid = () => setGuide('pyramid');
   function startGame() {
-    requestId.current++; setSelected(null); setRestaurants([]); setError(null); setToast('');
+    requestId.current++; setSelected(null); setRestaurants([]); setError(null);
     setPyramidReminder(0);
     setPlayer(createPlayerState()); setHasStarted(true); goTo('tutorial');
   }
@@ -103,7 +97,7 @@ export default function App() {
     if (player.currentMeal === 'dinner') goTo('daySummary');
     else {
       requestId.current++; setSelected(null); setLoading(true);
-      setPlayer(previous => nextMeal(previous)); setToast('Uus toidukord, uued söögikohad!');
+      setPlayer(previous => nextMeal(previous));
     }
   }
   function advanceDay() {
@@ -112,7 +106,7 @@ export default function App() {
   }
   return <GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={() => goTo('home')} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }}>
     <>
-      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={openPyramid} onResume={hasStarted ? () => goTo(resumeScreen) : undefined} />}
+      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={openPyramid} hasStarted={hasStarted} />}
       {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={() => goTo('home')} />}
       {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onPyramid={() => { setPyramidReminder(0); openPyramid(); }} pyramidReminder={pyramidReminder} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
       {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={openPyramid} />}
@@ -121,7 +115,6 @@ export default function App() {
     {selected && <RestaurantModal restaurant={selected} foods={player.offers[selected.id] ?? []} totals={player.foodGroupTotals} meal={player.currentMeal} loading={foodsLoading} error={menuError} onChoose={selectFood} onClose={() => { requestId.current++; setSelected(null); }} />}
     {currentFood && <FeedbackModal food={currentFood} previousTotals={totalsForDay({ ...player.days[dayNumber - 1], [player.currentMeal]: undefined })} moodScore={player.moodScore} meal={player.currentMeal} onContinue={continueAfterFood} />}
     {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : 'Toidupüramiid'} className={guide === 'pyramid' ? 'pyramid-guide-modal' : guide === 'tutorial' ? 'tutorial-guide-modal' : ''} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <div className="tutorial-guide"><TutorialSteps /><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></div> : <PyramidGuide totals={player.foodGroupTotals} />}</Modal>}
-    {toast && <div className="toast" role="status"><Check size={17} />{toast}</div>}
     {!storageAvailable && <div className="storage-note" role="status">Brauser ei luba mängu salvestada. Seiklus jätkub selles aknas.</div>}
   </GameShell>;
 }

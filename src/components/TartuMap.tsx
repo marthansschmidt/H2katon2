@@ -61,7 +61,7 @@ export function TartuMap({ restaurants, meal, hiddenRestaurantId, disabled = fal
       <svg className="map-building-links" aria-hidden="true">{layout.positions.map((position, index) => {
         if (restaurants[index]?.id === hiddenRestaurantId) return null;
         const tipY = position.y + markerHeight / 2 + 7;
-        return <g key={position.building}><path d={`M ${position.x} ${tipY} L ${position.anchorX} ${position.anchorY}`} /><circle cx={position.anchorX} cy={position.anchorY} r="4" /></g>;
+        return <path key={position.building} d={`M ${position.x} ${tipY} L ${position.anchorX} ${position.anchorY}`} />;
       })}</svg>
       {restaurants.map((restaurant, index) => restaurant.id === hiddenRestaurantId ? null : <RestaurantMarker key={restaurant.id} restaurant={restaurant} position={layout.positions[index]} disabled={disabled} onSelect={onSelect} />)}
     </div>

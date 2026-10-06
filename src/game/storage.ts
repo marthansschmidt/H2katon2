@@ -1,9 +1,11 @@
 import { FOOD_GROUPS } from '../data/foodGroups';
+import { MOCK_FOODS } from '../data/mockRestaurants';
 import { totalsForDay } from './foodPyramid';
 import { calculateDayScore } from './scoring';
+import { calculateMoodForDay } from './mood';
 import { MEAL_ORDER, type Food, type PlayerState, type Screen } from '../types/game';
 export const SAVE_KEY = 'pesukaru-seiklus-v1';
-interface Save { version: 1 | 2; player: PlayerState; screen: Screen; resumeScreen: Screen; started: boolean }
+interface Save { version: 1 | 2 | 3; player: PlayerState; screen: Screen; resumeScreen: Screen; started: boolean }
 const screens: Screen[] = ['home', 'tutorial', 'map', 'daySummary', 'final'];
 function validFood(food: Food): boolean {
   return !!food && typeof food.id === 'string' && typeof food.name === 'string' && typeof food.description === 'string' && typeof food.image === 'string'
@@ -16,7 +18,7 @@ export function loadGame(): Save | null {
     if (!raw) return null;
     const save = JSON.parse(raw) as Save;
     const p = save.player;
-    if (![1, 2].includes(save.version) || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
+    if (![1, 2, 3].includes(save.version) || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
     if (!Number.isInteger(p.currentDay) || p.currentDay < 1 || p.currentDay > 3 || !MEAL_ORDER.includes(p.currentMeal)) return null;
     // Version 1 saves from before meal-specific draws have no previous set.
     if (p.previousRestaurantIds === undefined) p.previousRestaurantIds = [];
@@ -43,15 +45,24 @@ export function loadGame(): Save | null {
     const destination = save.screen === 'home' ? save.resumeScreen : save.screen;
     if (['daySummary', 'final'].includes(destination) && !MEAL_ORDER.every(meal => p.days[p.currentDay - 1][meal])) return null;
     if (destination === 'final' && p.currentDay !== 3) return null;
+    if (save.version < 3) {
+      // Retain chosen meals while adapting their dots to the updated pyramid.
+      for (const day of p.days) for (const meal of MEAL_ORDER) {
+        const food = day[meal];
+        const currentFood = food && MOCK_FOODS.find(current => current.id === food.id);
+        if (food && currentFood) food.groups = currentFood.groups.map(group => ({ ...group }));
+      }
+      p.offers = {};
+    }
     p.foodGroupTotals = totalsForDay(p.days[p.currentDay - 1]);
     // Recompute old point totals from the saved choices using the current scoring rules.
     p.days = p.days.map(day => ({ ...day, score: calculateDayScore(day) }));
     p.score = p.days.reduce((sum, day) => sum + day.score, 0);
-    if (save.version === 1) p.offers = {};
-    save.version = 2;
+    p.moodScore = calculateMoodForDay(p.days[p.currentDay - 1]);
+    save.version = 3;
     return save;
   } catch { return null; }
 }
 export function saveGame(player: PlayerState, screen: Screen, resumeScreen: Screen, started: boolean): boolean {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 2, player, screen, resumeScreen, started })); return true; } catch { return false; }
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 3, player, screen, resumeScreen, started })); return true; } catch { return false; }
 }

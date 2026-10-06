@@ -131,9 +131,19 @@ for (const [width, height] of viewports) {
     const completed = completedGame();
     await openScreen(page, 'daySummary', completed);
     await checkLayout(page, 'daily summary');
+    const summaryTitle = await page.locator('.summary-title h1').boundingBox();
+    const dayScore = await page.locator('.day-score-total').boundingBox();
+    expect(dayScore!.y, 'day score below the summary title').toBeGreaterThanOrEqual(summaryTitle!.y + summaryTitle!.height + 8);
     const summaryBubble = await page.locator('.summary-speech').boundingBox();
     const summaryCharacter = await page.locator('.summary-character .raccoon').boundingBox();
     expect(summaryBubble!.y + summaryBubble!.height, 'summary speech above character').toBeLessThanOrEqual(summaryCharacter!.y);
+    await expect(page.locator('.summary-screen .feedback-card')).toHaveCount(0);
+    if (width >= 900) {
+      const overview = await page.locator('.summary-overview').boundingBox();
+      const pyramid = await page.locator('.summary-screen .pyramid-panel').boundingBox();
+      expect(overview!.x + overview!.width, 'summary character and text left of the pyramid').toBeLessThanOrEqual(pyramid!.x);
+      expect(summaryCharacter!.width, 'larger summary character').toBeGreaterThan(260);
+    }
     await page.screenshot({ path: `test-results/responsive-summary-${width}x${height}.png`, fullPage: true });
     await page.getByRole('button', { name: 'Vaata lõpptulemust', exact: true }).click();
     await checkLayout(page, 'final');
