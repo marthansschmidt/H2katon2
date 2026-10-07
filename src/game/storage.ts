@@ -2,7 +2,7 @@ import { FOOD_GROUPS } from '../data/foodGroups';
 import { MOCK_FOODS } from '../data/mockRestaurants';
 import { totalsForDay } from './foodPyramid';
 import { calculateDayScore } from './scoring';
-import { calculateMoodForDay } from './mood';
+import { getMoodForDay } from './mood';
 import { MEAL_ORDER, type Food, type PlayerState, type Screen } from '../types/game';
 export const SAVE_KEY = 'pesukaru-seiklus-v1';
 interface Save { version: 1 | 2 | 3; player: PlayerState; screen: Screen; resumeScreen: Screen; started: boolean }
@@ -20,6 +20,9 @@ export function loadGame(): Save | null {
     const p = save.player;
     if (![1, 2, 3].includes(save.version) || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
     if (!Number.isInteger(p.currentDay) || p.currentDay < 1 || p.currentDay > 3 || !MEAL_ORDER.includes(p.currentMeal)) return null;
+    // Existing adventures used the raccoon before character selection was added.
+    if (p.character === undefined) p.character = 'raccoon';
+    if (p.character !== 'raccoon' && p.character !== 'dinosaur') return null;
     // Version 1 saves from before meal-specific draws have no previous set.
     if (p.previousRestaurantIds === undefined) p.previousRestaurantIds = [];
     if (!Array.isArray(p.days) || p.days.length !== p.currentDay || ![p.usedFoodIds, p.usedRestaurantIds, p.restaurantIds, p.previousRestaurantIds].every(ids => Array.isArray(ids) && ids.every(id => typeof id === 'string')) || !p.offers || typeof p.offers !== 'object') return null;
@@ -58,7 +61,7 @@ export function loadGame(): Save | null {
     // Recompute old point totals from the saved choices using the current scoring rules.
     p.days = p.days.map(day => ({ ...day, score: calculateDayScore(day) }));
     p.score = p.days.reduce((sum, day) => sum + day.score, 0);
-    p.moodScore = calculateMoodForDay(p.days[p.currentDay - 1]);
+    p.moodScore = getMoodForDay(p.days).score;
     save.version = 3;
     return save;
   } catch { return null; }

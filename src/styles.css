@@ -235,7 +235,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .button-primary:hover { background: linear-gradient(#64d54d, #29ac43 55%, #168335); }
 .button-secondary { background: linear-gradient(#fff9e7, #ffe6b8); border: 2px solid #d6ad78; box-shadow: inset 0 2px 0 #fffdf3, 0 3px 0 #b4895655; color: #16364a; }
 .button-secondary:hover { background: #fff0ce; }
-.raccoon { position: relative; aspect-ratio: 1.12; overflow: hidden; isolation: isolate; }
+.raccoon { position: relative; aspect-ratio: auto; height: auto; max-width: 100%; overflow: hidden; isolation: isolate; }
 .food-illustration { display: block; position: relative; overflow: hidden; aspect-ratio: 1; height: auto; object-fit: contain; }
 
 /* The welcome screen is a single illustrated scene, not a web landing page. */
@@ -292,6 +292,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .status-avatar .raccoon { width: 68px; margin: 0; height: 60px; }
 .group-dot { border-color: #bcb997; background: #fff7df; }
 .group-dot.filled { border: 1.5px solid color-mix(in srgb, var(--group-color), #173c31 35%); box-shadow: inset 0 2px 0 #ffffff66; }
+.food-group-row.has-excess .group-count { display: inline-block; color: #8d233d; white-space: nowrap; }
+.food-group-row.has-excess .group-dots { flex-wrap: wrap; max-width: 100%; }
 
 /* Illustrations in the tutorial keep each step understandable at a glance. */
 .tutorial-screen > .mobile-header { margin-bottom: 12px; }
@@ -312,12 +314,12 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 
 /* Big food sprites, a local restaurant scene and warm menu cards. */
 .modal { background: #fff0ce; border-color: #d7b07b; }.modal-heading { background: #fff0cef5; }
-.restaurant-hero { height: 168px; border-color: #d3b885; background: #79c5e6; }.restaurant-art { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+.restaurant-hero { display: block; width: 100%; height: 168px; padding: 0; text-align: left; border-color: #d3b885; background: #79c5e6; }.restaurant-art { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
 .restaurant-banner-brand { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; justify-content: center; width: clamp(100px, 15vw, 150px); height: clamp(48px, 7vw, 64px); padding: 8px 12px; border: 1px solid #d3b885; border-radius: 12px; box-shadow: 0 3px 10px #1f2a3533; }
 .restaurant-banner-brand > img { display: block; min-width: 0; min-height: 0; width: 100%; height: 100%; object-fit: contain; }
 .restaurant-name-tooltip { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 6; width: max-content; max-width: min(220px, calc(100vw - 84px)); padding: 8px 12px; border: 1px solid #d3b885; border-radius: 10px; background: #fff8e7; color: var(--dark); box-shadow: 0 3px 10px #1f2a3533; font-size: 14px; font-weight: 800; line-height: 1.3; visibility: hidden; opacity: 0; pointer-events: none; }
-.restaurant-banner-brand:focus-visible .restaurant-name-tooltip { visibility: visible; opacity: 1; }
-@media (hover: hover) and (pointer: fine) { .restaurant-banner-brand:hover .restaurant-name-tooltip { visibility: visible; opacity: 1; } }
+.restaurant-hero.is-name-visible .restaurant-name-tooltip, .restaurant-hero:focus-visible .restaurant-name-tooltip { visibility: visible; opacity: 1; }
+@media (hover: hover) and (pointer: fine) { .restaurant-hero:hover .restaurant-name-tooltip { visibility: visible; opacity: 1; } }
 .restaurant-hero-icon { display: none; }
 .food-card { grid-template-columns: 98px minmax(0, 1fr); background: linear-gradient(#fff8e4, #fff0d2); border-color: #e8cda3; min-height: 160px; }
 .food-art-wrap { min-height: 104px; height: 104px; border: 0; background: none; margin-top: 0; }
@@ -325,8 +327,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .food-card h3 { font-size: 16px; }.food-card p { font-size: 14px; }
 .food-card .button { border-radius: 15px; font-size: 15px; }
 .food-group-chips > span { background: #fff7df; padding: 4px 5px; border-color: #e6d4b0; }
-.feedback-character { width: 238px; background: none; margin: -6px auto 8px; }
-.feedback-character .raccoon { width: 238px; }
+.feedback-character { width: 238px; max-width: 100%; background: none; margin: 8px auto 12px; }
+.feedback-character .raccoon { width: 100%; height: auto; }
 .feedback-modal { background: #fff7e0; }.feedback-modal .modal-heading { background: #fff7e0; }.feedback-modal .modal-heading h2 { color: #133749; text-align: center; font-size: 28px; }
 .added-groups > div { background: #fff1d3; border-color: #e5cc9f; }.added-groups > div > span:last-child { color: #613426; font-weight: 800; }
 
@@ -391,6 +393,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .final-results { position: relative; z-index: 1; margin-top: 20px; padding: 16px; text-align: left; }
 .result-row { display: flex; align-items: center; gap: 16px; padding: 13px 2px; border-bottom: 1px solid #e5c994; }
 .result-row:first-child { padding-top: 2px; }.result-row > svg { color: #dd961f; }.result-row > div { flex: 1; min-width: 0; }.result-row span { font-size: 12px; color: #645b40; display: block; margin-bottom: 4px; }.result-row strong { font-size: 17px; font-weight: 1000; line-height: 1.25; display: block; color: #173649; }.result-score strong { font-size: 32px; }.result-mood > svg { color: #28a77a; }.result-food > svg { color: #c7802b; }.result-row small { display: block; font-size: 11px; color: #7d7256; margin-top: 3px; }.result-insight p { font-size: 14px; font-weight: 800; line-height: 1.5; color: #34473b; }
+.result-mood[data-mood="unwell"] > svg { color: #efbd23; }
 .final-results > .button { font-size: 18px; margin-top: 16px; }
 .final-secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }.final-secondary-actions .button { min-height: 48px; font-size: 12px; gap: 5px; padding: 9px 5px; border-radius: 16px; }
 @media (max-width: 359px) {
@@ -543,7 +546,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .rating-feedback { color: #4e5943; font-size: 13px; line-height: 1.5; margin-top: 14px; padding-top: 14px; border-top: 1px solid #e3d7ba; }
 @media (max-width: 359px) { .score-rating { padding: 14px 12px; } .rating-title { font-size: 16px; } }
 
-/* Center the mood card and keep the pyramid phone in the bottom-right corner. */
+/* Keep the pyramid phone in the bottom-right corner. */
 .map-phone-button { position: fixed; right: max(16px, env(safe-area-inset-right)); bottom: max(16px, env(safe-area-inset-bottom)); z-index: 9; display: grid; place-items: center; width: 56px; height: 64px; padding: 0; color: #183748; background: linear-gradient(#fff9e5, #ffedc7); border: 2px solid #dbb986; border-radius: 16px; box-shadow: inset 0 2px 0 #fff, 0 3px 0 #b17e4533; }
 .map-phone-button:hover { background: #fff9e5; }
 .map-phone-button:active { transform: translateY(2px); }
@@ -560,9 +563,19 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .map-status-dock .status-avatar { flex-shrink: 0; }
 .map-status-dock .raccoon-status-main > div { min-width: 0; }
 .raccoon-status .mood-hint { font-size: 11px; line-height: 1.4; margin-top: 4px; color: #766547; overflow-wrap: anywhere; }
-@media (max-width: 480px) {
-  .map-status-dock .raccoon-status { padding-inline: 8px; }
-  .map-status-dock .raccoon-status-main { gap: 8px; }
+@media (max-width: 839px) {
+  .game-screen .game-header { top: max(12px, env(safe-area-inset-top)); left: max(16px, env(safe-area-inset-left)); right: max(80px, calc(env(safe-area-inset-right) + 64px)); width: auto; margin-inline: 0; }
+  .screen-map .site-header { top: max(12px, env(safe-area-inset-top)); padding: 0 max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+  .screen-map .mobile-menu-button { height: 56px; }
+  .game-screen .day-heading, .screen-map .mobile-menu-button { background: linear-gradient(#fff9e5, #ffedc7); border: 2px solid #dbb986; border-radius: 16px; box-shadow: inset 0 2px 0 #fff, 0 3px 0 #b17e4533; }
+  .game-screen .day-heading { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); }
+  .game-screen .meal-badge { justify-self: center; }
+  .game-screen .score-chip { margin: 0; }
+}
+@media (max-width: 599px) {
+  .map-status-dock { left: max(16px, env(safe-area-inset-left)); bottom: max(16px, env(safe-area-inset-bottom)); transform: none; width: min(414px, calc(100% - max(16px, env(safe-area-inset-left)) - max(16px, env(safe-area-inset-right)) - 72px)); padding: 0; }
+  .map-status-dock .raccoon-status { height: 64px; padding: 8px; border-radius: 16px; box-shadow: inset 0 2px 0 #fff, 0 3px 0 #b17e4533; }
+  .map-status-dock .raccoon-status-main { min-height: 0; gap: 8px; }
   .map-status-dock .status-avatar { width: 44px; height: 44px; }
   .map-status-dock .status-avatar .raccoon { width: 44px; height: 44px; }
   .map-status-dock .raccoon-status h3 { font-size: 14px; overflow-wrap: anywhere; }
@@ -590,6 +603,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .illustrated-pyramid .pyramid-segment-treats .food-group-row { gap: 2px; }
 .summary-screen .illustrated-pyramid .pyramid-segment-treats .group-name, .pyramid-segment-treats .pyramid-segment-label { font-size: clamp(9px, 2.6cqw, 13px); }
 .summary-screen .illustrated-pyramid .pyramid-segment-treats .group-dots { min-height: 0; }
+.summary-screen .illustrated-pyramid .pyramid-segment-treats .group-count,
+.summary-screen .illustrated-pyramid .pyramid-segment-treats .group-count > span { font-size: clamp(9px, 2.6cqw, 13px); }
 .summary-screen .illustrated-pyramid .pyramid-segment-treats .group-dot-icon { width: clamp(12px, 4cqw, 20px); height: clamp(12px, 4cqw, 20px); }
 .summary-screen .illustrated-pyramid .pyramid-segment-treats .group-dots:empty { display: none; }
 .tutorial-pyramid-preview .pyramid-graphic.illustrated-pyramid { left: 8px; width: 340px; max-width: none; margin: 0; transform: scale(.3); }
@@ -602,7 +617,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .summary-screen .day-score-total { font-size: clamp(17px, 1.5vw, 22px); gap: 8px; padding: 10px 16px; border-radius: 22px; }
 .summary-screen .day-score-total svg { width: 26px; height: 26px; }
 .summary-screen .summary-character { width: 100%; gap: 18px; padding: 0; }
-.summary-screen .summary-speech { width: min(100%, 420px); padding: 14px 18px; border-radius: 24px; font-size: clamp(15px, 1.3vw, 19px); line-height: 1.4; }
+.summary-screen .summary-speech { width: min(100%, 420px); padding: 14px 18px; border-radius: 24px; font-size: clamp(15px, 1.3vw, 19px); font-weight: 400; line-height: 1.4; }
+.summary-screen .summary-speech > strong { font-weight: 900; }
 .summary-screen .summary-character .raccoon { width: min(100%, clamp(240px, 28vw, 390px)); max-width: 100%; }
 .summary-screen .pyramid-panel { grid-area: pyramid; margin: 0; }
 .summary-screen .summary-menu { grid-area: menu; min-width: 0; align-self: start; }
@@ -611,4 +627,24 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 @media (min-width: 900px) {
   .summary-screen { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-areas: 'overview pyramid' 'overview menu' 'action action'; column-gap: clamp(24px, 3vw, 48px); }
   .summary-screen .summary-overview { align-self: center; }
+}
+
+/* Keep the companion choices beneath the character, centered on mobile. */
+.hero-character { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; flex-shrink: 0; }
+.character-picker { display: flex; justify-content: center; gap: 8px; padding: 6px; border: 2px solid #d4a369; border-radius: 22px; background: #fff4dceF; box-shadow: 0 4px 0 #72532118; width: max-content; max-width: calc(100% - 56px); flex-shrink: 0; transform: translateX(28px); }
+.character-picker button { min-height: 42px; padding: 8px 18px; border: 2px solid transparent; border-radius: 15px; background: transparent; color: #173b4c; font: inherit; font-weight: 800; cursor: pointer; transition: background .15s, color .15s; }
+.character-picker button[aria-pressed="true"] { background: #287b39; border-color: #1a602b; color: #fff; box-shadow: 0 2px 0 #184e28; }
+.character-picker button:hover { background: #e8edc9; }
+.character-picker button[aria-pressed="true"]:hover { background: #216e32; }
+.character-picker button:focus-visible { outline: 3px solid #173b4c; outline-offset: 3px; }
+@media (max-width: 599px) {
+  .hero-raccoon { width: min(64%, clamp(120px, 23dvh, 290px)); }
+  .hero-illustration { gap: 12px; }
+  .character-picker { padding: 4px; max-width: 100%; transform: none; }
+  .character-picker button { padding-inline: 14px; min-height: 40px; }
+}
+@media (min-width: 600px) and (max-height: 500px) {
+  .hero-raccoon { width: min(76%, 29dvh); }
+  .character-picker { padding: 3px; }
+  .character-picker button { min-height: 34px; padding: 5px 14px; font-size: 14px; }
 }

@@ -6,7 +6,7 @@ import { MEAL_ORDER, type Screen } from '../src/types/game';
 
 const viewports = [
   [320, 568], [360, 640], [390, 844], [430, 932], [600, 960],
-  [768, 1024], [1024, 768], [568, 320], [667, 375], [844, 390], [1280, 720], [1440, 900],
+  [725, 846], [768, 1024], [1024, 768], [568, 320], [667, 375], [844, 390], [1280, 720], [1440, 900],
   [1920, 1080], [2560, 1440],
 ];
 
@@ -64,6 +64,11 @@ for (const [width, height] of viewports) {
     const bubble = await speech.boundingBox();
     const character = await page.locator('.hero-raccoon').boundingBox();
     expect(bubble!.y + bubble!.height, 'speech bubble above the raccoon').toBeLessThanOrEqual(character!.y);
+    if (width < 600 && height > 500) {
+      const picker = await page.getByRole('group', { name: 'Vali oma tegelane' }).boundingBox();
+      expect(character!.x + character!.width / 2, 'character centers on mobile').toBeCloseTo(width / 2, 0);
+      expect(picker!.x + picker!.width / 2, 'character picker centers on mobile').toBeCloseTo(width / 2, 0);
+    }
     if (width >= 360 && height >= 640 || width >= 480) {
       const actions = await page.locator('.home-actions').boundingBox();
       expect(actions!.y + actions!.height, 'home actions fit the screen').toBeLessThanOrEqual(height);
@@ -97,11 +102,31 @@ for (const [width, height] of viewports) {
     const header = await page.locator('.game-screen .game-header').boundingBox();
     const menuButton = await page.getByRole('button', { name: 'Ava menüü' }).boundingBox();
     expect(menuButton!.x + menuButton!.width, 'menu button stays in the screen corner').toBeCloseTo(width - 16, 0);
-    expect(menuButton!.y, 'menu button stays at the top').toBeCloseTo(20, 0);
+    expect(menuButton!.y, 'menu button stays at the top').toBeCloseTo(width < 840 ? 12 : 20, 0);
     const phone = await page.getByRole('button', { name: 'Ava toidupüramiid' }).boundingBox();
     expect(phone!.x + phone!.width).toBeCloseTo(width - 16, 0);
     expect(phone!.y + phone!.height).toBeCloseTo(height - 16, 0);
-    expect(dock!.x + dock!.width / 2).toBeCloseTo(width / 2, 0);
+    if (width < 600) {
+      expect(dock!.x, 'mood card aligns left').toBeCloseTo(16, 0);
+      const moodCard = await page.locator('.raccoon-status').boundingBox();
+      expect(moodCard!.height, 'mood card matches the phone height').toBeCloseTo(phone!.height, 0);
+      expect(moodCard!.y, 'mood card aligns with the phone').toBeCloseTo(phone!.y, 0);
+      expect(moodCard!.width, 'mood card keeps its width and spacing').toBeCloseTo(Math.min(414, width - 104), 0);
+    } else {
+      expect(dock!.x + dock!.width / 2).toBeCloseTo(width / 2, 0);
+    }
+    if (width < 840) {
+      expect(header!.x, 'day controls align left').toBeCloseTo(16, 0);
+      expect(header!.y, 'day controls align with settings').toBeCloseTo(menuButton!.y, 0);
+      expect(header!.height, 'day controls match the settings height').toBeCloseTo(menuButton!.height, 0);
+      expect(menuButton!.x - (header!.x + header!.width), 'day controls keep the gap to settings').toBeCloseTo(16, 0);
+      const meal = await page.locator('.game-header .meal-badge').boundingBox();
+      const dayOverview = await page.locator('.game-header .day-overview').boundingBox();
+      const score = await page.locator('.game-header .score-chip').boundingBox();
+      expect(meal!.x + meal!.width / 2, 'meal sits in the center of the card').toBeCloseTo(header!.x + header!.width / 2, 0);
+      expect(dayOverview!.x + dayOverview!.width, 'day stays clear of the meal').toBeLessThanOrEqual(meal!.x);
+      expect(meal!.x + meal!.width, 'meal stays clear of the score').toBeLessThanOrEqual(score!.x);
+    }
     expect(dock!.x + dock!.width).toBeLessThan(phone!.x);
     await expect(page.getByText('Toidupüramiidi täituvus', { exact: true })).toHaveCount(0);
     for (const marker of markers) {

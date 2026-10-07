@@ -3,6 +3,27 @@ import { test, expect } from '@playwright/test';
 for (const [width, height] of [[375, 667], [430, 932]]) {
   test.describe(`${width}px puuteekraan`, () => {
     test.use({ viewport: { width, height }, isMobile: true, hasTouch: true });
+    test('söögikoha nimi avaneb bännerile ja logole vajutades', async ({ page }) => {
+      await page.goto('/');
+      await page.getByRole('button', { name: 'Alusta mängu', exact: true }).tap();
+      await page.getByRole('button', { name: 'Alustan!' }).tap();
+      await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
+      await page.locator('.restaurant-marker').last().tap();
+      await expect(page.locator('.food-card')).toHaveCount(3);
+      const banner = page.locator('.restaurant-hero');
+      const restaurantName = await page.locator('.restaurant-modal').getAttribute('aria-label');
+      const tooltip = page.getByRole('tooltip');
+      await expect(tooltip).toBeHidden();
+      await banner.tap({ position: { x: 30, y: 30 } });
+      await expect(tooltip).toHaveText(restaurantName!);
+      await expect(tooltip).toBeVisible();
+      await page.locator('.restaurant-banner-brand').tap();
+      await expect(tooltip).toBeHidden();
+      await page.locator('.restaurant-banner-brand').tap();
+      await expect(tooltip).toBeVisible();
+      await page.screenshot({ path: `test-results/restaurant-name-touch-${width}.png` });
+      await page.getByRole('button', { name: 'Sulge', exact: true }).tap();
+    });
     test('suured puutealad, kaardi progress ning keritavad dialoogid', async ({ page }) => {
       await page.goto('/');
       await page.evaluate(() => document.fonts.ready);
@@ -30,7 +51,7 @@ for (const [width, height] of [[375, 667], [430, 932]]) {
       expect(overflow).toBe(false);
       await page.screenshot({ animations: 'disabled', path: `test-results/restoran-viewport-${width}.png` });
       await page.getByRole('button', { name: 'Valin selle' }).last().tap();
-      await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
       await page.screenshot({ animations: 'disabled', path: `test-results/tagasiside-${width}.png` });
       await page.getByRole('button', { name: 'Edasi lõunasöögile' }).tap();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

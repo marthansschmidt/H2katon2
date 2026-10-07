@@ -2,6 +2,11 @@ import { MOCK_FOODS, MOCK_RESTAURANTS } from '../data/mockRestaurants';
 import { shuffle } from '../game/random';
 import { DailyMenuPlanner, type MenuContext } from '../game/dailyMenu';
 import type { Food, MealTime, Restaurant } from '../types/game';
+import { isSweetFood } from '../game/foodPyramid';
+
+// These sample venues offer sweets alongside their main meals; other venues do not.
+const SWEET_RESTAURANT_IDS = new Set(['raekoja', 'karlova', 'toome', 'ulikooli', 'kesklinna', 'maitsed']);
+export const restaurantOffersSweets = (id: string): boolean => SWEET_RESTAURANT_IDS.has(id);
 
 export interface RestaurantProvider {
   getRestaurantsForDay(excludedIds: string[], previousIds?: string[]): Promise<Restaurant[]>;
@@ -29,12 +34,21 @@ export function getAvailableFoods(foods: Food[], meal: MealTime, usedFoodIds: st
 }
 export class MockRestaurantProvider implements RestaurantProvider {
   private readonly menuPlanner = new DailyMenuPlanner(MOCK_FOODS);
-  async getRestaurantsForDay(excludedIds: string[], previousIds: string[] = []) { return getRandomRestaurants(MOCK_RESTAURANTS, excludedIds, 5, previousIds); }
+  async getRestaurantsForDay(excludedIds: string[], previousIds: string[] = []) {
+    const draw = getRandomRestaurants(MOCK_RESTAURANTS, excludedIds, 5, previousIds);
+    const offersSweets = restaurantOffersSweets(draw[0].id);
+    if (draw.every(restaurant => restaurantOffersSweets(restaurant.id) === offersSweets)) {
+      const alternatives = MOCK_RESTAURANTS.filter(restaurant => restaurantOffersSweets(restaurant.id) !== offersSweets);
+      draw[draw.length - 1] = getRandomRestaurants(alternatives, excludedIds, 1, previousIds)[0];
+    }
+    return draw;
+  }
   async getRestaurantById(id: string) { return MOCK_RESTAURANTS.find(r => r.id === id) ?? null; }
   async getMealsForRestaurant(id: string, meal: MealTime, usedFoodIds: string[], context?: MenuContext) {
     const restaurant = await this.getRestaurantById(id);
-    if (restaurant && context) return this.menuPlanner.getChoices(meal, context, restaurant.meals.map(food => food.id), usedFoodIds);
-    return restaurant ? getAvailableFoods(restaurant.meals, meal, usedFoodIds) : [];
+    if (restaurant && context) return this.menuPlanner.getChoices(meal, context, restaurant.meals.map(food => food.id), usedFoodIds, Math.random,
+      restaurantOffersSweets(id) ? 'include' : 'exclude');
+    return restaurant ? getAvailableFoods(restaurant.meals.filter(food => restaurantOffersSweets(id) || !isSweetFood(food)), meal, usedFoodIds) : [];
   }
 }
 // TODO: implement ApiRestaurantProvider against a permitted REST endpoint.

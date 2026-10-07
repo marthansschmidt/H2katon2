@@ -4,7 +4,7 @@ async function eatAndContinue(page: Page, continueLabel: string) {
   await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
   await page.locator('.restaurant-marker').first().click();
   await page.getByRole('button', { name: 'Valin selle' }).first().click();
-  await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
   await page.getByRole('button', { name: continueLabel }).click();
 }
 
@@ -34,7 +34,7 @@ for (const width of [390, 1440]) {
     await expect(page.locator('.summary-screen')).toBeVisible();
     await page.getByRole('button', { name: 'Järgmine päev', exact: true }).click();
     await expect(phone).toHaveClass(/is-reminding/);
-    await expect(page.locator('.day-pill')).toHaveText('PÄEV 2 / 3');
+    await expect(page.locator('.day-pill')).toHaveText('PÄEV 2');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await expect(phone.locator('svg')).toHaveCSS('animation-name', 'none');
     expect(await phone.evaluate(element => getComputedStyle(element, '::after').content)).toBe('""');

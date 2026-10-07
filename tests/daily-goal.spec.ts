@@ -35,7 +35,7 @@ for (const width of [390, 1440]) {
           expect(await cards.locator('h3').allTextContents()).toEqual(names);
         }
         await cards.nth(gains.indexOf(best)).getByRole('button', { name: 'Valin selle' }).click();
-        await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
         await page.getByRole('button', { name: meal === 2 ? 'Vaata päeva kokkuvõtet' : meal === 0 ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile' }).click();
       }
       await expect(page.locator('.summary-screen')).toBeVisible();
@@ -52,7 +52,7 @@ for (const width of [390, 1440]) {
       await expect(page.getByText('Vesi ja joogid', { exact: true })).toHaveCount(0);
       await expect(page.locator('.summary-screen .optional-group')).toHaveCount(0);
       await expect(page.locator('.pyramid-step-1 .group-name')).toContainText('Näksid');
-      await expect(page.locator('.pyramid-step-1 .group-dot:not(.filled)')).toHaveCount(0);
+      await expect(page.locator('.pyramid-step-1 .group-dot:not(.filled)')).toHaveCount(totals.treats === 0 ? 1 : 0);
       await expect(page.locator('.summary-screen').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toHaveCount(0);
       await expect(page.getByRole('heading', { name: 'Mida täna avastasime?' })).toHaveCount(0);
       if (day === 1) await page.screenshot({ path: `test-results/perfect-day-${width}.png`, fullPage: true, animations: 'disabled' });

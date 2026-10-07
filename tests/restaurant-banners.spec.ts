@@ -30,6 +30,16 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 1440, height: 900 
         const artwork = dialog.locator('.restaurant-art');
         await expect(artwork).toHaveAttribute('src', RESTAURANT_BANNERS[restaurant.id].src);
         await expect(dialog.locator('.restaurant-banner-brand img')).toHaveAttribute('src', restaurant.logo);
+        if (viewport.width === 1440) {
+          const tooltip = dialog.getByRole('tooltip');
+          await dialog.locator('.restaurant-menu-heading').hover();
+          await expect(tooltip).toBeHidden();
+          await dialog.locator('.restaurant-banner-brand').hover();
+          await expect(tooltip).toBeVisible();
+          await expect(tooltip).toHaveText(restaurant.name);
+          await dialog.locator('.restaurant-menu-heading').hover();
+          await expect(tooltip).toBeHidden();
+        }
         const size = await artwork.evaluate(async element => {
           const image = element as HTMLImageElement;
           await image.decode();

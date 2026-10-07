@@ -22,7 +22,7 @@ for (const width of [390, 768, 1440]) {
     await page.getByRole('button', { name: 'Alustan!' }).click();
     let previousMealIds: string[] = [];
     for (let day = 1; day <= 3; day++) {
-      await expect(page.locator('.day-pill')).toHaveText(`PÄEV ${day} / 3`);
+      await expect(page.locator('.day-pill')).toHaveText(`PÄEV ${day}`);
       await expect(page.locator('.restaurant-marker')).toHaveCount(5);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       if (day === 1) {
@@ -52,7 +52,7 @@ for (const width of [390, 768, 1440]) {
           expect(await page.locator('.food-card h3').allTextContents()).toEqual(foods);
         }
         await page.getByRole('button', { name: 'Valin selle' }).first().click();
-        await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+        await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
         await expect(page.locator('.restaurant-marker')).toHaveCount(4);
         const positionsAfter = await page.locator('.restaurant-marker').evaluateAll(elements => Object.fromEntries(elements.map(element => [element.getAttribute('aria-label'), (element as HTMLElement).style.cssText])));
         expect(Object.keys(positionsAfter)).not.toContain(chosenLabel);
@@ -63,7 +63,7 @@ for (const width of [390, 768, 1440]) {
         expect(await page.locator('.feedback-modal').evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(340);
         if (day === 1 && meal === 1) {
           await page.reload();
-          await expect(page.getByRole('heading', { name: 'Hea valik!' })).toBeVisible();
+          await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
           await expect(page.locator('.restaurant-marker')).toHaveCount(4);
           expect(await page.locator('.restaurant-marker').evaluateAll(elements => elements.map(element => element.getAttribute('aria-label')))).not.toContain(chosenLabel);
           expect(await page.locator('.feedback-modal').evaluate(element => element.getBoundingClientRect().width)).toBeLessThanOrEqual(340);

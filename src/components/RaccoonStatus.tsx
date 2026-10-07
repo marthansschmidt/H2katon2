@@ -1,10 +1,7 @@
-import { getMood, getMoodHint } from '../game/mood';
-import type { FoodGroupTotals } from '../types/game';
-import { RaccoonCharacter } from './RaccoonCharacter';
-export function RaccoonStatus({ score, totals }: { score: number; totals: FoodGroupTotals }) {
-  const mood = getMood(score);
-  const hint = getMoodHint(score, totals);
+import type { getMoodForDay } from '../game/mood';
+import { GameCharacter } from './GameCharacter';
+export function RaccoonStatus({ mood }: { mood: ReturnType<typeof getMoodForDay> }) {
   return <section className="card raccoon-status" data-mood={mood.id} aria-live="polite" aria-atomic="true">
-    <div className="raccoon-status-main"><span className="status-avatar"><RaccoonCharacter moodScore={score} small /></span><div><span className="eyebrow">ENESETUNNE</span><h3>{mood.label}</h3>{hint && <p className="mood-hint">{hint}</p>}</div></div>
+    <div className="raccoon-status-main"><span className="status-avatar"><GameCharacter moodScore={mood.score} moodId={mood.id} pose="wave" small /></span><div><span className="eyebrow">ENESETUNNE</span><h3>{mood.id === 'unwell' ? 'Paak lekkib' : mood.label}</h3></div></div>
   </section>;
 }

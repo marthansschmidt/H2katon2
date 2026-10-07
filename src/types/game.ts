@@ -1,4 +1,5 @@
 export type FoodGroupId = 'vegetables' | 'fruits' | 'grains' | 'dairy' | 'protein' | 'fats' | 'treats';
+export type CharacterId = 'raccoon' | 'dinosaur';
 export type MealTime = 'breakfast' | 'lunch' | 'dinner';
 export type FoodArt = 'porridge' | 'toast' | 'yogurt' | 'pancakes' | 'bowl' | 'soup' | 'burger' | 'wrap' | 'salad' | 'fish' | 'pasta' | 'cake' | 'smoothie' | 'fruit';
 export interface FoodGroupValue { groupId: FoodGroupId; points: number }
@@ -17,6 +18,7 @@ export interface DaySelection {
   score: number;
 }
 export interface PlayerState {
+  character: CharacterId;
   currentDay: number; currentMeal: MealTime; score: number; moodScore: number;
   foodGroupTotals: FoodGroupTotals; days: DaySelection[];
   usedRestaurantIds: string[]; usedFoodIds: string[];

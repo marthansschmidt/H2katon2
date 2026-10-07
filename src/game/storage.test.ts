@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MOCK_FOODS } from '../data/mockRestaurants';
-import { chooseFood, createPlayerState } from './state';
+import { chooseFood, createPlayerState, nextDay, nextMeal } from './state';
+import { getMoodForDay } from './mood';
 import { loadGame, SAVE_KEY, saveGame } from './storage';
 describe('mängu turvaline kohalik salvestamine', () => {
   let entries: Map<string, string>;
@@ -9,6 +10,44 @@ describe('mängu turvaline kohalik salvestamine', () => {
     vi.stubGlobal('localStorage', { getItem: (key: string) => entries.get(key) ?? null, setItem: (key: string, value: string) => entries.set(key, value) });
   });
   afterEach(() => vi.unstubAllGlobals());
+  for (const character of ['raccoon', 'dinosaur'] as const) {
+    it(`taastab järgmise hommiku päritud enesetunde ning taastumise (${character})`, () => {
+      const cake = MOCK_FOODS.find(food => food.id === 'chococake')!;
+      let player = createPlayerState(character);
+      for (let index = 0; index < 3; index++) {
+        player = chooseFood(player, cake, 'Kohvik');
+        if (index < 2) player = nextMeal(player);
+      }
+      player = nextDay(player);
+      saveGame(player, 'map', 'map', true);
+      const save = JSON.parse(entries.get(SAVE_KEY)!);
+      // Old saves reset the second day's score, so rebuild it from the full adventure.
+      save.player.moodScore = 65;
+      entries.set(SAVE_KEY, JSON.stringify(save));
+      let restored = loadGame()!.player;
+      expect(restored.moodScore).toBe(player.moodScore);
+      expect(getMoodForDay(restored.days).id).toBe('unwell');
+      const breakfast = MOCK_FOODS.find(food => food.id === 'oats')!;
+      restored = chooseFood(restored, breakfast, 'Kohvik');
+      expect(restored.moodScore).toBeGreaterThan(player.moodScore);
+      expect(getMoodForDay(restored.days).id).not.toBe('unwell');
+      saveGame(restored, 'map', 'map', true);
+      expect(loadGame()?.player).toEqual(restored);
+    });
+  }
+  it('taastab maiustuste tegeliku koguse ka varem ühe mummuni piiratud salvestusest', () => {
+    const cake = MOCK_FOODS.find(food => food.id === 'chococake')!;
+    let player = chooseFood(createPlayerState(), cake, 'Kohvik');
+    player = chooseFood(nextMeal(player), cake, 'Kohvik');
+    player = chooseFood(nextMeal(player), cake, 'Kohvik');
+    saveGame(player, 'daySummary', 'daySummary', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    save.player.foodGroupTotals.treats = 1;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    expect(loadGame()?.player.foodGroupTotals.treats).toBe(3);
+    expect(loadGame()?.player.score).toBe(player.score);
+    expect(loadGame()?.player.moodScore).toBe(player.moodScore);
+  });
   it('taastab pooleli jäänud toiduvaliku ning menüü', () => {
     const state = chooseFood({ ...createPlayerState(), restaurantIds: ['raekoja'], offers: { raekoja: MOCK_FOODS.slice(0, 3) } }, MOCK_FOODS[0], 'Raekoja Kohvik');
     expect(saveGame(state, 'map', 'map', true)).toBe(true);
@@ -18,6 +57,21 @@ describe('mängu turvaline kohalik salvestamine', () => {
   it('ei pea värskendatud avalehte juba alustatud mänguks', () => {
     saveGame(createPlayerState(), 'home', 'tutorial', false);
     expect(loadGame()?.started).toBe(false);
+  });
+  it('säilitab valitud tegelase ka enne mängu alustamist', () => {
+    saveGame(createPlayerState('dinosaur'), 'home', 'tutorial', false);
+    expect(loadGame()?.player.character).toBe('dinosaur');
+  });
+  it('taastab tegelase valikuta vana salvestuse pesukaruga, säilitades progressi', () => {
+    const state = chooseFood(createPlayerState(), MOCK_FOODS[0], 'Kohvik');
+    saveGame(state, 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    delete save.player.character;
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    expect(loadGame()?.player).toEqual(state);
+    save.player.character = 'unknown';
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    expect(loadGame()).toBeNull();
   });
   it('arvutab varasema punktisüsteemi skoori toiduvalikute järgi uuesti', () => {
     const state = chooseFood(createPlayerState(), MOCK_FOODS[0], 'Kohvik');
