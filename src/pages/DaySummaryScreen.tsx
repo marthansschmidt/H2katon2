@@ -11,7 +11,7 @@ export function DaySummaryScreen({ player, onNext, onPyramid }: { player: Player
   const day = player.days[player.currentDay - 1];
   const totals = totalsForDay(day);
   const mood = getMoodForDay(player.days);
-  const message = mood.id === 'unwell' ? `${mood.message} ${player.currentDay < 3 ? 'Homme valin rohkem erinevaid toite ja vähem magusat.' : 'Järgmisel seiklusel valin rohkem erinevaid toite ja vähem magusat.'}` : 'Jätkan mitmekesiste toitudega.';
+  const message = mood.id === 'unwell' ? (player.currentDay < 3 ? 'Homme valin rohkem erinevaid toite ja vähem magusat.' : 'Järgmisel seiklusel valin rohkem erinevaid toite ja vähem magusat.') : 'Jätkan mitmekesiste toitudega.';
   return <main className="summary-screen">
     <div className="summary-overview"><div className="summary-title"><h1 className="eyebrow">PÄEV {player.currentDay} KOKKUVÕTE</h1><p className="day-score-total"><StarSolid size={18} /><span>Päeva skoor</span><strong>{day.score} / {MAX_DAILY_SCORE}</strong></p></div>
     <div className="summary-character" data-mood={mood.id}><div className="summary-speech"><strong>{mood.id === 'unwell' ? 'Mul on paha olla' : 'Mul on hea olla'}</strong><br />{message}</div><GameCharacter moodScore={player.moodScore} moodId={mood.id} /></div>
