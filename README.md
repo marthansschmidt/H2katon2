@@ -2,7 +2,7 @@
 
 Toiduseiklus on eestikeelne hariduslik brauserimäng 16–19-aastastele. Mängija veedab oma tegelasega kolm päeva Tartus, valib hommiku-, lõuna- ja õhtusöögi ning kogub toidupüramiidi mummusid. Eesmärk on teha mitmekesiseid toiduvalikuid ja täita iga päeva kuue põhigrupi eesmärgid.
 
-Mäng on loodud häkatoni raames VSo25 ja UX25 koostööprojektina.
+Mäng on loodud VOCO 2026 häkatoni raames VSo25 ja UX25 koostööprojektina. Projekt ühendab mängu arenduse ja kasutajakogemuse disaini.
 
 ## Autorid
 
@@ -16,7 +16,7 @@ Mäng on loodud häkatoni raames VSo25 ja UX25 koostööprojektina.
 1. Vali tegelane ja alusta uut mängu. Esialgu saab mängida pesukaruga.
 2. Igal toidukorral ilmub kaardile viis söögikohta. Ava sobiv koht ja vali selle kolmest toidust üks.
 3. Toiduvaliku järel näed lisanduvaid mummusid, punkte ja tegelase enesetundele vastavat pilti. Nupp „Jätka“ viib järgmisele toidukorrale või päeva kokkuvõttesse.
-4. Telefoniikoon avab toidupüramiidi, kust saad vaadata päeva edenemist ja gruppide selgitusi.
+4. Ava toidupüramiid telefoniikoonist kaardil või söögikoha bänneri paremas alumises nurgas. Püramiid näitab kogutud mummusid ja gruppide selgitusi. Menüü bännerist avatud püramiidi sulgemisel saad jätkata samast menüüst ja kerimiskohast.
 5. Pärast õhtusööki näed päeva menüüd ja kokkuvõtet. Kolmanda päeva järel kuvatakse koguskoor, tärnid, lõpu enesetunne ning soovitus järgmiseks seikluseks.
 
 Mäng kasutab 12 Tartu söögikoha nimesid ja logosid: Werner, Joyce, Kolm Tilli, Hõlm, Aparaat, La Dolce Vita, Humal, Kampus, Pompei, Fii, Vilde ja Vine ning Tacora. Mängu 40 toitu ja nende menüüdesse jaotamine on näidisandmed, mitte söögikohtade tegelikud päevapakkumised.
@@ -27,7 +27,7 @@ Menüüd arvestavad toidukorda ja päeva puuduvaid mummusid. Igas menüüs on ü
 
 ## Toidupüramiid ja punktid
 
-Mängus tähendab **1 mumm 2 portsjonit**. Toidu portsjonid teisendatakse mummudeks ülespoole ümardades: näiteks 3 portsjonit annab 2 tervet mummu. Poolikuid mummusid ei kuvata.
+Mängus kehtib **1 mumm = 2 portsjonit**. Toidu portsjonid teisendatakse mummudeks ülespoole ümardades: näiteks 3 portsjonist saab 2 tervet mummu. Poolikuid mummusid ei kuvata. Toiduvaliku juurdekasv sõltub sellest, kui palju ruumi on vastavas põhigrupis veel alles.
 
 | Toidugrupp | Päeva eesmärk | Portsjonite vaste mängus |
 | --- | ---: | ---: |
@@ -39,7 +39,9 @@ Mängus tähendab **1 mumm 2 portsjonit**. Toidu portsjonid teisendatakse mummud
 | Lisatavad toidurasvad, pähklid ja seemned | 3 mummu | 6 portsjonit |
 | Maiustused ja näksid | Valikuline, mängupiir 1 mumm | 2 portsjonit |
 
-Iga uus põhigrupi mummu annab **50 punkti**. Täidetud põhigrupp enam mummusid ega punkte juurde ei saa. Kuue põhigrupi 16 mummu annavad 800 punkti. Kõigi põhigruppide täitmine annab päeva lõpus lisaks **200 boonuspunkti**, nii et päeva maksimum on **1000 punkti** ja kolme päeva maksimum **3000 punkti**. Toidukaardid ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid, arvestades juba täidetud gruppe.
+Iga uus põhigrupi mumm annab **50 punkti**. Täidetud põhigrupp enam mummusid ega punkte juurde ei saa. Kuue põhigrupi 16 mummu annavad 800 punkti. Kõigi põhigruppide täitmine annab pärast päeva kolmandat toiduvalikut lisaks **200 boonuspunkti**, nii et päeva maksimum on **1000 punkti** ja kolme päeva maksimum **3000 punkti**. Toidukaardid ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid, arvestades juba täidetud gruppe.
+
+Telefoni kaudu avatud püramiid ja päeva kokkuvõte kasutavad sama kujundust: kogutud mummud paiknevad otse värviliste toidugruppide sees. Püramiidi selgitusvaates on iga grupi all selle sisu kirjeldus. Valguallikate hulka kuuluvad mängus liha ja lihatooted, kala, muna, oad, läätsed, kikerherned ning tofu. Üldine portsjonite ja punktide selgitus paikneb püramiidi juures.
 
 Maiustuste ja näkside mummud punkte ei anna. Iga neid sisaldav toiduvalik lisab ühe näksimummu, ka pärast mängupiiri täitumist. Kolme toidukorraga võib neid koguneda kuni kolm. Selgitus tuletab meelde, et ühest korrast päevas piisab. Magusaid valikuid pakuvad Werner, Kolm Tilli, Humal, Kampus, Fii ning Vilde ja Vine; nende menüüdes on igal toidukorral vähemalt üks magus valik. Magusat saab valida ka korduvalt.
 
@@ -65,13 +67,17 @@ Toiduvaliku kinnitusakna pealkiri on mitmesse gruppi mummusid lisava valiku korr
 
 ## Kasutajaliides ja salvestamine
 
-Mäng kohandub telefoni, tahvelarvuti ja arvuti ekraanile. Kaardi valgus muutub koos toidukorraga: hommikul on koiduvalgus, lõunal päevavalgus ja õhtul valgustatud akendega hämar linn. Kreemjad kaardid, rohelised tegevusnupud ja värvilised mummud läbivad kõiki vaateid.
+Mäng kohandub telefoni, tahvelarvuti ja arvuti ekraanile. Avalehel paikneb tegelase valik tegelase all; joondus arvestab ekraani ja tegelase suurust. Jaluses on projekti taust, autorite nimed ja tähis **VOCO 2026**. Töölauavaates paikneb jalus allserva lähedal; madalas vaates saab sisu vajaduse korral kerida.
 
-Söögikohtade logod on kaardimullides läbipaistva taustaga. Menüü bänneril on logo loetavuse jaoks kreemjas taust. Bänneri paremas nurgas olev telefoniikoon avab päeva toidupüramiidi menüüd sulgemata; püramiidi sulgemisel saab jätkata samast menüüst. Bänneri nimeinfo avaneb arvutis sellele liikudes ning mobiilis puudutades. Kujundus arvestab telefoni turvaalasid ja vähendatud animatsioonide eelistust.
+Kaardi valgus muutub koos toidukorraga: hommikul on koiduvalgus, lõunal päevavalgus ja õhtul valgustatud akendega hämar linn. Kreemjad kaardid, rohelised tegevusnupud ja värvilised mummud läbivad kõiki vaateid. Telefoni nupp paikneb enesetundekaardi paremal. Tahvli- ja töölauavaates moodustavad need ekraani all keskele joondatud paari; mõlemal on sama kõrgus, taust, nurgad ja vari. Telefonivaates paikneb enesetundekaart vasakul ning telefoni nupp paremas allnurgas.
+
+Söögikohtade logod on kaardimullides läbipaistva taustaga. Menüü bänneril on logo loetavuse jaoks kreemjas taust. Bänneri telefoni nupp kasutab logokastiga sama tausta, äärist ja varju. Bänneri nimeinfo avaneb arvutis sellele liikudes ning mobiilis puudutades. Kujundus arvestab telefoni turvaalasid ja vähendatud animatsioonide eelistust.
+
+Juhendis on neli illustreeritud sammu. Sammunumbrid paiknevad ühtlaselt kaartide vasakus ülanurgas. Toitumise jälgimise sammus näidatakse telefoni, paremale suunatud noolt ja toidupüramiidi.
 
 Mängu ajal avalehele liikudes küsitakse kinnitust: „Kas soovid avalehele minna?“. Valikud on „Jätka mängu“ ja „Jah, avalehele“.
 
-Varasemad salvestused viiakse uuele portsjonite arvestusele üle: valitud toidud säilivad, mummud, punktid ja enesetunne arvutatakse uuesti ning aegunud menüüd koostatakse uuesti.
+Praegune salvestusvorming on versioon 4. Varasemad salvestused viiakse uuele portsjonite arvestusele üle: valitud toidud säilivad, mummud, punktid ja enesetunne arvutatakse uuesti ning aegunud menüüd koostatakse uuesti. Dinosauruse avamine salvestatakse eraldi.
 
 Mänguseis, tegelase valik ja dinosauruse avamine salvestatakse brauseri `localStorage`-isse. Lehe värskendamine taastab mängu seisu ja toiduvalikutest arvutatud enesetunde. Uus mäng nullib päevad, punktid ja menüüd, kuid säilitab avatud dinosauruse. Kui brauser salvestamist ei luba, saab mängida samas aknas, kuid seis ei säili pärast lehe sulgemist või värskendamist.
 
@@ -101,7 +107,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Vitesti testid kontrollivad mänguolekut, menüüde koostamist, punktiarvestust, püramiidi, enesetunnet, salvestamist ja dinosauruse avamise tingimusi. Playwrighti brauseritestid kontrollivad mängu läbimist eri ekraanisuurustel, puute- ja hiiretoiminguid, piltide kuvamist, dialooge, värskendamise järel jätkamist ning dinosauruse avamist. Playwright käivitab vajaduse korral kohaliku Vite'i serveri; ekraanipildid salvestatakse kausta `test-results/`.
+Vitesti testid kontrollivad mänguolekut, menüüde koostamist, portsjonite ümardamist, punktiarvestust, püramiidi, enesetunnet, salvestuste üleviimist ja dinosauruse avamise tingimusi. Playwrighti brauseritestid kontrollivad mängu läbimist eri ekraanisuurustel, puute- ja hiiretoiminguid, piltide kuvamist, dialooge, värskendamise järel jätkamist ning dinosauruse avamist. Bänneri telefoni testid kontrollivad lisaks püramiidi avamist menüü seest, õigete mummude kuvamist ning sama menüü, kerimiskoha ja fookuse taastamist. Playwright käivitab vajaduse korral kohaliku Vite'i serveri; ekraanipildid salvestatakse kausta `test-results/`.
 
 ## Projekti ülesehitus
 
@@ -120,26 +126,11 @@ Vitesti testid kontrollivad mänguolekut, menüüde koostamist, punktiarvestust,
 | `docs/` | Illustratsioonide genereerimispromptid ja logode dokumentatsioon |
 | `tests/` | Playwrighti brauseritestid; loogikatestid asuvad lähtekoodi kõrval |
 | `exports/` | Toitude visuaalne HTML- ja PDF-ülevaade |
+| `scripts/export-food-catalog.mjs` | Toitude ülevaate loomine mängu andmete põhjal |
 
 Praegune `MockRestaurantProvider` kasutab kohalikke näidisandmeid. Teise andmeallika ühendamiseks saab luua `RestaurantProvider` liidest täitva teenuse ja ühendada selle `setRestaurantProvider()` kaudu. Rakendus ei vaja taustaserverit ega välist API-t. Fondid ja pildid serveeritakse kohalikult.
 
 Illustratsioonid on loodud imagegen-tööriistaga; lähteülesanded ja piltide kirjeldused asuvad kaustas `docs/`. Tegelaste atlasest valitakse poosid SVG `viewBox`-iga. Söögikohtade bännerid on kunstilised tõlgendused, mitte fotod tegelikest interjööridest.
-
-## Toitude visuaalne ülevaade
-
-- [PDF-ülevaade](exports/toidud-ulevaade.pdf)
-- [HTML-ülevaade](exports/toidud-ulevaade.html)
-
-Ülevaates on kõik 40 toitu koos pildi, kirjelduse, sobivate toidukordade, punktide ja lisanduvate mummudega **tühja päevapüramiidi korral**. Mängu edenedes võib tegelik juurdekasv olla väiksem, sest täidetud põhigrupid rohkem mummusid ei kogu. HTML-fail sisaldab pilte ja fonti ning on eraldi avatav ja prinditav.
-
-Ülevaate uuesti loomiseks käivita esmalt arendusserver ning teises terminalis:
-
-```sh
-npx playwright install chromium
-node scripts/export-food-catalog.mjs
-```
-
-Skript kasutab vaikimisi aadressi `http://127.0.0.1:5173`. Teise aadressi saab määrata keskkonnamuutujaga `FOOD_CATALOG_URL`. HTML, PDF ja eelvaatepildid kirjutatakse kausta `exports/`.
 
 ## Toitumise alus
 
