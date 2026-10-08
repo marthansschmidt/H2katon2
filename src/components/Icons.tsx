@@ -6,7 +6,7 @@ import {
   Egg as EggIcon, Fish as FishIcon, GlassHalf as GlassHalfIcon,
   HalfMoon as HalfMoonIcon, HeartSolid as HeartSolidIcon, HelpCircle as HelpCircleIcon,
   HomeSimple as HomeSimpleIcon, InfoCircle as InfoCircleIcon, Leaf as LeafIcon,
-  LightBulb as LightBulbIcon, NavArrowDown as NavArrowDownIcon,
+  LightBulb as LightBulbIcon, Lock as LockIcon, NavArrowDown as NavArrowDownIcon,
   NavArrowUp as NavArrowUpIcon, OpenBook as OpenBookIcon, PlaySolid as PlaySolidIcon,
   Restart as RestartIcon, Settings as SettingsIcon, SmartphoneDevice as SmartphoneDeviceIcon,
   Sparks as SparksIcon, Star as StarIcon, StarSolid as StarSolidIcon,
@@ -34,6 +34,7 @@ export const HomeSimple = gameIcon(HomeSimpleIcon, 'home-simple');
 export const InfoCircle = gameIcon(InfoCircleIcon, 'info-circle');
 export const Leaf = gameIcon(LeafIcon, 'leaf');
 export const LightBulb = gameIcon(LightBulbIcon, 'light-bulb');
+export const Lock = gameIcon(LockIcon, 'lock');
 export const NavArrowDown = gameIcon(NavArrowDownIcon, 'nav-arrow-down');
 export const NavArrowUp = gameIcon(NavArrowUpIcon, 'nav-arrow-up');
 export const OpenBook = gameIcon(OpenBookIcon, 'open-book');

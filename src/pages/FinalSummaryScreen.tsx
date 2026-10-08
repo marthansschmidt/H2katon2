@@ -1,4 +1,4 @@
-import { Triangle, HeartSolid, HomeSimple, LightBulb, RotateCcw, GroupIcon } from '../components/Icons';
+import { Check, Triangle, HeartSolid, HomeSimple, LightBulb, RotateCcw, GroupIcon } from '../components/Icons';
 import { PrimaryButton, SecondaryButton } from '../components/Button';
 import { Card } from '../components/Card';
 import { ScoreRating } from '../components/ScoreRating';
@@ -6,6 +6,7 @@ import { GameCharacter } from '../components/GameCharacter';
 import { FOOD_GROUPS } from '../data/foodGroups';
 import { consumptionForDay, emptyTotals, totalsForDay } from '../game/foodPyramid';
 import { calculateMoodForAdventure, DAILY_TREAT_LIMIT } from '../game/mood';
+import { hasEarnedDinosaur } from '../game/characters';
 import type { PlayerState } from '../types/game';
 
 export function FinalSummaryScreen({ player, onRestart, onHome, onPyramid }: {
@@ -35,6 +36,7 @@ export function FinalSummaryScreen({ player, onRestart, onHome, onPyramid }: {
     </div>
     <Card className="final-results">
       <ScoreRating score={player.score} />
+      {hasEarnedDinosaur(player) && <div className="character-unlock-reward" role="status"><Check size={28} /><div><strong>Dinosaurus on avatud!</strong><p>Järgmises mängus saad valida pesukaru või dinosauruse.</p></div></div>}
       <div className="result-row result-mood" data-mood={mood.id} role="group" aria-label="Hetke enesetunne"><HeartSolid size={28} /><div><strong>{mood.label}</strong></div></div>
       <div className="result-row result-food"><GroupIcon name={most.icon} size={29} /><div><span>Kõige rohkem said</span><strong>{most.name}</strong></div></div>
       <div className="result-row result-insight"><LightBulb size={29} /><div><span>Mõte järgmiseks seikluseks</span><p>{insight}</p></div></div>

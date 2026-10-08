@@ -33,6 +33,19 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 1440, height: 900 
           await image.decode();
           return image.naturalWidth > 0 && image.naturalHeight > 0;
         })).toBe(true);
+        const transparentRatio = await logo.evaluate(element => {
+          const image = element as HTMLImageElement;
+          const canvas = document.createElement('canvas');
+          canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+          const context = canvas.getContext('2d')!;
+          context.drawImage(image, 0, 0);
+          const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+          let clear = 0;
+          for (let i = 3; i < pixels.length; i += 4) if (pixels[i] === 0) clear++;
+          return clear / (canvas.width * canvas.height);
+        });
+        expect(transparentRatio, `${restaurant.name} has actual transparent pixels`).toBeGreaterThan(.1);
+        await expect(marker.locator('.marker-pin')).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
         await expect(logo).toBeVisible();
         const logoRect = await logo.boundingBox();
         const pinRect = await marker.locator('.marker-pin').boundingBox();
@@ -42,7 +55,7 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 1440, height: 900 
         expect(logoRect!.y + logoRect!.height).toBeLessThanOrEqual(pinRect!.y + pinRect!.height + 1);
         expect(await marker.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
       }
-      await page.screenshot({ path: `test-results/restaurant-logos-${viewport.width}-${offset}.png` });
+      await page.screenshot({ path: `test-results/restaurant-logos-${viewport.width}-${offset}.png`, animations: 'disabled' });
     }
     expect(failedLogos).toEqual([]);
     expect(externalRequests).toEqual([]);

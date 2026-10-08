@@ -9,7 +9,7 @@ export interface Food {
 }
 export interface Restaurant {
   id: string; name: string; locationLabel: string; icon: string; meals: Food[];
-  logo: string; logoBackground?: string;
+  logo: string;
 }
 export interface FoodGroup { id: FoodGroupId; name: string; shortName: string; color: string; minTarget: number; maxTarget: number; icon: string; tip: string }
 export type FoodGroupTotals = Record<FoodGroupId, number>;

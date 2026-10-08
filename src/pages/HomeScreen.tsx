@@ -1,10 +1,13 @@
-import { OpenBook, PlaySolid, Triangle } from '../components/Icons';
+import { Lock, OpenBook, PlaySolid, Triangle } from '../components/Icons';
 import { PrimaryButton, SecondaryButton } from '../components/Button';
 import { Card } from '../components/Card';
 import { GameCharacter } from '../components/GameCharacter';
 import type { CharacterId } from '../types/game';
+import { MAX_GAME_SCORE } from '../game/scoring';
+import { InfoTooltip, useInfoTooltip } from '../components/InfoTooltip';
 
-export function HomeScreen({ onStart, onTutorial, onPyramid, hasStarted, character, onCharacterChange }: { onStart: () => void; onTutorial: () => void; onPyramid: () => void; hasStarted: boolean; character: CharacterId; onCharacterChange: (character: CharacterId) => void }) {
+export function HomeScreen({ onStart, onTutorial, onPyramid, hasStarted, character, dinosaurUnlocked, onCharacterChange }: { onStart: () => void; onTutorial: () => void; onPyramid: () => void; hasStarted: boolean; character: CharacterId; dinosaurUnlocked: boolean; onCharacterChange: (character: CharacterId) => void }) {
+  const unlockInfo = useInfoTooltip();
   return <main className="home-screen">
     <section className="home-hero">
       <div className="game-logo"><h1 aria-label="Toiduseiklus"><span className="logo-food" aria-hidden="true">TOIDUSEIKLUS</span></h1></div>
@@ -14,7 +17,13 @@ export function HomeScreen({ onStart, onTutorial, onPyramid, hasStarted, charact
           <GameCharacter className="hero-raccoon" moodScore={94} pose="wave" />
           <div className="character-picker" role="group" aria-label="Vali oma tegelane">
             <button type="button" aria-pressed={character === 'raccoon'} onClick={() => onCharacterChange('raccoon')}>Pesukaru</button>
-            <button type="button" aria-pressed={character === 'dinosaur'} onClick={() => onCharacterChange('dinosaur')}>Dinosaurus</button>
+            <span className={`character-choice tooltip-trigger${!dinosaurUnlocked && unlockInfo.visible ? ' is-tooltip-visible' : ''}`} {...unlockInfo.triggerProps}>
+              <button type="button" aria-pressed={character === 'dinosaur'} data-locked={!dinosaurUnlocked} aria-expanded={!dinosaurUnlocked ? unlockInfo.visible : undefined} aria-describedby={!dinosaurUnlocked ? 'dinosaur-unlock-hint' : undefined} onClick={() => {
+                if (!dinosaurUnlocked) { unlockInfo.toggle(); return; }
+                unlockInfo.hide(); onCharacterChange('dinosaur');
+              }}>{!dinosaurUnlocked && <Lock size={16} />}Dinosaurus</button>
+              {!dinosaurUnlocked && <InfoTooltip id="dinosaur-unlock-hint" className="character-unlock-hint">Ava dinosaurus: kogu mängus {MAX_GAME_SCORE} punkti.</InfoTooltip>}
+            </span>
           </div>
         </div>
       </div>

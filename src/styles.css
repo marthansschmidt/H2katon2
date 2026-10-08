@@ -84,9 +84,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .pyramid-guide .guide-groups .group-name { justify-content: center; }
 .pyramid-guide .guide-groups .group-dots { width: auto; justify-content: center; padding: 0; margin: 0; gap: 6px; }
 .pyramid-guide .guide-groups .group-dot { width: 16px; height: 16px; }
-.pyramid-guide-modal .modal-heading, .tutorial-guide-modal .modal-heading, .feedback-modal .modal-heading { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; }
-.pyramid-guide-modal .mobile-header-title, .tutorial-guide-modal .mobile-header-title, .feedback-modal .mobile-header-title { grid-column: 2; text-align: center; }
-.pyramid-guide-modal .modal-heading > .icon-button, .tutorial-guide-modal .modal-heading > .icon-button, .feedback-modal .modal-heading > .icon-button { grid-column: 3; }
+.mobile-header.has-close { --header-action-size: 48px; display: grid; grid-template-columns: var(--header-action-size) minmax(0, 1fr) var(--header-action-size); }
+.mobile-header.modal-heading.has-close { --header-action-size: 44px; }
+.mobile-header.has-close .mobile-header-title { grid-column: 2; text-align: center; }
+.mobile-header.has-close > .icon-button { grid-column: 3; }
 .bottom-action { position: sticky; bottom: 0; z-index: 5; padding: 16px 0 max(18px, env(safe-area-inset-bottom)); margin-top: 8px; background: linear-gradient(#f8efd900, var(--cream) 16px); }
 
 /* Welcome: logo, city and companion, then one clear action. */
@@ -164,6 +165,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 /* Native dialogs: menus fill the frame, feedback stays compact. */
 .modal { width: calc(100% - 24px); max-width: 406px; max-height: calc(100dvh - 32px); margin: auto; padding: 0 16px 20px; color: var(--dark); background: var(--cream); border: 2px solid var(--border); border-radius: 26px; box-shadow: 0 22px 80px #182b3d40; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
 .modal::backdrop { background: #152c3d85; backdrop-filter: blur(4px); }
+.modal.home-confirm-modal { max-width: 420px; background: linear-gradient(#fff9e7, #fff0ce); }
+.home-confirm-modal .modal-heading { background: none; border: 0; margin-bottom: 16px; }
+.home-confirm-modal .modal-heading h2 { color: #133749; line-height: 1.3; }
+.home-confirm-actions { display: grid; gap: 12px; }
 .modal-heading { position: sticky; top: 0; z-index: 5; background: #f8efd9f5; backdrop-filter: blur(10px); padding: 10px 0; margin-bottom: 14px; border-bottom: 1px solid var(--border); }.modal-heading h2 { font-size: 22px; }.modal-heading .icon-button { width: 44px; min-width: 44px; height: 44px; border-radius: 16px; box-shadow: none; }
 .modal-wide { width: 100%; max-width: 430px; max-height: 100dvh; height: 100dvh; border: 0; border-radius: 0; padding-bottom: max(22px, env(safe-area-inset-bottom)); }.modal-wide .modal-heading h2 { font-size: 19px; }.modal-wide .modal-heading { gap: 8px; }
 .restaurant-modal .mobile-header-title { text-align: center; }
@@ -282,8 +287,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 .restaurant-marker:after { content: ''; position: absolute; bottom: -7px; left: calc(50% - 6px); width: 12px; height: 12px; transform: rotate(45deg); border-right: 2px solid #d7b27a; border-bottom: 2px solid #d7b27a; background: #fff0ce; }
 .marker-pin { width: 58px; height: 52px; }
 .restaurant-marker { justify-content: center; }
-.restaurant-marker .marker-pin { display: block; flex-shrink: 0; width: 100%; padding: 5px; border-radius: 8px; }
-.restaurant-logo { display: block; width: 100%; height: 100%; object-fit: contain; }
+.restaurant-marker .marker-pin { display: block; flex-shrink: 0; width: 100%; padding: 5px; background: transparent; }
+.restaurant-logo { --logo-tone-filter: opacity(1); display: block; width: 100%; height: 100%; object-fit: contain; filter: var(--logo-tone-filter); }
+.restaurant-logo[data-tone="dark"] { --logo-tone-filter: brightness(0); }
+.restaurant-logo[data-tone="gold"] { --logo-tone-filter: brightness(.65); }
 .marker-pin > span { background: #487d49; color: #fff7df; border: 1px solid #e2efc3; left: -14px; top: 6px; width: 18px; height: 18px; }
 .restaurant-marker > strong { font-size: 12px; line-height: 1.15; }
 .map-status-dock { width: min(414px, calc(100% - 16px)); background: none; padding-top: 0; }
@@ -315,11 +322,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 /* Big food sprites, a local restaurant scene and warm menu cards. */
 .modal { background: #fff0ce; border-color: #d7b07b; }.modal-heading { background: #fff0cef5; }
 .restaurant-hero { display: block; width: 100%; height: 168px; padding: 0; text-align: left; border-color: #d3b885; background: #79c5e6; }.restaurant-art { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
-.restaurant-banner-brand { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; justify-content: center; width: clamp(100px, 15vw, 150px); height: clamp(48px, 7vw, 64px); padding: 8px 12px; border: 1px solid #d3b885; border-radius: 12px; box-shadow: 0 3px 10px #1f2a3533; }
+.restaurant-banner-brand { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; justify-content: center; width: clamp(100px, 15vw, 150px); height: clamp(48px, 7vw, 64px); padding: 8px 12px; background: #fff8e7; border: 1px solid #d3b885; border-radius: 12px; box-shadow: 0 3px 10px #1f2a3533; }
 .restaurant-banner-brand > img { display: block; min-width: 0; min-height: 0; width: 100%; height: 100%; object-fit: contain; }
-.restaurant-name-tooltip { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 6; width: max-content; max-width: min(220px, calc(100vw - 84px)); padding: 8px 12px; border: 1px solid #d3b885; border-radius: 10px; background: #fff8e7; color: var(--dark); box-shadow: 0 3px 10px #1f2a3533; font-size: 14px; font-weight: 800; line-height: 1.3; visibility: hidden; opacity: 0; pointer-events: none; }
-.restaurant-hero.is-name-visible .restaurant-name-tooltip, .restaurant-hero:focus-visible .restaurant-name-tooltip { visibility: visible; opacity: 1; }
-@media (hover: hover) and (pointer: fine) { .restaurant-hero:hover .restaurant-name-tooltip { visibility: visible; opacity: 1; } }
+.game-tooltip { position: absolute; bottom: calc(100% + 8px); left: 0; z-index: 6; width: max-content; max-width: min(220px, calc(100vw - 84px)); padding: 8px 12px; border: 1px solid #d3b885; border-radius: 10px; background: #fff8e7; color: var(--dark); box-shadow: 0 3px 10px #1f2a3533; font-size: 14px; font-weight: 800; line-height: 1.3; visibility: hidden; opacity: 0; pointer-events: none; }
+.tooltip-trigger.is-tooltip-visible .game-tooltip { visibility: visible; opacity: 1; }
 .restaurant-hero-icon { display: none; }
 .food-card { grid-template-columns: 98px minmax(0, 1fr); background: linear-gradient(#fff8e4, #fff0d2); border-color: #e8cda3; min-height: 160px; }
 .food-art-wrap { min-height: 104px; height: 104px; border: 0; background: none; margin-top: 0; }
@@ -632,11 +638,18 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 3px soli
 /* Keep the companion choices beneath the character, centered on mobile. */
 .hero-character { display: flex; flex-direction: column; align-items: center; gap: 14px; width: 100%; flex-shrink: 0; }
 .character-picker { display: flex; justify-content: center; gap: 8px; padding: 6px; border: 2px solid #d4a369; border-radius: 22px; background: #fff4dceF; box-shadow: 0 4px 0 #72532118; width: max-content; max-width: calc(100% - 56px); flex-shrink: 0; transform: translateX(28px); }
-.character-picker button { min-height: 42px; padding: 8px 18px; border: 2px solid transparent; border-radius: 15px; background: transparent; color: #173b4c; font: inherit; font-weight: 800; cursor: pointer; transition: background .15s, color .15s; }
+.character-picker button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; padding: 8px 18px; border: 2px solid transparent; border-radius: 15px; background: transparent; color: #173b4c; font: inherit; font-weight: 800; cursor: pointer; transition: background .15s, color .15s; }
 .character-picker button[aria-pressed="true"] { background: #287b39; border-color: #1a602b; color: #fff; box-shadow: 0 2px 0 #184e28; }
 .character-picker button:hover { background: #e8edc9; }
 .character-picker button[aria-pressed="true"]:hover { background: #216e32; }
 .character-picker button:focus-visible { outline: 3px solid #173b4c; outline-offset: 3px; }
+.character-picker button[data-locked="true"] { background: #eee6d2; color: #747566; cursor: help; box-shadow: none; }
+.character-choice { position: relative; display: flex; }
+.character-choice .game-tooltip { left: auto; right: 0; text-align: center; white-space: normal; }
+.character-unlock-reward { display: flex; align-items: center; gap: 12px; padding: 16px; margin-bottom: 20px; border: 2px solid #9bbb7f; border-radius: 20px; background: #edf5dc; color: #173b4c; text-align: left; }
+.character-unlock-reward > svg { color: #287b39; }
+.character-unlock-reward strong { font-size: 18px; font-weight: 900; }
+.character-unlock-reward p { margin-top: 6px; font-size: 14px; line-height: 1.4; color: #536246; }
 @media (max-width: 599px) {
   .hero-raccoon { width: min(64%, clamp(120px, 23dvh, 290px)); }
   .hero-illustration { gap: 12px; }

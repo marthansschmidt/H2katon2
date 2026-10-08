@@ -3,6 +3,7 @@ import { REQUIRED_FOOD_GROUPS } from '../src/data/foodGroups';
 import { MOCK_FOODS } from '../src/data/mockRestaurants';
 import { isSweetFood } from '../src/game/foodPyramid';
 import { SAVE_KEY } from '../src/game/storage';
+import { seedUnlockedDinosaur } from './helpers/character-unlocks';
 
 async function setVenues(page: Page, ids: string[]) {
   await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
@@ -37,7 +38,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
     test(`sweet foods remain selectable at later meals at selected venues (${character}, ${width}px)`, async ({ page }) => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/');
-      if (character === 'dinosaur') await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click();
+      if (character === 'dinosaur') { await seedUnlockedDinosaur(page); await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click(); }
       await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
       await page.getByRole('button', { name: 'Alustan!' }).click();
       const firstVenues = ['toome', 'raekoja', 'emajoe', 'supilinna', 'roheline'];

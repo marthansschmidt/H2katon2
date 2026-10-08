@@ -27,9 +27,14 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 1440, height: 900 
       for (const restaurant of restaurants) {
         await page.getByRole('button', { name: `Vali söögikoht ${restaurant.name}`, exact: true }).click();
         const dialog = page.getByRole('dialog', { name: restaurant.name, exact: true });
+        await expect(dialog.getByRole('button', { name: 'Tagasi', exact: true })).toHaveCount(0);
+        await expect(dialog.getByRole('button', { name: 'Sulge', exact: true })).toHaveCount(1);
         const artwork = dialog.locator('.restaurant-art');
         await expect(artwork).toHaveAttribute('src', RESTAURANT_BANNERS[restaurant.id].src);
         await expect(dialog.locator('.restaurant-banner-brand img')).toHaveAttribute('src', restaurant.logo);
+        await expect(dialog.locator('.restaurant-banner-brand')).toHaveCSS('background-color', 'rgb(255, 248, 231)');
+        await expect(dialog.locator('.restaurant-banner-brand')).not.toHaveCSS('box-shadow', 'none');
+        await expect(dialog.locator('.restaurant-banner-brand .restaurant-logo')).toHaveCount(1);
         if (viewport.width === 1440) {
           const tooltip = dialog.getByRole('tooltip');
           await dialog.locator('.restaurant-menu-heading').hover();

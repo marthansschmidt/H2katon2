@@ -2,6 +2,7 @@ import { test, expect, type Locator } from '@playwright/test';
 import { MOCK_FOODS } from '../src/data/mockRestaurants';
 import { chooseFood, createPlayerState, nextMeal } from '../src/game/state';
 import { SAVE_KEY } from '../src/game/storage';
+import { seedUnlockedDinosaur } from './helpers/character-unlocks';
 
 async function spriteBounds(sprite: Locator) {
   return sprite.evaluate(async element => {
@@ -58,6 +59,7 @@ for (const width of [320, 390, 430]) {
     test(`mobiilis on terve ja halva enesetundega tegelane täielikult nähtav (${character}, ${width}px)`, async ({ page }) => {
       await page.setViewportSize({ width, height: 844 });
       await page.goto('/');
+      if (character === 'dinosaur') await seedUnlockedDinosaur(page);
       let player = createPlayerState(character);
       for (const mood of ['well', 'unwell'] as const) {
         player = chooseFood(player, MOCK_FOODS.find(food => food.id === 'berrymuffin')!, 'Humal');
@@ -85,6 +87,7 @@ for (const width of [360, 1440]) {
   test(`tegelase valik säilib kogu seikluses (${width}px)`, async ({ page }) => {
     await page.setViewportSize({ width, height: width === 360 ? 640 : 900 });
     await page.goto('/');
+    await seedUnlockedDinosaur(page);
     await expect(page.getByRole('button', { name: 'Pesukaru', exact: true })).toHaveAttribute('aria-pressed', 'true');
     const raccoon = await expectFullSprite(page.locator('.hero-raccoon'));
     const raccoonSize = await page.locator('.hero-raccoon').boundingBox();
@@ -137,7 +140,9 @@ for (const width of [360, 1440]) {
     await page.getByRole('button', { name: 'Tagasi menüüsse' }).click();
     await page.getByRole('button', { name: 'Uus mäng', exact: true }).click();
     expect(await page.evaluate(() => JSON.parse(localStorage.getItem('pesukaru-seiklus-v1')!).player.character)).toBe('dinosaur');
-    await page.getByRole('button', { name: 'Tagasi', exact: true }).click();
+    await expect(page.getByRole('button', { name: 'Tagasi', exact: true })).toHaveCount(0);
+    await page.getByRole('button', { name: 'Sulge', exact: true }).click();
+    await page.getByRole('dialog', { name: 'Kas soovid avalehele minna?' }).getByRole('button', { name: 'Jah, avalehele', exact: true }).click();
     await page.getByRole('button', { name: 'Pesukaru', exact: true }).click();
     await expect(page.locator('.hero-raccoon')).toHaveAttribute('data-character', 'raccoon');
     await page.reload();

@@ -14,7 +14,7 @@ export function FeedbackModal({ food, previousTotals, moodScore, moodId, meal, o
   const contributions = getFoodContributions(food, previousTotals);
   const excessTreats = isSweetFood(food) && previousTotals.treats >= DAILY_TREAT_LIMIT;
   const title = excessTreats ? 'Suhkrupauk!' : contributions.length > 1 ? 'Hea valik!' : 'Toit valitud!';
-  return <Modal title={title} onClose={onContinue} className="feedback-modal">
+  return <Modal title={title} onClose={onContinue} dismissible={false} className="feedback-modal">
     <div className="choice-feedback">
       <div className="feedback-character"><GameCharacter moodScore={moodScore} moodId={moodId} pose="eat" /></div>
       <h3>{food.name}</h3><p className="choice-points">+{calculateChoiceScore(food, previousTotals, meal)} punkti</p>

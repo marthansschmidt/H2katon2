@@ -2,6 +2,8 @@
 
 Responsiivne eestikeelne häkatonimäng 16–19-aastastele: kolm päeva Tartus, üheksa toiduvalikut, mänguline toidupüramiid ja pesukaru tagasiside.
 
+Alguses on valitav pesukaru. Kolme päeva maksimumskoor (3000 punkti) avab dinosauruse; saavutus salvestatakse brauserisse mänguseisust eraldi ning säilib ka uut mängu alustades. Lõpptulemuse „Mängi uuesti“ viib avalehele, kus saab valida avatud tegelase. Viis tärni üksi dinosaurust ei ava.
+
 Kaart vahetub koos toidukorraga: hommikusöögi ajal on pehme koiduvalgus, lõunasöögi ajal loomulike mahedate värvidega keskpäev ning õhtusöögi ajal hämar linn valgustatud akende ja laternatega. Kõigis kolmes vaates on sama tänavapaigutus ja majad ka kaardi keskel. Söögikohtade mullid kasutavad majade katusepunkte ning kohanduvad ekraani suuruse järgi. Kaardid asuvad failides `public/art/tartu-map-morning.webp`, `public/art/tartu-map-noon-v2.webp` ja `public/art/tartu-map-night.webp`; genereerimispromptid on failis `docs/map-variants-prompts.md`.
 
 ## Kujundus

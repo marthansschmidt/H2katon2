@@ -53,6 +53,17 @@ for (const width of [390, 768, 1440]) {
         }
         await page.getByRole('button', { name: 'Valin selle' }).first().click();
         await expect(page.getByRole('heading', { name: /^(Hea valik!|Toit valitud!|Suhkrupauk!)$/ })).toBeVisible();
+        const feedback = page.locator('.feedback-modal');
+        await expect(feedback.getByRole('button', { name: 'Sulge', exact: true })).toHaveCount(0);
+        await expect(feedback.getByRole('button')).toHaveCount(1);
+        if (day === 1 && meal === 0) {
+          const savedChoice = await page.evaluate(() => localStorage.getItem('pesukaru-seiklus-v1'));
+          await page.keyboard.press('Escape');
+          await expect(feedback).toBeVisible();
+          await page.mouse.click(1, 1);
+          await expect(feedback).toBeVisible();
+          expect(await page.evaluate(() => localStorage.getItem('pesukaru-seiklus-v1'))).toBe(savedChoice);
+        }
         await expect(page.locator('.restaurant-marker')).toHaveCount(4);
         const positionsAfter = await page.locator('.restaurant-marker').evaluateAll(elements => Object.fromEntries(elements.map(element => [element.getAttribute('aria-label'), (element as HTMLElement).style.cssText])));
         expect(Object.keys(positionsAfter)).not.toContain(chosenLabel);

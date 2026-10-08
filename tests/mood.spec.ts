@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { MOCK_FOODS } from '../src/data/mockRestaurants';
 import { SAVE_KEY } from '../src/game/storage';
+import { seedUnlockedDinosaur } from './helpers/character-unlocks';
 
 async function offerFood(page: Page, foodId: string) {
   await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
@@ -24,7 +25,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
       const alternativeArtworkRequests: string[] = [];
       page.on('request', request => { if (new URL(request.url()).pathname.startsWith('/art/moods/')) alternativeArtworkRequests.push(request.url()); });
       await page.goto('/');
-      if (character === 'dinosaur') await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click();
+      if (character === 'dinosaur') { await seedUnlockedDinosaur(page); await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click(); }
       await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
       await page.getByRole('button', { name: 'Alustan!' }).click();
       const status = page.locator('.raccoon-status');
@@ -106,7 +107,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
   test(`final wellbeing records gradual recovery after earlier excess (${character})`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    if (character === 'dinosaur') await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click();
+    if (character === 'dinosaur') { await seedUnlockedDinosaur(page); await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click(); }
     await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
     await page.getByRole('button', { name: 'Alustan!' }).click();
     for (let day = 0; day < 3; day++) {

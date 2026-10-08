@@ -6,7 +6,7 @@ import { GameMapScreen } from './pages/GameMapScreen';
 import { DaySummaryScreen } from './pages/DaySummaryScreen';
 import { FinalSummaryScreen } from './pages/FinalSummaryScreen';
 import { Modal } from './components/Modal';
-import { Button } from './components/Button';
+import { Button, PrimaryButton, SecondaryButton } from './components/Button';
 import { PyramidGuide } from './components/PyramidGuide';
 import { CharacterContext } from './components/GameCharacter';
 import { GameShell } from './components/GameShell';
@@ -16,12 +16,18 @@ import { chooseFood, createPlayerState, nextDay, nextMeal } from './game/state';
 import { foodsForDay, totalsForDay } from './game/foodPyramid';
 import { getMoodForDay } from './game/mood';
 import { loadGame, saveGame } from './game/storage';
+import { hasEarnedDinosaur, loadDinosaurUnlocked, saveDinosaurUnlocked } from './game/characters';
 import { getMealsForRestaurant, getRestaurantById, getRestaurantsForMeal } from './services/restaurantService';
-import type { Food, Restaurant, Screen } from './types/game';
+import type { CharacterId, Food, Restaurant, Screen } from './types/game';
 
 export default function App() {
   const [saved] = useState(loadGame);
-  const [player, setPlayer] = useState(saved?.player ?? createPlayerState());
+  const [dinosaurUnlocked, setDinosaurUnlocked] = useState(() => loadDinosaurUnlocked()
+    || !!(saved && (saved.screen === 'final' || saved.resumeScreen === 'final') && hasEarnedDinosaur(saved.player)));
+  const [player, setPlayer] = useState(() => {
+    const restored = saved?.player ?? createPlayerState();
+    return restored.character === 'dinosaur' && !dinosaurUnlocked ? { ...restored, character: 'raccoon' as const } : restored;
+  });
   const [screen, setScreen] = useState<Screen>(saved?.screen ?? 'home');
   const [resumeScreen, setResumeScreen] = useState<Screen>(saved?.resumeScreen ?? 'tutorial');
   const [hasStarted, setHasStarted] = useState(saved?.started ?? false);
@@ -35,6 +41,7 @@ export default function App() {
   const [menuError, setMenuError] = useState<string | null>(null);
   const [retry, setRetry] = useState(0);
   const [mobileNav, setMobileNav] = useState(false);
+  const [confirmHome, setConfirmHome] = useState(false);
   const [storageAvailable, setStorageAvailable] = useState(true);
   const requestId = useRef(0);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -43,6 +50,12 @@ export default function App() {
   const restaurantIdsKey = player.restaurantIds.join(',');
 
   useEffect(() => { setStorageAvailable(saveGame(player, screen, resumeScreen, hasStarted)); }, [player, screen, resumeScreen, hasStarted]);
+  useEffect(() => {
+    if (screen === 'final' && hasEarnedDinosaur(player)) setDinosaurUnlocked(true);
+  }, [screen, player]);
+  useEffect(() => {
+    if (dinosaurUnlocked && !saveDinosaurUnlocked()) setStorageAvailable(false);
+  }, [dinosaurUnlocked]);
   useEffect(() => { mainRef.current?.focus({ preventScroll: true }); window.scrollTo({ top: 0, behavior: 'instant' }); setMobileNav(false); }, [screen, dayNumber]);
   useEffect(() => {
     if (screen !== 'map') return;
@@ -66,6 +79,19 @@ export default function App() {
 
   const goTo = (nextScreen: Screen) => { setScreen(nextScreen); if (nextScreen !== 'home') setResumeScreen(nextScreen); };
   const openPyramid = () => setGuide('pyramid');
+  function selectCharacter(character: CharacterId) {
+    if (character === 'dinosaur' && !dinosaurUnlocked) return;
+    setPlayer(previous => ({ ...previous, character }));
+  }
+  function leaveForHome() {
+    requestId.current++; setSelected(null); setGuide(null); setConfirmHome(false); setMobileNav(false);
+    goTo('home');
+  }
+  function requestHome() {
+    if (screen === 'home' || screen === 'final') { leaveForHome(); return; }
+    mainRef.current?.focus({ preventScroll: true });
+    setMobileNav(false); setConfirmHome(true);
+  }
   function startGame() {
     requestId.current++; setSelected(null); setRestaurants([]); setError(null);
     setPyramidReminder(0);
@@ -106,17 +132,20 @@ export default function App() {
     if (dayNumber === 3) goTo('final');
     else { setRestaurants([]); setPlayer(previous => nextDay(previous)); goTo('map'); }
   }
-  return <CharacterContext.Provider value={player.character}><GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={() => goTo('home')} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }}>
+  return <CharacterContext.Provider value={player.character}><GameShell screen={screen} mainRef={mainRef} menuOpen={mobileNav} onMenu={() => setMobileNav(v => !v)} onHome={requestHome} onTutorial={() => { setMobileNav(false); setGuide('tutorial'); }}>
     <>
-      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={openPyramid} hasStarted={hasStarted} character={player.character} onCharacterChange={character => setPlayer(previous => ({ ...previous, character }))} />}
-      {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={() => goTo('home')} />}
+      {screen === 'home' && <HomeScreen onStart={startGame} onTutorial={() => setGuide('tutorial')} onPyramid={openPyramid} hasStarted={hasStarted} character={player.character} dinosaurUnlocked={dinosaurUnlocked} onCharacterChange={selectCharacter} />}
+      {screen === 'tutorial' && <TutorialScreen onBegin={() => goTo('map')} onBack={requestHome} />}
       {screen === 'map' && <GameMapScreen player={player} restaurants={restaurants} onRestaurant={r => void openRestaurant(r)} onPyramid={() => { setPyramidReminder(0); openPyramid(); }} pyramidReminder={pyramidReminder} loading={loading} error={error} onRetry={() => setRetry(v => v + 1)} />}
       {screen === 'daySummary' && <DaySummaryScreen player={player} onNext={advanceDay} onPyramid={openPyramid} />}
-      {screen === 'final' && <FinalSummaryScreen player={player} onRestart={startGame} onHome={() => goTo('home')} onPyramid={openPyramid} />}
+      {screen === 'final' && <FinalSummaryScreen player={player} onRestart={leaveForHome} onHome={requestHome} onPyramid={openPyramid} />}
     </>
     {selected && <RestaurantModal restaurant={selected} foods={player.offers[selected.id] ?? []} totals={player.foodGroupTotals} meal={player.currentMeal} loading={foodsLoading} error={menuError} onChoose={selectFood} onClose={() => { requestId.current++; setSelected(null); }} />}
     {currentFood && <FeedbackModal food={currentFood} previousTotals={totalsForDay({ ...player.days[dayNumber - 1], [player.currentMeal]: undefined })} moodScore={player.moodScore} moodId={getMoodForDay(player.days).id} meal={player.currentMeal} onContinue={continueAfterFood} />}
     {guide && <Modal title={guide === 'tutorial' ? 'Kuidas mängida?' : 'Toidupüramiid'} className={guide === 'pyramid' ? 'pyramid-guide-modal' : guide === 'tutorial' ? 'tutorial-guide-modal' : ''} onClose={() => setGuide(null)}>{guide === 'tutorial' ? <div className="tutorial-guide"><TutorialSteps /><Button onClick={() => setGuide(null)}>Sain aru! <ArrowRight size={18} /></Button></div> : <PyramidGuide totals={player.foodGroupTotals} />}</Modal>}
+    {confirmHome && <Modal title="Kas soovid avalehele minna?" className="home-confirm-modal" showCloseButton={false} onClose={() => setConfirmHome(false)}>
+      <div className="home-confirm-actions"><PrimaryButton onClick={() => setConfirmHome(false)}>Jätka mängu</PrimaryButton><SecondaryButton onClick={leaveForHome}>Jah, avalehele</SecondaryButton></div>
+    </Modal>}
     {!storageAvailable && <div className="storage-note" role="status">Brauser ei luba mängu salvestada. Seiklus jätkub selles aknas.</div>}
   </GameShell></CharacterContext.Provider>;
 }

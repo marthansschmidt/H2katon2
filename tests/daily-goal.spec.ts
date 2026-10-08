@@ -3,6 +3,7 @@ import { DAILY_GOAL_EXPLANATION, REQUIRED_FOOD_GROUPS } from '../src/data/foodGr
 import { getFoodGoalGain } from '../src/game/foodPyramid';
 import { MOCK_FOODS } from '../src/data/mockRestaurants';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from '../src/game/state';
+import { DINOSAUR_UNLOCK_KEY } from '../src/game/characters';
 
 for (const width of [390, 1440]) {
   test(`greatest of three choices fills all daily goals for three days (${width}px)`, async ({ page }) => {
@@ -56,6 +57,7 @@ for (const width of [390, 1440]) {
       await expect(page.locator('.summary-screen').getByText(DAILY_GOAL_EXPLANATION, { exact: true })).toHaveCount(0);
       await expect(page.getByRole('heading', { name: 'Mida täna avastasime?' })).toHaveCount(0);
       if (day === 1) await page.screenshot({ path: `test-results/perfect-day-${width}.png`, fullPage: true, animations: 'disabled' });
+      expect(await page.evaluate(key => localStorage.getItem(key), DINOSAUR_UNLOCK_KEY)).toBeNull();
       await page.getByRole('button', { name: day < 3 ? 'Järgmine päev' : 'Vaata lõpptulemust', exact: true }).click();
     }
     await expect(page.locator('.final-screen')).toBeVisible();
@@ -68,6 +70,20 @@ for (const width of [390, 1440]) {
     await expect(page.locator('.rating-star.is-earned')).toHaveCount(5);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: `test-results/final-rating-${width}.png`, fullPage: true, animations: 'disabled' });
+    await expect(page.locator('.character-unlock-reward')).toContainText('Dinosaurus on avatud!');
+    expect(await page.evaluate(key => localStorage.getItem(key), DINOSAUR_UNLOCK_KEY)).toBe('true');
+    await page.getByRole('button', { name: 'Mängi uuesti', exact: true }).click();
+    await expect(page.locator('.home-screen')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Dinosaurus', exact: true })).toBeEnabled();
+    await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click();
+    await expect(page.locator('.hero-raccoon')).toHaveAttribute('data-character', 'dinosaur');
+    await page.getByRole('button', { name: 'Uus mäng', exact: true }).click();
+    const fresh = await page.evaluate(() => JSON.parse(localStorage.getItem('pesukaru-seiklus-v1')!).player);
+    expect(fresh.score).toBe(0);
+    expect(fresh.character).toBe('dinosaur');
+    await page.reload();
+    await expect(page.locator('.tutorial-step .raccoon')).toHaveAttribute('data-character', 'dinosaur');
+    expect(await page.evaluate(key => localStorage.getItem(key), DINOSAUR_UNLOCK_KEY)).toBe('true');
   });
 }
 
