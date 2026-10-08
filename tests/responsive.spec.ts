@@ -5,7 +5,7 @@ import { SAVE_KEY } from '../src/game/storage';
 import { MEAL_ORDER, type Screen } from '../src/types/game';
 
 const viewports = [
-  [320, 568], [360, 640], [390, 844], [430, 932], [600, 960],
+  [320, 568], [360, 640], [390, 844], [430, 932], [600, 960], [606, 846],
   [725, 846], [768, 1024], [1024, 768], [568, 320], [667, 375], [844, 390], [1280, 720], [1440, 900],
   [1920, 1080], [2560, 1440],
 ];
@@ -104,16 +104,22 @@ for (const [width, height] of viewports) {
     expect(menuButton!.x + menuButton!.width, 'menu button stays in the screen corner').toBeCloseTo(width - 16, 0);
     expect(menuButton!.y, 'menu button stays at the top').toBeCloseTo(width < 840 ? 12 : 20, 0);
     const phone = await page.getByRole('button', { name: 'Ava toidupüramiid' }).boundingBox();
-    expect(phone!.x + phone!.width).toBeCloseTo(width - 16, 0);
-    expect(phone!.y + phone!.height).toBeCloseTo(height - 16, 0);
+    if (width < 600) {
+      expect(phone!.x + phone!.width).toBeCloseTo(width - 16, 0);
+      expect(phone!.y + phone!.height).toBeCloseTo(height - 16, 0);
+    } else {
+      const controls = await page.locator('.map-bottom-controls').boundingBox();
+      expect(controls!.x + controls!.width / 2, 'bottom controls center on tablet and desktop').toBeCloseTo(width / 2, 0);
+      expect(phone!.x - dock!.x - dock!.width, 'phone sits right of the mood card with a gap').toBeCloseTo(16, 0);
+      expect(phone!.y + phone!.height / 2, 'phone centers vertically beside the mood card').toBeCloseTo(dock!.y + dock!.height / 2, 0);
+      expect(phone!.height, 'phone matches the mood card height').toBeCloseTo(dock!.height, 0);
+    }
     if (width < 600) {
       expect(dock!.x, 'mood card aligns left').toBeCloseTo(16, 0);
       const moodCard = await page.locator('.raccoon-status').boundingBox();
       expect(moodCard!.height, 'mood card matches the phone height').toBeCloseTo(phone!.height, 0);
       expect(moodCard!.y, 'mood card aligns with the phone').toBeCloseTo(phone!.y, 0);
       expect(moodCard!.width, 'mood card keeps its width and spacing').toBeCloseTo(Math.min(414, width - 104), 0);
-    } else {
-      expect(dock!.x + dock!.width / 2).toBeCloseTo(width / 2, 0);
     }
     if (width < 840) {
       expect(header!.x, 'day controls align left').toBeCloseTo(16, 0);
@@ -127,7 +133,7 @@ for (const [width, height] of viewports) {
       expect(dayOverview!.x + dayOverview!.width, 'day stays clear of the meal').toBeLessThanOrEqual(meal!.x);
       expect(meal!.x + meal!.width, 'meal stays clear of the score').toBeLessThanOrEqual(score!.x);
     }
-    expect(dock!.x + dock!.width).toBeLessThan(phone!.x);
+    if (width < 600) expect(dock!.x + dock!.width).toBeLessThan(phone!.x);
     await expect(page.getByText('Toidupüramiidi täituvus', { exact: true })).toHaveCount(0);
     for (const marker of markers) {
       expect(marker.x).toBeGreaterThanOrEqual(0);

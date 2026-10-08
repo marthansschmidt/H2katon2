@@ -31,6 +31,7 @@ export function HomeScreen({ onStart, onTutorial, onPyramid, hasStarted, charact
         <PrimaryButton onClick={onStart} className="start-button"><PlaySolid size={24} />{hasStarted ? 'Uus mäng' : 'Alusta mängu'}</PrimaryButton>
         <div className="home-secondary-actions"><SecondaryButton onClick={onTutorial}><OpenBook size={25} />Kuidas mängida?</SecondaryButton><SecondaryButton onClick={onPyramid} aria-label="Avasta toidupüramiidi"><Triangle size={25} />Toidupüramiid</SecondaryButton></div>
       </div>
+      <footer className="home-footer"><p>Mäng on loodud häkatoni raames VSo25 ja UX25 koostööprojektina.</p><p>Mängu autorid on Märt, Aksel, Anete ja Adeele.</p><p><strong>VOCO 2026</strong></p></footer>
     </section>
   </main>;
 }
