@@ -8,8 +8,8 @@ Mäng on loodud häkatoni raames VSo25 ja UX25 koostööprojektina.
 
 | Rühm | Autorid |
 | --- | --- |
-| VSo25 | Märt Hansschmidt ja Aksel Müür |
-| UX25 | Anete Leppik ja Adeele Jago |
+| VSo25 | Märt ja Aksel |
+| UX25 | Anete ja Adeele |
 
 ## Mängimine
 
