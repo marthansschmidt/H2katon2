@@ -1,75 +1,142 @@
 # Toiduseiklus
 
-Responsiivne eestikeelne häkatonimäng 16–19-aastastele: kolm päeva Tartus, üheksa toiduvalikut, mänguline toidupüramiid ja pesukaru tagasiside.
+Toiduseiklus on eestikeelne hariduslik brauserimäng 16–19-aastastele. Mängija veedab oma tegelasega kolm päeva Tartus, valib hommiku-, lõuna- ja õhtusöögi ning kogub toidupüramiidi mummusid. Eesmärk on teha mitmekesiseid toiduvalikuid ja täita iga päeva kuue põhigrupi eesmärgid.
 
-Alguses on valitav pesukaru. Kolme päeva maksimumskoor (3000 punkti) avab dinosauruse; saavutus salvestatakse brauserisse mänguseisust eraldi ning säilib ka uut mängu alustades. Lõpptulemuse „Mängi uuesti“ viib avalehele, kus saab valida avatud tegelase. Viis tärni üksi dinosaurust ei ava.
+Mäng on loodud häkatoni raames VSo25 ja UX25 koostööprojektina.
 
-Kaart vahetub koos toidukorraga: hommikusöögi ajal on pehme koiduvalgus, lõunasöögi ajal loomulike mahedate värvidega keskpäev ning õhtusöögi ajal hämar linn valgustatud akende ja laternatega. Kõigis kolmes vaates on sama tänavapaigutus ja majad ka kaardi keskel. Söögikohtade mullid kasutavad majade katusepunkte ning kohanduvad ekraani suuruse järgi. Kaardid asuvad failides `public/art/tartu-map-morning.webp`, `public/art/tartu-map-noon-v2.webp` ja `public/art/tartu-map-night.webp`; genereerimispromptid on failis `docs/map-variants-prompts.md`.
+## Autorid
 
-## Kujundus
+| Rühm | Autorid |
+| --- | --- |
+| VSo25 | Märt Hansschmidt ja Aksel Müür |
+| UX25 | Anete Leppik ja Adeele Jago |
 
-Mäng täidab ekraani laiuse ja vähemalt ekraani kõrguse. Telefonis paikneb sisu ühes veerus; tahvlil ja arvutis kasutavad avaleht, juhend, menüü ja lõpptulemus mitut veergu. Päevakokkuvõte läheb kahte veergu alates 900 px laiusest, et menüükaardid jääksid loetavaks. Avaleht kasutab täisekraanilist Tartu stseeni, erksat mängulogo ning suuri ruumilisi nuppe. Kreemitaust, rohelised tegevusnupud, ümarad kaardid ja värvilised progressimummud moodustavad ühise süsteemi. Kaardivaates püsib pesukaru staatusekaart all nähtaval ning söögikohtade nupud paiknevad ülemiste juhtnuppude ja staatusekaardi vahel. Madalas rõhtvaates on kaardinupud ühes reas. Juhendis ja päevakokkuvõttes on kleepuv tegevusnupp. Restoranimenüü täidab telefoni ekraani ning pikem sisu kerib dialoogi sees.
+## Mängimine
 
-Ühised komponendid: `GameShell`, `MobileHeader`, `PrimaryButton`, `SecondaryButton`, `Card`, `FoodCard`, `RestaurantMarker`, `RaccoonStatus`, `FoodGroupDot`, `FoodGroupProgress`, `DayProgress`, `MealBadge`, `FeedbackModal` ja `SummaryCard`. Värvid, vahed, nurgad ja varjud on määratud failis `src/styles.css`. Nunito fondifail on kohalik (`public/fonts/`), SIL Open Font License on kõrval failis `OFL.txt`. Vähendatud animatsioonide eelistust ja telefoni turvaalasid arvestatakse CSS-is. Mänguloogika ja toitumisvahemikud jäid kujundustöö käigus samaks.
+1. Vali tegelane ja alusta uut mängu. Esialgu saab mängida pesukaruga.
+2. Igal toidukorral ilmub kaardile viis söögikohta. Ava sobiv koht ja vali selle kolmest toidust üks.
+3. Toiduvaliku järel näed lisanduvaid mummusid, punkte ja tegelase enesetundele vastavat pilti. Nupp „Jätka“ viib järgmisele toidukorrale või päeva kokkuvõttesse.
+4. Telefoniikoon avab toidupüramiidi, kust saad vaadata päeva edenemist ja gruppide selgitusi.
+5. Pärast õhtusööki näed päeva menüüd ja kokkuvõtet. Kolmanda päeva järel kuvatakse koguskoor, tärnid, lõpu enesetunne ning soovitus järgmiseks seikluseks.
+
+Mäng kasutab 12 Tartu söögikoha nimesid ja logosid: Werner, Joyce, Kolm Tilli, Hõlm, Aparaat, La Dolce Vita, Humal, Kampus, Pompei, Fii, Vilde ja Vine ning Tacora. Mängu 40 toitu ja nende menüüdesse jaotamine on näidisandmed, mitte söögikohtade tegelikud päevapakkumised.
+
+Söögikohad loositakse iga toidukorra jaoks uuesti. Eelistatakse varem näitamata kohti ja järjestikused viisikud ei kattu praeguse 12 söögikohaga andmestiku puhul. Sama toidukorra kohad ja avatud menüüde valikud säilivad lehe värskendamisel.
+
+Menüüd arvestavad toidukorda ja päeva puuduvaid mummusid. Igas menüüs on üks valik, mis annab rohkem uusi põhigruppide mummusid kui teised kaks. Kuni päeva eesmärk on veel saavutatav, säilitab see valik võimaluse täita kõik põhigrupid kolme toidukorraga.
+
+## Toidupüramiid ja punktid
+
+| Toidugrupp | Päeva eesmärk |
+| --- | ---: |
+| Köögiviljad | 4 mummu |
+| Puuviljad ja marjad | 4 mummu |
+| Teraviljatooted ja kartul | 4 mummu |
+| Piim ja piimatooted | 3 mummu |
+| Kala, muna, liha ja muud valguallikad | 2 mummu |
+| Lisatavad toidurasvad, pähklid ja seemned | 3 mummu |
+| Maiustused ja näksid | Valikuline, mängupiir 1 mummu |
+
+Iga uus põhigrupi mummu annab **50 punkti**. Täidetud põhigrupp enam mummusid ega punkte juurde ei saa. Päeva maksimum on **1000 punkti** ja kolme päeva maksimum **3000 punkti**. Toidukaardid ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid, arvestades juba täidetud gruppe.
+
+Maiustuste ja näkside mummud punkte ei anna. Iga neid sisaldav toiduvalik lisab ühe näksimummu, ka pärast mängupiiri täitumist. Kolme toidukorraga võib neid koguneda kuni kolm. Selgitus tuletab meelde, et ühest korrast päevas piisab. Magusaid valikuid pakuvad Werner, Kolm Tilli, Humal, Kampus, Fii ning Vilde ja Vine; nende menüüdes on igal toidukorral vähemalt üks magus valik. Magusat saab valida ka korduvalt.
+
+Lõpptulemuse tärnid sõltuvad koguskoorist:
+
+| Tärne | Punktid |
+| --- | --- |
+| 1 | 0–599 |
+| 2 | 600–1199 |
+| 3 | 1200–1799 |
+| 4 | 1800–2399 |
+| 5 | 2400–3000 |
+
+## Enesetunne ja tegelased
+
+Mängus on kaks nähtavat enesetunde olekut. Kaardi enesetundekaart näitab teksti **„Hea ja värske olla“** või **„Suhkru üledoos“** ning sellele vastavat tegelase portreed. Päeva kokkuvõttes ütleb tegelane „Mul on hea olla“ või „Mul on paha olla“. Lõpptulemuses on enesetunde plokis ainult roheline või kollane süda ja hetke olek „Hea olla“ või „Kõht on paha“.
+
+Üle ühe näksimummu kogumine teeb tegelase enesetunde halvaks. Halb enesetunne kandub järgmisse päeva, kuigi päeva püramiid alustab tühjalt. Toidukord, mis lisab mummusid vähemalt kolmest põhigrupist, aitab taastuda, kui selle päeva näkside piir pole ületatud. Sisemine enesetunde skoor muutub järk-järgult, kuni 14 punkti toidukorra kohta. Portree ja muud tegelasepildid muutuvad koos enesetundega.
+
+Toiduvaliku kinnitusakna pealkiri on mitmesse gruppi mummusid lisava valiku korral „Hea valik!“, ühe või nulli grupi korral „Toit valitud!“. Päeva teise ja kolmanda magusa valiku puhul kuvatakse „Suhkrupauk!“. Sellest aknast saab lahkuda ainult nupuga „Jätka“.
+
+**Dinosaurus avaneb lõpetatud mängu maksimumskooriga: 3000 punkti.** Viie tärni teenimisest üksi ei piisa. Avamine salvestatakse brauserisse mänguseisust eraldi ja säilib uut mängu alustades. „Mängi uuesti“ viib avalehele, kus saab valida pesukaru või avatud dinosauruse. Lukustatud dinosauruse avamise juhis ilmub arvutis sellele liikudes ja mobiilis puudutades.
+
+## Kasutajaliides ja salvestamine
+
+Mäng kohandub telefoni, tahvelarvuti ja arvuti ekraanile. Kaardi valgus muutub koos toidukorraga: hommikul on koiduvalgus, lõunal päevavalgus ja õhtul valgustatud akendega hämar linn. Kreemjad kaardid, rohelised tegevusnupud ja värvilised mummud läbivad kõiki vaateid.
+
+Söögikohtade logod on kaardimullides läbipaistva taustaga. Menüü bänneril on logo loetavuse jaoks kreemjas taust. Bänneri nimeinfo avaneb arvutis sellele liikudes ning mobiilis puudutades. Kujundus arvestab telefoni turvaalasid ja vähendatud animatsioonide eelistust.
+
+Mängu ajal avalehele liikudes küsitakse kinnitust: „Kas soovid avalehele minna?“. Valikud on „Jätka mängu“ ja „Jah, avalehele“.
+
+Mänguseis, tegelase valik ja dinosauruse avamine salvestatakse brauseri `localStorage`-isse. Lehe värskendamine taastab mängu seisu ja toiduvalikutest arvutatud enesetunde. Uus mäng nullib päevad, punktid ja menüüd, kuid säilitab avatud dinosauruse. Kui brauser salvestamist ei luba, saab mängida samas aknas, kuid seis ei säili pärast lehe sulgemist või värskendamist.
 
 ## Käivitamine
+
+Projekt kasutab React 19, TypeScripti ja Vite'i. Arendamiseks on vaja Node.js-i ja npm-i.
 
 ```sh
 npm install
 npm run dev
 ```
 
-Vite kuvab kohaliku aadressi. Tootmisversioon: `npm run build`; selle eelvaade: `npm run preview`.
+Ava terminalis kuvatud kohalik aadress, tavaliselt `http://localhost:5173`.
+
+Tootmisversiooni koostamine ja eelvaade:
+
+```sh
+npm run build
+npm run preview
+```
 
 ## Kontrollimine
 
 ```sh
 npm test
 npx playwright install chromium
-npx playwright test
+npm run test:e2e
 ```
 
-Loogikatestid kontrollivad andmete piisavust, juhuvalikut, nähtud toitude eelistusi, kõiki üheksat valikut, päevade vahetust, skoori, enesetunde muutuse piiramist ja tagasisidet. Päeva eesmärgi testid kontrollivad kõiki võiduni viivaid valikute algusi kõigis 12 restoranis, nõrgemaid valikuid ning vana veegrupiga salvestuse taastamist. Brauseritestid läbivad mängu telefoni-, tahvelarvuti- ja arvutivaates, kontrollivad värskendamise järel jätkamist, menüü püsimist ning mängu nullimist. Mobiilitestid kontrollivad lisaks 375 ja 430 px puuteekraanidel nupusuurusi, püsivat progressikaarti ning dialoogide kerimist ja sulgemist. `tests/responsive.spec.ts` kontrollib kõiki vaateid ja dialooge 14 ekraanisuurusel, alates 320 × 568 telefonist ja 568 × 320 rõhtvaatest kuni 2560 × 1440 arvutiekraanini. Kontrollitakse ekraani täitmist, teksti ja dialoogide ülevoolu, kaardinuppude kattumist ja staatusekaardi taha jäämist ning kõnemulli loetavust. Ekraanipildid salvestatakse kausta `test-results/`.
+Vitesti testid kontrollivad mänguolekut, menüüde koostamist, punktiarvestust, püramiidi, enesetunnet, salvestamist ja dinosauruse avamise tingimusi. Playwrighti brauseritestid kontrollivad mängu läbimist eri ekraanisuurustel, puute- ja hiiretoiminguid, piltide kuvamist, dialooge, värskendamise järel jätkamist ning dinosauruse avamist. Playwright käivitab vajaduse korral kohaliku Vite'i serveri; ekraanipildid salvestatakse kausta `test-results/`.
 
 ## Projekti ülesehitus
 
-- `src/types/game.ts`: TypeScripti andmemudelid.
-- `src/data/`: 12 fiktiivset restorani, 40 erinevat toitu, 6 põhigruppi ja valikuline maiustuste grupp. Igal restoranil on näidismenüü; toidukorra kolm valikut kohandatakse päeva puuduvate mummude järgi.
-- `src/services/restaurantService.ts`: vahetatav `RestaurantProvider`, praegune `MockRestaurantProvider` ja UI kasutatavad asünkroonsed teenusefunktsioonid, restoranide ja toidumenüüde jaoks.
-- `src/game/`: juhuvalik, püramiidi arvutused, skoor, enesetunne, tagasiside, oleku muutused ja kohalik salvestamine.
-- `src/components/`: korduvkasutatav kasutajaliides ja kohalikud pixel-art illustratsioonid.
-- `src/pages/`: peamenüü, juhend, kaart, päeva kokkuvõte ja lõpptulemus.
+| Asukoht | Sisu |
+| --- | --- |
+| `src/App.tsx` | Vaadete vahetus, mänguseis ja dialoogide juhtimine |
+| `src/pages/` | Avaleht, juhend, kaart, päeva kokkuvõte ja lõpptulemus |
+| `src/components/` | Nupud, kaardid, püramiid, tegelased ja dialoogid |
+| `src/game/` | Menüüde koostamine, skoor, enesetunne, tegelaste avamine ja salvestamine |
+| `src/data/` | Söögikohad, 40 toitu, toidugrupid ja piltide seosed |
+| `src/services/restaurantService.ts` | Söögikohtade ja menüüde andmeallika liides |
+| `src/types/game.ts` | TypeScripti andmemudelid |
+| `src/styles.css` | Ühine kujundus ja ekraanisuurustele kohandumine |
+| `public/art/` ja `public/logos/` | Tegelased, toidupildid, linnavaated, bännerid ja logod |
+| `public/fonts/` | Kohalik Nunito font koos SIL Open Font License'i failiga |
+| `docs/` | Illustratsioonide genereerimispromptid ja logode dokumentatsioon |
+| `tests/` | Playwrighti brauseritestid; loogikatestid asuvad lähtekoodi kõrval |
+| `exports/` | Toitude visuaalne HTML- ja PDF-ülevaade |
 
-Kõigil 40 menüütoidul on oma nimele ja koostisosadele vastav läbipaistva taustaga 320 × 320 PNG kaustas `public/art/foods/`. Fail `src/data/foodImages.ts` seob pildid toidu ID-ga; menüü ja päevakokkuvõte kasutavad sama pilti ka varem salvestatud mängudes. Pildid loodi sisseehitatud imagegen-tööriistaga; genereerimispromptid on failis `docs/food-images-prompts.md`.
+Praegune `MockRestaurantProvider` kasutab kohalikke näidisandmeid. Teise andmeallika ühendamiseks saab luua `RestaurantProvider` liidest täitva teenuse ja ühendada selle `setRestaurantProvider()` kaudu. Rakendus ei vaja taustaserverit ega välist API-t. Fondid ja pildid serveeritakse kohalikult.
 
-Kaustas `public/art/` on ka pesukaru nelja poosi atlas, üldine 15 pildiga toiduatlas püramiidi jaoks, taimse võileiva lisapilt ning kolm Tartu stseeni. Atlased ja kaardid loodi imagegen-tööriistaga ja pakiti WebP-vormingusse algses resolutsioonis. SVG viewBox eraldab atlasest vajalikud tegelased ja toidud; HTML-tekstid ja nupud jäävad interaktiivseteks elementideks. Nende genereerimispromptid on failis `docs/art-prompts.md`.
+Illustratsioonid on loodud imagegen-tööriistaga; lähteülesanded ja piltide kirjeldused asuvad kaustas `docs/`. Tegelaste atlasest valitakse poosid SVG `viewBox`-iga. Söögikohtade bännerid on kunstilised tõlgendused, mitte fotod tegelikest interjööridest.
 
-Kaustas `public/art/moods/` on kolm läbipaistva taustaga 512 × 512 pesukaru pilti: murelik, väsinud ja turgutust vajav. Need loodi imagegeniga algse atlase järgi; promptid on failis `docs/raccoon-moods-prompts.md`. Mängus on kaks enesetunde olekut: „Hea olla“ ja „Kõht on paha“. Kaardi portree, toiduvaliku kinnituspilt ning päeva- ja lõppkokkuvõtte tegelane kasutavad olekule vastavat rõõmsat või halva enesetunde pilti. Dinosauruse väsinud ja halva enesetunde poos on failis `public/art/moods/dinosaur-unwell.png`, loodud sisseehitatud imagegeniga; prompt on failis `docs/dinosaur-unwell-prompt.md`. Halva enesetunde kaardiportree näitab sama tegelase nägu lähemalt; taastumisel tuleb rõõmus portree tagasi. Algus-, söömis- ja lõpupoosid säilivad. Enesetunde arvutus, tekstid ja vihjed kasutavad toiduvalikutest sõltuvaid enesetunde olekuid.
+## Toitude visuaalne ülevaade
 
-Kõigil 12 söögikohal on oma 1200 × 400 WebP-bänner kaustas `public/art/restaurants/`. Bännerid loodi imagegeniga mängu pildistiilis, lähtudes söögikohtade üldisest iseloomust; need on kunstilised tõlgendused. Toiduvaliku vaate ülaosas on valitud söögikoha bänner ja olemasolev logo. `src/data/restaurantBanners.ts` seob pildid säilitatud restorani ID-dega. Genereerimispromptid ja inspiratsiooniallikad on failis `docs/restaurant-banners-prompts.md`.
+- [PDF-ülevaade](exports/toidud-ulevaade.pdf)
+- [HTML-ülevaade](exports/toidud-ulevaade.html)
 
-Komponendid ei impordi mock-restoranide andmeid. Tulevase REST-integratsiooni jaoks loo `RestaurantProvider` liidest täitev `ApiRestaurantProvider` ja ühenda see `setRestaurantProvider()` kaudu. Ülejäänud mäng ei vaja andmeallika vahetamisel muudatusi. Praegune rakendus ei kasuta scrapingut, päevapakkumised.ee-d, taustaserverit ega väliseid API-sid. Kõik fondid ja illustratsioonid töötavad lokaalselt; infoallika link avatakse ainult mängija soovil.
+Ülevaates on kõik 40 toitu koos pildi, kirjelduse, sobivate toidukordade, punktide ja lisanduvate mummudega **tühja päevapüramiidi korral**. Mängu edenedes võib tegelik juurdekasv olla väiksem, sest täidetud põhigrupid rohkem mummusid ei kogu. HTML-fail sisaldab pilte ja fonti ning on eraldi avatav ja prinditav.
 
-## Mängureeglid
+Ülevaate uuesti loomiseks käivita esmalt arendusserver ning teises terminalis:
 
-Pärast toidu kinnitamist kaob valitud söögikoht sama toidukorra kaardilt. Teiste mullide asukohad jäävad paigale ning kinnitatud toidukorra menüüd ei saa uuesti avada. Peitmine säilib lehe värskendamisel. Järgmisele toidukorrale liikudes loositakse kõik viis söögikohta uuesti ning menüüd tühjendatakse.
+```sh
+npx playwright install chromium
+node scripts/export-food-catalog.mjs
+```
 
-Magusat pakuvad mängus Werner, Kolm Tilli, Humal, Kampus, Fii ja Vilde ja Vine. Nende menüüs on iga toidukorra ajal vähemalt üks magus valik; ülejäänud söögikohtade menüüs maiustustega toite ei ole. Igas kaardile loositud viisikus on mõlemat tüüpi söögikohti. Varem söödud magusad toidud jäävad järgmiste toidukordade menüüdes lubatuks, arvestades toidu sobivust hommiku-, lõuna- või õhtusöögiks. Põhigruppide mummud ja skoor on endiselt piiratud päeva eesmärkidega; maiustuste mummud võivad üle piiri koguneda; iga söödud magusa toidu tegelik kogus mõjutab enesetunnet ka pärast valikulise maiustuste mummu täitumist.
-
-Päevas on kolm kohustuslikku toiduvalikut. Viis restorani loositakse iga hommiku-, lõuna- ja õhtusöögi jaoks. Eelmise toidukorra kohad jäetakse kõrvale ning ülejäänute seas eelistatakse varem näitamata kohti. 12 restoraniga võivad varasemate voorude kohad hiljem tagasi tulla, kuid järjestikused viisikud ei kattu. Väiksema andmeallika puhul on puuduvate alternatiivide asemel lubatud kordused. Loositud kohtade komplekt ja avatud menüüd püsivad sama toidukorra jooksul ka lehe värskendamisel. `usedFoodIds` salvestab nähtud menüütoidud; uued menüüd eelistavad nägemata toite, kuid sobivate valikute lõppedes on kordused lubatud.
-
-Päeva eesmärgid on köögiviljad 4, puuviljad 4, teraviljad 4, piimatooted 3, valguallikad 2 ja toidurasvad 3 mummu. Kõigi kuue põhigrupi read on kolme sobiva toiduga täidetavad. Maiustuste ja näkside päeva mängupiir on üks mummu, kuid tegelik kogus võib seda ületada. Iga magus toiduvalik lisab kuni ühe maiustuste mummu, ka teisel ja kolmandal toidukorral. Päevas saab nii koguneda kuni kolm mummu. Üle piiri mummud kuvatakse püramiidis eraldi ning need ei mõjuta põhigruppide eesmärgi täituvust ega anna lisapunkte; vee ja jookide gruppi mängus praegu ei ole.
-
-Igas söögikohas on kolm eri toitu, millest üks lisab rangelt rohkem puuduvaid põhigruppide mummusid kui ülejäänud kaks. Menüü koostamisel kontrollitakse ka ülejäänud toidukordi: parim valik säilitab võimaluse kõik kuus eesmärki täita. Kahe väiksema mummude juurdekasvuga valiku seas eelistatakse toite, mis seda võimalust ei säilita; magusat pakkuvas söögikohas jäetakse menüüsse alati magus valik. Vajaduse korral täiendatakse restorani näidismenüüd kogu toidukataloogist. Valikud segatakse juhuslikku järjekorda ja salvestatakse toidukorra lõpuni. Pärast nõrgemat valikut on järgmistel toidukordadel endiselt üks suurima võimaliku juurdekasvuga valik.
-
-Täidetud põhigrupi rida rohkem mummusid ei kogu. Maiustuste ja näkside rida kogub ühe mummu iga magusa valiku eest ka üle päeva piiri. Toidukaart ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid. Iga uus põhigrupi mummu annab 50 punkti; kõik 20 põhigrupi mummu annavad kokku 1000 punkti. Kolme päeva maksimum on 3000 punkti. Lõpptulemuse hinnang on 1–5 tärni: 1 tärn 0–599, 2 tärni 600–1199, 3 tärni 1200–1799, 4 tärni 1800–2399 ja 5 tärni 2400–3000 punkti eest. Lõppekraan näitab viit tärni, millest teenitud tärnid on kuldsed. Varasemate salvestuste toitude mummud ja punktid viiakse uutele eesmärkidele vastavusse; pooleli jäänud menüüd koostatakse uuesti. Enesetunne muutub sujuvalt, kuni 14 punkti toidukorra kohta. Päevakokkuvõte näitab täidetud ridu ja puuduvaid gruppe; lõpptulemus näitab koguskoori, tärne, seikluse lõpu enesetunnet ja soovitust järgmiseks seikluseks.
-
-Mäng salvestab oleku brauseri `localStorage`-isse. Kui salvestamine on keelatud, saab mängida samas aknas. Uus mäng nullib päevad, punktid, menüüd ja kasutatud ID-d.
-
-Enesetunne arvestab põhigruppide mummude kogumist võrreldes juba söödud toidukordadega ja gruppide mitmekesisust. Veel proovimata grupid mõjutavad enesetunnet rohkem päeva lõpupoole. Kuvatav enesetunne on ainult hea või halb. Liigne magus teeb mõlema tegelase kõhu pahaks ning mitmekesine toit aitab sellest taastuda. Muutus on kuni 14 punkti iga toidukorra kohta. Uus päev säilitab eelmise päeva enesetunde ja võimaliku halva enesetunde oleku; päeva mummud nullitakse. Kaardil muutuvad enesetunde tekst ja portree koos; hea ja halva enesetunde pildid on mõlema tegelase jaoks erinevad. Mõlema tegelase enesetunne taastatakse ka varem salvestatud toiduvalikutest. Maiustuste ja näkside tegelik kogus arvutatakse kõigist söödud toitudest, sõltumata püramiidi ühe mummu piirist. Iga magus toiduvalik lisab ühe mummu nii püramiidi kui ka enesetunde arvestusse. Üks mummu ei põhjusta liigse magusa halba enesetunnet. Kui päeva kogus ületab ühe mummu, langeb enesetunne ja tekstiks saab „Kõht on paha“. Päevakokkuvõttes muutub tegelane visuaalselt väsinuks või halva enesetundega tegelaseks. Sõnum viitab järgmisel päeval uutele valikutele; kolmanda päeva järel viitab see järgmisele seiklusele. See on mängureegel, mitte toitumisnorm. Halb enesetunne tuleb järgmisesse hommikusse kaasa ja säilib ka lehe värskendamisel. Mitmekesine toidukord, mis lisab mummusid vähemalt kolmest põhigrupist, aitab enesetunnet järk-järgult parandada, kui selle päeva näkside piir pole ületatud. Selline valik aitab ka päritud halvast enesetundest väljuda; energia taastub sujuvalt järgmiste valikutega. Uus mäng algab rahuliku enesetundega. Lõppkokkuvõtte enesetunde plokk näitab ainult hetke enesetunnet paksus kirjas. Kõik päevad arvutatakse järjekorras, nii et varasemate valikute mõju ja hilisem taastumine jõuavad ka lõpptulemusse. Salvestatud enesetunne taastatakse kogu seikluse toiduvalikutest.
+Skript kasutab vaikimisi aadressi `http://127.0.0.1:5173`. Teise aadressi saab määrata keskkonnamuutujaga `FOOD_CATALOG_URL`. HTML, PDF ja eelvaatepildid kirjutatakse kausta `exports/`.
 
 ## Toitumise alus
 
-Sisuline alus on Tervise Arengu Instituudi [toitumine.ee toidusoovitused](https://toitumine.ee/kuidas-tervislikult-toituda/toidusoovitused): mitmekesine menüü, gruppide proportsioonid, puhas joogivesi ja pikema perioodi tervik. Mängu mummud ja nende päeva vahemikud on hariduslik abstraktsioon, mitte portsjonid, kalorid, toitumisnormid ega meditsiiniline nõuanne. Päris toidupüramiid kirjeldab pikemat perioodi kui üks päev. Mäng jaotab köögiviljad ning puuviljad eraldi gruppideks ning liidab taimsed valguallikad valguallikate gruppi.
-
-Kõik illustratsioonid ja fondid serveeritakse kohalikult; mäng ei vaja töö ajal pildi- ega fonditeenuseid.
+Mängu sisuline alus on Tervise Arengu Instituudi [toitumine.ee toidusoovitused](https://toitumine.ee/kuidas-tervislikult-toituda/toidusoovitused): mitmekesine menüü ja toidugruppide tasakaal. Mummud, päevased eesmärgid ja enesetunde muutused on mängureeglid, mitte portsjonid, kalorid ega individuaalsed toitumisnormid. Päris toidupüramiid kirjeldab pikemat perioodi kui üks päev. Mäng käsitleb köögivilju ja puuvilju eraldi ning arvestab taimseid valguallikaid valguallikate grupis; eraldi vee ja jookide gruppi mängus ei ole.

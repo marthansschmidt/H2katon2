@@ -25,8 +25,8 @@ export function GameCharacter({ moodScore = 75, className = '', small = false, p
   if (character === 'raccoon') return <RaccoonCharacter moodScore={moodScore} className={className} small={small} pose={pose} />;
 
   const offset = frames[pose];
-  // Keep the entire atlas cell so hands, feet and tail cannot be cropped.
-  const frame = small ? [offset + 140, 0, 570, 395] : [offset, 0, 724, 724];
+  // Small portraits start beyond the tail; full poses keep the entire atlas cell.
+  const frame = small ? [offset + 200, 0, 524, 395] : [offset, 0, 724, 724];
   const [x, y, width, height] = frame;
   const [, , raccoonWidth, raccoonHeight] = RACCOON_FRAMES[pose];
   const displayWidth = small ? 410 : raccoonWidth;

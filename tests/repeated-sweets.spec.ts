@@ -57,7 +57,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
       await openVenue(page, 'Kampus');
       await chooseSweet(page, 'berrymuffin');
       await expect(page.getByRole('heading', { name: 'Suhkrupauk!', exact: true })).toBeVisible();
-      await expect(page.locator('.raccoon-status h3')).toHaveText('Paak lekkib');
+      await expect(page.locator('.raccoon-status h3')).toHaveText('Suhkru üledoos');
       await page.getByRole('button', { name: 'Edasi õhtusöögile' }).click();
       await setVenues(page, firstVenues);
       await openVenue(page, 'Humal');

@@ -43,7 +43,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
         await expect(page.locator('.feedback-character image')).toHaveAttribute('href', mood === 'unwell' ? moodArtwork : artwork);
         await expect(page.locator('.feedback-modal')).not.toContainText('Enesetunne:');
         await expect(status.locator('.mood-hint')).toHaveCount(0);
-        if (mood === 'unwell') await expect(status.getByRole('heading')).toHaveText('Paak lekkib');
+        if (mood === 'unwell') await expect(status.getByRole('heading')).toHaveText('Suhkru üledoos');
         await page.getByRole('button', { name: index === 2 ? 'Vaata päeva kokkuvõtet' : index === 0 ? 'Edasi lõunasöögile' : 'Edasi õhtusöögile' }).click();
         if (index < 2) {
           await page.reload();
@@ -63,7 +63,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
       const beforeNextDay = await page.evaluate(key => JSON.parse(localStorage.getItem(key)!).player, SAVE_KEY);
       await page.getByRole('button', { name: 'Järgmine päev', exact: true }).click();
       await expect(status).toHaveAttribute('data-mood', 'unwell');
-      await expect(status.getByRole('heading')).toHaveText('Paak lekkib');
+      await expect(status.getByRole('heading')).toHaveText('Suhkru üledoos');
       const morning = await page.evaluate(key => JSON.parse(localStorage.getItem(key)!).player, SAVE_KEY);
       expect(morning.moodScore).toBe(beforeNextDay.moodScore);
       expect(morning.foodGroupTotals.treats).toBe(0);
@@ -123,7 +123,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
           expect(afterFood - beforeFood).toBeLessThanOrEqual(14);
         }
         if (day < 2 && index > 0) {
-          await expect(page.locator('.raccoon-status h3')).toHaveText('Paak lekkib');
+          await expect(page.locator('.raccoon-status h3')).toHaveText('Suhkru üledoos');
           const saved = await page.evaluate(key => JSON.parse(localStorage.getItem(key)!).player, SAVE_KEY);
           expect(saved.foodGroupTotals.treats).toBe(index + 1);
         }
