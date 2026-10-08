@@ -95,7 +95,7 @@ describe('mängu turvaline kohalik salvestamine', () => {
     save.player.foodGroupTotals.drinks = 2;
     entries.set(SAVE_KEY, JSON.stringify(save));
     const restored = loadGame()!;
-    expect(restored.version).toBe(3);
+    expect(restored.version).toBe(4);
     expect(restored.player.days[0].breakfast?.id).toBe('yogurt');
     expect(restored.player.days[0]).not.toHaveProperty('waterMeals');
     expect(restored.player.foodGroupTotals).not.toHaveProperty('drinks');
@@ -126,11 +126,28 @@ describe('mängu turvaline kohalik salvestamine', () => {
     save.player.score = save.player.days[0].score = 200;
     entries.set(SAVE_KEY, JSON.stringify(save));
     const restored = loadGame()!;
-    expect(restored.version).toBe(3);
+    expect(restored.version).toBe(4);
     expect(restored.player.days[0].breakfast?.id).toBe('yogurt');
     expect(restored.player.days[0].restaurantNames.breakfast).toBe('Kohvik');
-    expect(restored.player.foodGroupTotals).toEqual({ ...state.foodGroupTotals, dairy: 3, fruits: 4 });
-    expect(restored.player.score).toBe(400);
+    expect(restored.player.foodGroupTotals).toEqual({ ...state.foodGroupTotals, dairy: 2, fruits: 2 });
+    expect(restored.player.score).toBe(state.score);
+    expect(restored.player.offers).toEqual({});
+  });
+  it('viib versiooni 3 toiduvaliku uuele portsjonite arvestusele', () => {
+    const yogurt = MOCK_FOODS.find(food => food.id === 'yogurt')!;
+    const state = chooseFood({ ...createPlayerState(), offers: { raekoja: [yogurt] } }, yogurt, 'Kohvik');
+    saveGame(state, 'map', 'map', true);
+    const save = JSON.parse(entries.get(SAVE_KEY)!);
+    save.version = 3;
+    save.player.days[0].breakfast.groups = [
+      { groupId: 'dairy', points: 3 }, { groupId: 'fruits', points: 4 }, { groupId: 'grains', points: 1 },
+    ];
+    entries.set(SAVE_KEY, JSON.stringify(save));
+    const restored = loadGame()!;
+    expect(restored.version).toBe(4);
+    expect(restored.player.days[0].breakfast?.groups).toEqual(yogurt.groups);
+    expect(restored.player.foodGroupTotals).toEqual(state.foodGroupTotals);
+    expect(restored.player.score).toBe(state.score);
     expect(restored.player.offers).toEqual({});
   });
   it('ignoreerib katkist JSON-i ja vigaseid mummugruppe', () => {

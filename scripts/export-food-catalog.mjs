@@ -19,13 +19,15 @@ try {
   const page = await browser.newPage({ viewport: { width: 1100, height: 1250 } });
   await page.goto(baseURL);
   const catalog = await page.evaluate(async () => {
-    const [{ MOCK_FOODS }, { FOOD_GROUPS }, { FOOD_IMAGES }, pyramid, scoring] = await Promise.all([
+    const [{ MOCK_FOODS }, { FOOD_GROUPS, PORTIONS_PER_DOT }, { FOOD_IMAGES }, pyramid, scoring] = await Promise.all([
       import('/src/data/mockRestaurants.ts'), import('/src/data/foodGroups.ts'), import('/src/data/foodImages.ts'),
       import('/src/game/foodPyramid.ts'), import('/src/game/scoring.ts'),
     ]);
     return {
       groups: FOOD_GROUPS,
       pointsPerDot: scoring.POINTS_PER_DOT,
+      portionsPerDot: PORTIONS_PER_DOT,
+      fullDayBonus: scoring.FULL_DAY_BONUS,
       dailyMax: scoring.MAX_DAILY_SCORE,
       gameMax: scoring.MAX_GAME_SCORE,
       foods: MOCK_FOODS.map(food => ({
@@ -50,7 +52,7 @@ try {
   const pages = Math.ceil(catalog.foods.length / perPage) + 1;
   const footer = number => `<footer><span>TOIDUSEIKLUS · TÜHI PÄEVAPÜRAMIID</span><span>${date} · ${number} / ${pages}</span></footer>`;
   const shortMeals = { breakfast: 'Hommik', lunch: 'Lõuna', dinner: 'Õhtu' };
-  const groupLegend = catalog.groups.map(group => `<div class="legend-row"><span class="legend-icon" style="color:${group.color}">${icon(group)}</span><span>${escape(group.shortName)}</span><strong>${group.maxTarget}</strong><small>${group.id === 'treats' ? 'valikuline piir' : 'päeva eesmärk'}</small></div>`).join('');
+  const groupLegend = catalog.groups.map(group => `<div class="legend-row"><span class="legend-icon" style="color:${group.color}">${icon(group)}</span><span>${escape(group.shortName)}</span><strong>${group.maxTarget}</strong><small>${group.maxTarget * catalog.portionsPerDot} portsjonit · ${group.id === 'treats' ? 'valikuline piir' : 'päeva eesmärk'}</small></div>`).join('');
   const heroFoods = ['oats', 'burger', 'berrymuffin'].map(id => `<img src="${imageURLs.get(id)}" alt="${escape(catalog.foods.find(food => food.id === id).name)}">`).join('');
   const cover = `<section class="sheet cover" aria-label="Ülevaade ja lugemisjuhis">
     <div class="eyebrow">TOIDUSEIKLUS / TOITUDE ÜLEVAADE</div>
@@ -60,12 +62,13 @@ try {
     <div class="cover-stats"><div><strong>${catalog.foods.length}</strong><span>toitu</span></div><div><strong>${catalog.groups.length}</strong><span>toidugruppi</span></div><div><strong>${catalog.pointsPerDot}</strong><span>punkti põhigrupi mummu eest</span></div></div>
     <div class="cover-columns"><div><h2>Päeva mummud</h2><div class="legend">${groupLegend}</div></div><div class="reading-guide"><h2>Kuidas lugeda?</h2>
       <p><strong>+N</strong> näitab, mitu mummu see toit tühja püramiidi lisab. Kaardilt puuduv grupp annab <strong>0 mummu</strong>.</p>
-      <p><strong>Punktid</strong> tulevad kuuest põhigrupist. Näksimumm punkte ei anna. Päeva maksimum on ${catalog.dailyMax}, mängu maksimum ${catalog.gameMax} punkti.</p>
+      <p><strong>1 mumm = ${catalog.portionsPerDot} portsjonit.</strong> Kogused ümardatakse üles: 3 portsjonit annab 2 tervet mummu.</p>
+      <p><strong>Punktid</strong> tulevad kuuest põhigrupist. Näksimumm punkte ei anna. Kõigi põhigruppide täitmine annab päeva lõpus ${catalog.fullDayBonus} boonuspunkti. Päeva maksimum on ${catalog.dailyMax}, mängu maksimum ${catalog.gameMax} punkti.</p>
       <p><strong>Hilisematel valikutel</strong> lisanduvad põhigruppide mummud ainult päeva eesmärgi täitumiseni, mistõttu võib punktisumma olla väiksem.</p>
       <p><strong>Maiustused ja näksid</strong> lisavad iga toiduvalikuga ühe mummu. Päeva teine ja kolmas näksivalik teevad tegelasel olemise halvaks.</p>
       <p><strong>Toidukorrad</strong> näitavad, millal toit võib menüüs esineda. „Taimne“ vastab mängu toiduandmetes olevale märkele.</p>
     </div></div>
-    <div class="source-note">Kogused on mängu mummud. Andmed pärinevad mängu toidukaartidest ja punktiarvestusest.</div>
+    <div class="source-note">Kogused on lihtsustatud mänguportsjonid ja terved mummud. Andmed pärinevad mängu toidukaartidest ja punktiarvestusest.</div>
     ${footer(1)}
   </section>`;
   const card = (food, index) => {

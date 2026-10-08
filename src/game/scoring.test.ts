@@ -15,10 +15,10 @@ describe('choice scores and final star ratings', () => {
     expect(calculateScore(sorted[0], totals)).toBeGreaterThan(calculateScore(sorted[1], totals));
     const cookie = MOCK_FOODS.find(food => food.id === 'oatcookie')!;
     // Already filled groups and optional sweets must not inflate the score.
-    expect(calculateScore(cookie, { ...totals, grains: 4, dairy: 3, fats: 3 })).toBe(0);
+    expect(calculateScore(cookie, { ...totals, grains: 5, dairy: 2, fats: 3 })).toBe(0);
   });
 
-  it('matches advertised choice points to actual gains and reaches 1000 with all 20 goal dots', () => {
+  it('matches advertised choice points to actual gains and reaches 1000 with all 16 goal dots', () => {
     const planner = new DailyMenuPlanner(MOCK_FOODS);
     let state = createPlayerState();
     for (const meal of MEAL_ORDER) {

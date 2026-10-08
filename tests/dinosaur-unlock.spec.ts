@@ -8,7 +8,7 @@ import { SAVE_KEY } from '../src/game/storage';
 function completedGame(dinner = 'herring') {
   let player = createPlayerState();
   for (let day = 0; day < 3; day++) {
-    for (const [index, id] of ['oats', 'caesar', dinner].entries()) {
+    for (const [index, id] of ['oats', 'caesar', day === 2 ? dinner : 'herring'].entries()) {
       player = chooseFood(player, MOCK_FOODS.find(food => food.id === id)!, 'Humal');
       if (index < 2) player = nextMeal(player);
     }

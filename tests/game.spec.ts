@@ -137,7 +137,7 @@ test('juhendi ja püramiidi avamine, klaviatuur ning mobiili ülevool', async ({
   await page.getByRole('button', { name: 'Sulge menüü' }).click();
   await page.getByRole('button', { name: 'Ava toidupüramiid' }).click();
   await expect(page.getByRole('dialog', { name: 'Toidupüramiid' })).toBeVisible();
-  await expect(page.getByRole('dialog').getByRole('img', { name: 'Köögiviljad: 0 mummu, päeva eesmärk 4' })).toBeVisible();
+  await expect(page.locator('.pyramid-guide > .pyramid-progress').getByRole('img', { name: 'Köögiviljad: 0 mummu, päeva eesmärk 2' })).toBeVisible();
   await expect(page.getByText('Vesi ja joogid', { exact: true })).toHaveCount(0);
   await page.keyboard.press('Escape');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

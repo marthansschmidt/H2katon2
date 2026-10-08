@@ -6,7 +6,7 @@ import { DailyMenuPlanner } from './dailyMenu';
 import { addFoodToTotals, calculateDayBalance, calculateFoodGroupTotals, consumptionForDay, emptyTotals, foodsForDay, getFoodGoalGain, isDayComplete, isSweetFood } from './foodPyramid';
 import { getMood } from './mood';
 import { MockRestaurantProvider, restaurantOffersSweets } from '../services/restaurantService';
-import { dayBonus } from './scoring';
+import { dayBonus, FULL_DAY_BONUS } from './scoring';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from './state';
 
 describe('three choices and reachable daily goals', () => {
@@ -20,7 +20,7 @@ describe('three choices and reachable daily goals', () => {
       if (mealIndex === 3) {
         expect(isDayComplete(totals)).toBe(true);
         expect(calculateDayBalance(totals)).toBe(100);
-        expect(dayBonus(totals)).toBe(0);
+        expect(dayBonus(totals)).toBe(FULL_DAY_BONUS);
         return;
       }
       const key = `${mealIndex}/${[...ids].sort().join(',')}`;

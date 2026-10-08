@@ -27,17 +27,19 @@ Menüüd arvestavad toidukorda ja päeva puuduvaid mummusid. Igas menüüs on ü
 
 ## Toidupüramiid ja punktid
 
-| Toidugrupp | Päeva eesmärk |
-| --- | ---: |
-| Köögiviljad | 4 mummu |
-| Puuviljad ja marjad | 4 mummu |
-| Teraviljatooted ja kartul | 4 mummu |
-| Piim ja piimatooted | 3 mummu |
-| Kala, muna, liha ja muud valguallikad | 2 mummu |
-| Lisatavad toidurasvad, pähklid ja seemned | 3 mummu |
-| Maiustused ja näksid | Valikuline, mängupiir 1 mummu |
+Mängus tähendab **1 mumm 2 portsjonit**. Toidu portsjonid teisendatakse mummudeks ülespoole ümardades: näiteks 3 portsjonit annab 2 tervet mummu. Poolikuid mummusid ei kuvata.
 
-Iga uus põhigrupi mummu annab **50 punkti**. Täidetud põhigrupp enam mummusid ega punkte juurde ei saa. Päeva maksimum on **1000 punkti** ja kolme päeva maksimum **3000 punkti**. Toidukaardid ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid, arvestades juba täidetud gruppe.
+| Toidugrupp | Päeva eesmärk | Portsjonite vaste mängus |
+| --- | ---: | ---: |
+| Köögiviljad | 2 mummu | 4 portsjonit |
+| Puuviljad ja marjad | 2 mummu | 4 portsjonit |
+| Teraviljatooted ja kartul | 5 mummu | 10 portsjonit |
+| Piim ja piimatooted | 2 mummu | 4 portsjonit |
+| Kala, muna, liha ja muud valguallikad | 2 mummu | 4 portsjonit |
+| Lisatavad toidurasvad, pähklid ja seemned | 3 mummu | 6 portsjonit |
+| Maiustused ja näksid | Valikuline, mängupiir 1 mumm | 2 portsjonit |
+
+Iga uus põhigrupi mummu annab **50 punkti**. Täidetud põhigrupp enam mummusid ega punkte juurde ei saa. Kuue põhigrupi 16 mummu annavad 800 punkti. Kõigi põhigruppide täitmine annab päeva lõpus lisaks **200 boonuspunkti**, nii et päeva maksimum on **1000 punkti** ja kolme päeva maksimum **3000 punkti**. Toidukaardid ja valiku tagasiside näitavad tegelikult lisanduvaid mummusid, arvestades juba täidetud gruppe.
 
 Maiustuste ja näkside mummud punkte ei anna. Iga neid sisaldav toiduvalik lisab ühe näksimummu, ka pärast mängupiiri täitumist. Kolme toidukorraga võib neid koguneda kuni kolm. Selgitus tuletab meelde, et ühest korrast päevas piisab. Magusaid valikuid pakuvad Werner, Kolm Tilli, Humal, Kampus, Fii ning Vilde ja Vine; nende menüüdes on igal toidukorral vähemalt üks magus valik. Magusat saab valida ka korduvalt.
 
@@ -65,9 +67,11 @@ Toiduvaliku kinnitusakna pealkiri on mitmesse gruppi mummusid lisava valiku korr
 
 Mäng kohandub telefoni, tahvelarvuti ja arvuti ekraanile. Kaardi valgus muutub koos toidukorraga: hommikul on koiduvalgus, lõunal päevavalgus ja õhtul valgustatud akendega hämar linn. Kreemjad kaardid, rohelised tegevusnupud ja värvilised mummud läbivad kõiki vaateid.
 
-Söögikohtade logod on kaardimullides läbipaistva taustaga. Menüü bänneril on logo loetavuse jaoks kreemjas taust. Bänneri nimeinfo avaneb arvutis sellele liikudes ning mobiilis puudutades. Kujundus arvestab telefoni turvaalasid ja vähendatud animatsioonide eelistust.
+Söögikohtade logod on kaardimullides läbipaistva taustaga. Menüü bänneril on logo loetavuse jaoks kreemjas taust. Bänneri paremas nurgas olev telefoniikoon avab päeva toidupüramiidi menüüd sulgemata; püramiidi sulgemisel saab jätkata samast menüüst. Bänneri nimeinfo avaneb arvutis sellele liikudes ning mobiilis puudutades. Kujundus arvestab telefoni turvaalasid ja vähendatud animatsioonide eelistust.
 
 Mängu ajal avalehele liikudes küsitakse kinnitust: „Kas soovid avalehele minna?“. Valikud on „Jätka mängu“ ja „Jah, avalehele“.
+
+Varasemad salvestused viiakse uuele portsjonite arvestusele üle: valitud toidud säilivad, mummud, punktid ja enesetunne arvutatakse uuesti ning aegunud menüüd koostatakse uuesti.
 
 Mänguseis, tegelase valik ja dinosauruse avamine salvestatakse brauseri `localStorage`-isse. Lehe värskendamine taastab mängu seisu ja toiduvalikutest arvutatud enesetunde. Uus mäng nullib päevad, punktid ja menüüd, kuid säilitab avatud dinosauruse. Kui brauser salvestamist ei luba, saab mängida samas aknas, kuid seis ei säili pärast lehe sulgemist või värskendamist.
 
@@ -139,4 +143,4 @@ Skript kasutab vaikimisi aadressi `http://127.0.0.1:5173`. Teise aadressi saab m
 
 ## Toitumise alus
 
-Mängu sisuline alus on Tervise Arengu Instituudi [toitumine.ee toidusoovitused](https://toitumine.ee/kuidas-tervislikult-toituda/toidusoovitused): mitmekesine menüü ja toidugruppide tasakaal. Mummud, päevased eesmärgid ja enesetunde muutused on mängureeglid, mitte portsjonid, kalorid ega individuaalsed toitumisnormid. Päris toidupüramiid kirjeldab pikemat perioodi kui üks päev. Mäng käsitleb köögivilju ja puuvilju eraldi ning arvestab taimseid valguallikaid valguallikate grupis; eraldi vee ja jookide gruppi mängus ei ole.
+Mängu sisuline alus on Tervise Arengu Instituudi [toitumine.ee toidusoovitused](https://toitumine.ee/kuidas-tervislikult-toituda/toidusoovitused): mitmekesine menüü ja toidugruppide tasakaal. Portsjonite suurused ja toitude kogused on lihtsustatud mänguarvestus. Mummud, päevased eesmärgid ja enesetunde muutused ei väljenda kaloreid ega individuaalseid toitumisnorme. Päris toidupüramiid kirjeldab pikemat perioodi kui üks päev. Mäng käsitleb köögivilju ja puuvilju eraldi ning arvestab taimseid valguallikaid valguallikate grupis; eraldi vee ja jookide gruppi mängus ei ole.

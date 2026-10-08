@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { FOOD_GROUPS, REQUIRED_FOOD_GROUPS } from '../data/foodGroups';
 import { MOCK_FOODS } from '../data/mockRestaurants';
 import { addFoodToTotals, calculateFoodGroupTotals, emptyTotals, getFoodContributions, getFoodGoalGain } from './foodPyramid';
-import { calculateChoiceScore } from './scoring';
+import { calculateChoiceScore, FULL_DAY_BONUS } from './scoring';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from './state';
 
 const cake = MOCK_FOODS.find(food => food.id === 'chococake')!;
@@ -22,7 +22,7 @@ describe('treat dots may exceed the daily limit', () => {
     const full = { ...emptyTotals(), ...Object.fromEntries(REQUIRED_FOOD_GROUPS.map(group => [group.id, group.maxTarget])), treats: 6 };
     expect(getFoodContributions(cake, full)).toEqual([{ groupId: 'treats', points: 1 }]);
     expect(getFoodGoalGain(cake, full)).toBe(0);
-    expect(calculateChoiceScore(cake, full, 'dinner')).toBe(0);
+    expect(calculateChoiceScore(cake, full, 'dinner')).toBe(FULL_DAY_BONUS);
     for (const group of FOOD_GROUPS) if (group.id !== 'treats') expect(addFoodToTotals(full, cake)[group.id]).toBe(full[group.id]);
   });
 

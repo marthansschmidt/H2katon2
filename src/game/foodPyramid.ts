@@ -6,7 +6,7 @@ export const isSweetFood = (food: Food): boolean => food.groups.some(value => va
 
 export function getFoodContributions(food: Food, totals: FoodGroupTotals): FoodGroupValue[] {
   return FOOD_GROUPS.flatMap(group => {
-    const available = food.groups.filter(value => value.groupId === group.id).reduce((sum, value) => sum + value.points, 0);
+    const available = Math.ceil(food.groups.filter(value => value.groupId === group.id).reduce((sum, value) => sum + value.points, 0));
     const points = group.id === 'treats' ? Math.min(1, available) : Math.max(0, Math.min(available, group.maxTarget - totals[group.id]));
     return points > 0 ? [{ groupId: group.id, points }] : [];
   });

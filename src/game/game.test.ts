@@ -4,7 +4,7 @@ import { MOCK_FOODS, MOCK_RESTAURANTS } from '../data/mockRestaurants';
 import { getAvailableFoods, getRandomRestaurants, MockRestaurantProvider } from '../services/restaurantService';
 import { calculateDayBalance, calculateFoodGroupTotals, emptyTotals, foodsForDay } from './foodPyramid';
 import { calculateMoodScore } from './mood';
-import { calculateScore, dayBonus } from './scoring';
+import { calculateScore, dayBonus, FULL_DAY_BONUS } from './scoring';
 import { chooseFood, createPlayerState, nextDay, nextMeal } from './state';
 import { generateDayFeedback } from './feedback';
 
@@ -118,7 +118,7 @@ describe('mitmekesisus ja toetav tagasiside', () => {
     const totals = Object.fromEntries(FOOD_GROUPS.map(g => [g.id, g.minTarget])) as ReturnType<typeof emptyTotals>;
     expect(calculateDayBalance(totals)).toBe(100);
     expect(totals.treats).toBe(0);
-    expect(dayBonus(totals)).toBe(0);
+    expect(dayBonus(totals)).toBe(FULL_DAY_BONUS);
     expect(calculateDayBalance(emptyTotals())).toBeLessThan(30);
   });
   it('näitab nii puudujääki kui ka tugevat ületarbimist', () => {

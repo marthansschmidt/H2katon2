@@ -5,7 +5,7 @@ import { calculateDayScore } from './scoring';
 import { getMoodForDay } from './mood';
 import { MEAL_ORDER, type Food, type PlayerState, type Screen } from '../types/game';
 export const SAVE_KEY = 'pesukaru-seiklus-v1';
-interface Save { version: 1 | 2 | 3; player: PlayerState; screen: Screen; resumeScreen: Screen; started: boolean }
+interface Save { version: 1 | 2 | 3 | 4; player: PlayerState; screen: Screen; resumeScreen: Screen; started: boolean }
 const screens: Screen[] = ['home', 'tutorial', 'map', 'daySummary', 'final'];
 function validFood(food: Food): boolean {
   return !!food && typeof food.id === 'string' && typeof food.name === 'string' && typeof food.description === 'string' && typeof food.image === 'string'
@@ -18,7 +18,7 @@ export function loadGame(): Save | null {
     if (!raw) return null;
     const save = JSON.parse(raw) as Save;
     const p = save.player;
-    if (![1, 2, 3].includes(save.version) || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
+    if (![1, 2, 3, 4].includes(save.version) || typeof save.started !== 'boolean' || !screens.includes(save.screen) || !screens.includes(save.resumeScreen) || !p) return null;
     if (!Number.isInteger(p.currentDay) || p.currentDay < 1 || p.currentDay > 3 || !MEAL_ORDER.includes(p.currentMeal)) return null;
     // Existing adventures used the raccoon before character selection was added.
     if (p.character === undefined) p.character = 'raccoon';
@@ -48,12 +48,12 @@ export function loadGame(): Save | null {
     const destination = save.screen === 'home' ? save.resumeScreen : save.screen;
     if (['daySummary', 'final'].includes(destination) && !MEAL_ORDER.every(meal => p.days[p.currentDay - 1][meal])) return null;
     if (destination === 'final' && p.currentDay !== 3) return null;
-    if (save.version < 3) {
+    if (save.version < 4) {
       // Retain chosen meals while adapting their dots to the updated pyramid.
       for (const day of p.days) for (const meal of MEAL_ORDER) {
         const food = day[meal];
         const currentFood = food && MOCK_FOODS.find(current => current.id === food.id);
-        if (food && currentFood) food.groups = currentFood.groups.map(group => ({ ...group }));
+        if (food) food.groups = (currentFood ?? food).groups.map(group => ({ ...group, points: Math.ceil(group.points) }));
       }
       p.offers = {};
     }
@@ -62,10 +62,10 @@ export function loadGame(): Save | null {
     p.days = p.days.map(day => ({ ...day, score: calculateDayScore(day) }));
     p.score = p.days.reduce((sum, day) => sum + day.score, 0);
     p.moodScore = getMoodForDay(p.days).score;
-    save.version = 3;
+    save.version = 4;
     return save;
   } catch { return null; }
 }
 export function saveGame(player: PlayerState, screen: Screen, resumeScreen: Screen, started: boolean): boolean {
-  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 3, player, screen, resumeScreen, started })); return true; } catch { return false; }
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ version: 4, player, screen, resumeScreen, started })); return true; } catch { return false; }
 }

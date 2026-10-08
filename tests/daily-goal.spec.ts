@@ -90,19 +90,19 @@ for (const width of [390, 1440]) {
 test('weaker saved choices receive a lower score and four stars after day three', async ({ page }) => {
   let player = createPlayerState();
   for (let day = 0; day < 3; day++) {
-    for (const [index, id] of ['oatcookie', 'chococake', 'smoothie'].entries()) {
+    for (const [index, id] of ['oats', 'chickenrice', 'smoothie'].entries()) {
       player = chooseFood(player, MOCK_FOODS.find(food => food.id === id)!, 'Kohvik');
       if (index < 2) player = nextMeal(player);
     }
     if (day < 2) player = nextDay(player);
   }
-  expect(player.score).toBe(1800);
+  expect(player.score).toBe(2100);
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(save => localStorage.setItem('pesukaru-seiklus-v1', JSON.stringify(save)), {
     version: 2, player, screen: 'final', resumeScreen: 'final', started: true,
   });
   await page.goto('/');
-  await expect(page.getByRole('region', { name: 'Lõpptulemus', exact: true })).toContainText('1800 / 3000 punkti');
+  await expect(page.getByRole('region', { name: 'Lõpptulemus', exact: true })).toContainText('2100 / 3000 punkti');
   await expect(page.getByRole('img', { name: '4 tärni 5-st' })).toBeVisible();
   await expect(page.locator('.rating-star')).toHaveCount(5);
   await expect(page.locator('.rating-star.is-earned')).toHaveCount(4);

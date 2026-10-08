@@ -27,7 +27,7 @@ async function chooseSweet(page: Page, foodId: string) {
   const food = MOCK_FOODS.find(food => food.id === foodId)!;
   const card = page.locator('.food-card').filter({ has: page.getByRole('heading', { name: food.name, exact: true }) });
   const treatPoints = 1;
-  await expect(card.locator('.food-group-chips > span[title="Maiustused ja näksid"]')).toContainText(`+${treatPoints}`);
+  await expect(card.locator('.food-group-chips > span[title^="Maiustused ja näksid:"]')).toContainText(`+${treatPoints}`);
   await card.getByRole('button', { name: 'Valin selle' }).click();
   await expect(page.locator('.added-groups > div').filter({ hasText: 'näksid' }).locator('strong')).toHaveText(`+${treatPoints}`);
   await expect(page.locator('.feedback-modal')).not.toContainText('Enesetunne:');
@@ -41,7 +41,7 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
       if (character === 'dinosaur') { await seedUnlockedDinosaur(page); await page.getByRole('button', { name: 'Dinosaurus', exact: true }).click(); }
       await page.getByRole('button', { name: 'Alusta mängu', exact: true }).click();
       await page.getByRole('button', { name: 'Alustan!' }).click();
-      const firstVenues = ['toome', 'raekoja', 'emajoe', 'supilinna', 'roheline'];
+      const firstVenues = ['kesklinna', 'raekoja', 'emajoe', 'supilinna', 'roheline'];
       await setVenues(page, firstVenues);
       for (const venue of ['Joyce', 'Hõlm', 'Tacora']) {
         await openVenue(page, venue);
@@ -49,35 +49,35 @@ for (const character of ['raccoon', 'dinosaur'] as const) {
         expect(names.some(name => isSweetFood(MOCK_FOODS.find(food => food.name === name)!))).toBe(false);
         await page.getByRole('button', { name: 'Sulge', exact: true }).click();
       }
-      await openVenue(page, 'Humal');
-      await chooseSweet(page, 'chococake');
+      await openVenue(page, 'Fii');
+      await chooseSweet(page, 'oatcookie');
       await expect(page.locator('.feedback-modal')).not.toHaveAttribute('aria-label', 'Suhkrupauk!');
       await page.getByRole('button', { name: 'Edasi lõunasöögile' }).click();
       await setVenues(page, ['karlova', 'kesklinna', 'ulikooli', 'maitsed', 'aparaadi']);
-      await openVenue(page, 'Kampus');
-      await chooseSweet(page, 'berrymuffin');
+      await openVenue(page, 'Fii');
+      await chooseSweet(page, 'oatcookie');
       await expect(page.getByRole('heading', { name: 'Suhkrupauk!', exact: true })).toBeVisible();
       await expect(page.locator('.raccoon-status h3')).toHaveText('Suhkru üledoos');
       await page.getByRole('button', { name: 'Edasi õhtusöögile' }).click();
       await setVenues(page, firstVenues);
-      await openVenue(page, 'Humal');
+      await openVenue(page, 'Fii');
       const names = await page.locator('.food-card h3').allTextContents();
-      expect(names).toContain('Šokolaadikook');
+      expect(names).toContain('Kaeraküpsis ja piim');
       // Saved menus retain the repeated dessert when reopening after a refresh.
       await page.getByRole('button', { name: 'Sulge', exact: true }).click();
       await page.reload();
       await expect(page.locator('.tartu-map')).toHaveAttribute('aria-busy', 'false');
-      await openVenue(page, 'Humal');
+      await openVenue(page, 'Fii');
       expect(await page.locator('.food-card h3').allTextContents()).toEqual(names);
-      await chooseSweet(page, 'chococake');
+      await chooseSweet(page, 'oatcookie');
       await expect(page.getByRole('heading', { name: 'Suhkrupauk!', exact: true })).toBeVisible();
       await page.getByRole('button', { name: 'Vaata päeva kokkuvõtet' }).click();
       await expect(page.locator('.summary-character')).toHaveAttribute('data-mood', 'unwell');
       await expect(page.locator('.summary-character .raccoon')).toHaveAttribute('data-mood-art', 'true');
       await expect(page.locator('.summary-character .raccoon')).toHaveAttribute('aria-label', `Halva enesetundega ${character === 'dinosaur' ? 'dinosaurus' : 'pesukaru'}`);
       const player = await page.evaluate(key => JSON.parse(localStorage.getItem(key)!).player, SAVE_KEY);
-      expect(player.days[0].breakfast.id).toBe('chococake');
-      expect(player.days[0].dinner.id).toBe('chococake');
+      expect(player.days[0].breakfast.id).toBe('oatcookie');
+      expect(player.days[0].dinner.id).toBe('oatcookie');
       expect(player.character).toBe(character);
       expect(player.foodGroupTotals.treats).toBe(3);
       for (const group of REQUIRED_FOOD_GROUPS) expect(player.foodGroupTotals[group.id]).toBeLessThanOrEqual(group.maxTarget);
